@@ -10,8 +10,8 @@
   "background_color": "#1c5d99",
   "theme_color": "#1c5d99",
   "icons": [
-    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
-    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
-    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+    { "src": "taxi-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "taxi-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "taxi-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
   ]
 }
