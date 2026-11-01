@@ -1,0 +1,1749 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#1c5d99">
+<title>Taxi Gestion Pro</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css">
+<style>
+/* Mise en page : une colonne sur téléphone, deux colonnes (saisie / résultat) sur grand écran. */
+:root{
+  --bg:#f2f4f6; --surface:#ffffff; --field:#f7f9fb; --ink:#14212e; --muted:#566676; --line:#d6dee5;
+  --accent:#1c5d99; --accent-ink:#ffffff; --signal:#f0b400;
+  --good:#17703f; --warn:#a24b05; --bad:#b42318;
+  --font:system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0f1820; --surface:#17232e; --field:#101b24; --ink:#e8eef3; --muted:#9bacbb; --line:#2a3a48;
+    --accent:#6aaee8; --accent-ink:#0b1a27; --signal:#f5c542;
+    --good:#4cc38a; --warn:#f0a35a; --bad:#f08a80; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0f1820; --surface:#17232e; --field:#101b24; --ink:#e8eef3; --muted:#9bacbb; --line:#2a3a48;
+  --accent:#6aaee8; --accent-ink:#0b1a27; --signal:#f5c542;
+  --good:#4cc38a; --warn:#f0a35a; --bad:#f08a80; color-scheme:dark;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.45 var(--font);
+  padding-left:max(16px, env(safe-area-inset-left, 0px));
+  padding-right:max(16px, env(safe-area-inset-right, 0px));
+  padding-bottom:calc(32px + env(safe-area-inset-bottom, 0px))}
+h1,h2,h3{margin:0;line-height:1.2;text-wrap:balance}
+h2{font-size:1.05rem}
+h3{font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);font-weight:700}
+p{margin:0}
+button,input,select{font:inherit;color:inherit}
+.wrap{max-width:1100px;margin:0 auto}
+
+/* En-tête */
+.top{position:sticky;top:0;z-index:1000;background:var(--bg);padding-top:max(10px, env(safe-area-inset-top, 0px));padding-bottom:10px}
+.brand{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.brand h1{font-size:1.15rem;letter-spacing:.01em}
+.brand-mark{width:26px;height:26px;border-radius:5px;flex:none;border:2px solid var(--ink);
+  background:repeating-conic-gradient(var(--ink) 0 25%, var(--signal) 0 50%) 0 0/13px 13px}
+.tabs{display:grid;grid-template-columns:repeat(6,1fr);gap:3px}
+.tab{padding:10px 2px;border:1px solid var(--line);background:var(--surface);border-radius:8px;cursor:pointer;font-weight:600;font-size:.7rem;min-height:44px;min-width:0}
+.tab.is-active{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.count{display:none}
+textarea{width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);min-width:0;resize:vertical;font:inherit;color:inherit}
+textarea:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.badge{display:inline-block;font-size:.72rem;font-weight:700;padding:2px 8px;border-radius:99px;border:1px solid currentColor}
+.badge.ok{color:var(--good)} .badge.due{color:var(--warn)} .badge.off{color:var(--muted)}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{min-height:40px;padding:6px 14px;border-radius:99px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600}
+.chip[aria-pressed="true"]{background:var(--accent);color:var(--accent-ink);border-color:var(--accent)}
+.ride ul{margin:4px 0;padding-left:18px}
+.ride summary{cursor:pointer;font-weight:600;min-height:32px}
+.doc{background:#ffffff;color:#111111;border:1px solid var(--line);border-radius:8px;padding:16px;display:grid;gap:14px;min-width:0;overflow-wrap:anywhere}
+.doc h2{font-size:1.4rem;color:#111111}
+.doc table{width:100%;border-collapse:collapse}
+.doc th,.doc td{padding:6px 4px;border-bottom:1px solid #dddddd;text-align:left;vertical-align:top}
+.doc th.r,.doc td.r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.doc .top2{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap}
+.doc .muted{color:#555555;font-size:.85rem}
+@media print{
+  body *{visibility:hidden}
+  #invPrint,#invPrint *{visibility:visible}
+  #invPrint{position:absolute;left:0;top:0;width:100%}
+  .doc{border:0}
+}
+.live{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-top:8px;padding:8px 12px;border-radius:8px;background:var(--accent);color:var(--accent-ink);font-variant-numeric:tabular-nums}
+.live strong{font-size:1.7rem;line-height:1.1}
+
+/* Cartes et champs */
+.layout{display:grid;gap:14px;grid-template-columns:1fr}
+@media (min-width:900px){ .layout{grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);align-items:start} .sticky{position:sticky;top:130px} }
+.col{display:grid;gap:14px;min-width:0}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:14px;display:grid;gap:12px;min-width:0}
+.card>header{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px}
+.field{display:grid;gap:4px;min-width:0;align-content:start}
+.field>span{font-size:.82rem;color:var(--muted);font-weight:600}
+.field small{color:var(--muted);font-size:.78rem}
+input[type=text],input[type=number],input[type=date],input[type=time],select{
+  width:100%;min-height:44px;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--field);min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:3px solid var(--accent);outline-offset:1px}
+.unit{display:flex;align-items:center;gap:8px}
+.unit em{font-style:normal;color:var(--muted);font-size:.85rem;white-space:nowrap}
+.check{display:flex;align-items:center;gap:10px;min-height:44px}
+.check input{width:20px;height:20px;flex:none}
+.btn{min-height:44px;padding:8px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);cursor:pointer;font-weight:600}
+.btn.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.btn.danger{color:var(--bad);border-color:var(--bad)}
+.btn[disabled]{opacity:.5;cursor:not-allowed}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.addr{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+.addr .btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.sugg{list-style:none;margin:0;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sugg button{width:100%;text-align:left;padding:10px 12px;border:0;border-top:1px solid var(--line);background:var(--surface);cursor:pointer;min-height:44px}
+.sugg li:first-child button{border-top:0}
+.sugg button:hover{background:var(--field)}
+.sugg .info{padding:10px 12px;color:var(--muted)}
+.notice{padding:10px 12px;border-radius:8px;border:1px solid var(--line);background:var(--field);color:var(--ink)}
+.notice.warn{border-color:var(--warn)}
+.notice.bad{border-color:var(--bad)}
+.notice .row{margin-top:8px}
+
+/* Carte */
+#map{height:300px;border-radius:8px;border:1px solid var(--line);isolation:isolate;background:var(--field)}
+.map-off{padding:16px;color:var(--muted)}
+.routes{display:grid;gap:8px}
+.route{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;text-align:left;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface);cursor:pointer;min-height:44px}
+.route[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent)}
+.tag{font-size:.72rem;font-weight:700;padding:2px 7px;border-radius:99px;border:1px solid var(--line);color:var(--muted)}
+
+/* Résultat */
+.price{display:grid;gap:2px}
+.price .label{font-size:.82rem;color:var(--muted);font-weight:600}
+.price strong{font-size:2.3rem;line-height:1.05;font-variant-numeric:tabular-nums}
+.price small{color:var(--muted)}
+dl{margin:0;display:grid;gap:0}
+.r{display:flex;justify-content:space-between;gap:12px;padding:7px 0;border-top:1px solid var(--line)}
+.r:first-child{border-top:0}
+.r dt{color:var(--muted);min-width:0}
+.r dd{margin:0;font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.r.total{font-weight:800}
+.r.total dt{color:var(--ink)}
+.verdict{padding:8px 12px;border-radius:8px;font-weight:700;border:1px solid currentColor}
+.verdict.good{color:var(--good)} .verdict.warn{color:var(--warn)} .verdict.bad{color:var(--bad)}
+.fine{font-size:.8rem;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+
+/* Suivi GPS */
+.gpsout{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:10px}
+.gpsout div{background:var(--field);border:1px solid var(--line);border-radius:8px;padding:8px 10px}
+.gpsout span{display:block;font-size:.75rem;color:var(--muted);font-weight:600}
+.gpsout b{font-size:1.1rem;font-variant-numeric:tabular-nums}
+
+/* Liste des courses */
+.list{display:grid;gap:10px}
+.ride{display:grid;gap:6px;padding:12px;border:1px solid var(--line);border-radius:10px;background:var(--surface)}
+.ride .head{display:flex;justify-content:space-between;gap:10px;align-items:baseline}
+.ride .route-txt{color:var(--muted);overflow-wrap:anywhere}
+.ride .nums{display:flex;gap:14px;flex-wrap:wrap;font-variant-numeric:tabular-nums}
+.pos{color:var(--good)} .neg{color:var(--bad)}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px}
+.stats div{background:var(--surface);border:1px solid var(--line);border-radius:10px;padding:10px 12px}
+.stats span{display:block;font-size:.75rem;color:var(--muted);font-weight:600}
+.stats b{font-size:1.15rem;font-variant-numeric:tabular-nums}
+
+#toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom, 0px));
+  background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:2000;max-width:90vw;text-align:center}
+@media (prefers-reduced-motion: no-preference){ #toast{transition:opacity .2s} }
+</style>
+</head>
+<body>
+<div class="wrap">
+<header class="top">
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v1.6</span></div>
+  <nav class="tabs" aria-label="Rubriques">
+    <button class="tab is-active" data-tab="calc" type="button">Calcul</button>
+    <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
+    <button class="tab" data-tab="clients" type="button">Clients</button>
+    <button class="tab" data-tab="invoices" type="button">Factures</button>
+    <button class="tab" data-tab="expenses" type="button">Dépenses</button>
+    <button class="tab" data-tab="settings" type="button">Réglages</button>
+  </nav>
+  <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
+</header>
+
+<div id="storageWarn" class="notice bad" hidden>
+  Ce navigateur ne permet pas d'enregistrer les données. Vos courses et vos réglages seront perdus à la fermeture. Ouvrez le fichier avec Chrome ou Firefox, hors navigation privée.
+</div>
+
+<main>
+<!-- ============ CALCULATEUR ============ -->
+<section id="tab-calc" class="layout" aria-label="Calculateur de course">
+  <div class="col">
+    <div id="setupWarn" class="notice warn" hidden>
+      Vos tarifs et vos coûts ne sont pas encore renseignés, donc les prix et les résultats restent à zéro.
+      <div class="row"><button class="btn" type="button" id="goSettings">Ouvrir les réglages</button></div>
+    </div>
+
+    <div class="card">
+      <header><h2>Trajet</h2></header>
+      <div class="grid">
+        <label class="field"><span>Nom du client</span><input type="text" id="f_client" autocomplete="off" list="clientList"><datalist id="clientList"></datalist></label>
+        <label class="field"><span>Date</span><input type="date" id="f_date"></label>
+        <label class="field"><span>Heure de départ</span><input type="time" id="f_heure"></label>
+      </div>
+      <div id="clientAddr" class="notice" hidden>
+        <div id="clientAddrTxt"></div>
+        <div class="row"><button class="btn" type="button" id="addrAsFrom">Départ chez le client</button><button class="btn" type="button" id="addrAsTo">Arrivée chez le client</button></div>
+      </div>
+      <label class="field"><span>Tarif appliqué</span><select id="f_grille"></select></label>
+
+      <div>
+        <label class="field" for="f_depart"><span>Adresse de départ</span></label>
+        <div class="addr">
+          <input type="text" id="f_depart" autocomplete="off" placeholder="Numéro, rue, ville">
+          <div class="btns">
+            <button class="btn" type="button" id="goFrom">Rechercher</button>
+            <button class="btn" type="button" id="locFrom">Ma position</button>
+          </div>
+        </div>
+        <ul class="sugg" id="sugFrom" hidden></ul>
+      </div>
+
+      <div>
+        <label class="field" for="f_arrivee"><span>Adresse d'arrivée</span></label>
+        <div class="addr">
+          <input type="text" id="f_arrivee" autocomplete="off" placeholder="Numéro, rue, ville">
+          <div class="btns">
+            <button class="btn" type="button" id="goTo">Rechercher</button>
+            <button class="btn" type="button" id="locTo">Ma position</button>
+          </div>
+        </div>
+        <ul class="sugg" id="sugTo" hidden></ul>
+      </div>
+
+      <button class="btn primary" type="button" id="goRoute">Calculer l'itinéraire</button>
+      <p class="fine">Tapez les deux adresses puis touchez Calculer l'itinéraire. L'application retient la première adresse trouvée et l'affiche pour que vous la vérifiiez. Pour choisir une autre proposition, touchez Rechercher à côté de l'adresse.</p>
+      <div id="routeMsg" class="notice" hidden></div>
+      <div id="routes" class="routes"></div>
+      <div id="map" role="application" aria-label="Carte du trajet"></div>
+      <p class="fine">Distances calculées par la route (OpenStreetMap, serveur de démonstration OSRM). Ce sont des distances théoriques, le suivi GPS plus bas mesure la distance réellement roulée.</p>
+    </div>
+
+    <div class="card">
+      <header><h2>Distances et durées</h2></header>
+      <div class="grid">
+        <label class="field"><span>Kilomètres aller</span><div class="unit"><input type="number" id="f_kmAller" inputmode="decimal" min="0" step="0.1"><em>km</em></div></label>
+        <label class="field"><span>Durée du trajet aller</span><div class="unit"><input type="number" id="f_dureeAller" inputmode="numeric" min="0" step="1"><em>min</em></div></label>
+        <label class="field"><span>Retour</span>
+          <select id="f_retourMode">
+            <option value="none">Pas de retour</option>
+            <option value="vide">Retour à vide (non facturé)</option>
+            <option value="client">Retour avec le client (facturé)</option>
+          </select>
+        </label>
+        <label class="field"><span>Kilomètres retour</span><div class="unit"><input type="number" id="f_kmRetour" inputmode="decimal" min="0" step="0.1"><em>km</em></div></label>
+        <label class="field"><span>Kilomètres supplémentaires</span><div class="unit"><input type="number" id="f_kmExtra" inputmode="decimal" min="0" step="0.1"><em>km</em></div><small>Facturés au client</small></label>
+        <label class="field"><span>Temps d'attente</span><div class="unit"><input type="number" id="f_attente" inputmode="numeric" min="0" step="1"><em>min</em></div></label>
+      </div>
+      <p class="fine num" id="kmSummary"></p>
+    </div>
+
+    <div class="card">
+      <header><h2>Suppléments et frais</h2></header>
+      <div class="grid">
+        <label class="field"><span>Suppléments</span><div class="unit"><input type="number" id="f_supplements" inputmode="decimal" min="0" step="0.01"><em>€</em></div></label>
+        <label class="field"><span>Péages</span><div class="unit"><input type="number" id="f_peages" inputmode="decimal" min="0" step="0.01"><em>€</em></div></label>
+        <label class="field"><span>Stationnement</span><div class="unit"><input type="number" id="f_stationnement" inputmode="decimal" min="0" step="0.01"><em>€</em></div></label>
+        <label class="field"><span>Autres frais</span><div class="unit"><input type="number" id="f_autres" inputmode="decimal" min="0" step="0.01"><em>€</em></div></label>
+      </div>
+      <label class="check"><input type="checkbox" id="f_refacture" checked><span>Péages, stationnement et autres frais refacturés au client</span></label>
+      <label class="field"><span>Prix convenu avec le client (facultatif)</span><div class="unit"><input type="number" id="f_prixConvenu" inputmode="decimal" min="0" step="0.01"><em>€</em></div><small>Si vous le remplissez, il remplace le prix calculé.</small></label>
+    </div>
+
+    <div class="card">
+      <header><h2>Suivi GPS de la course</h2></header>
+      <p class="fine">Touchez Démarrer au départ de la course : le prix s'affiche et monte au fur et à mesure des kilomètres roulés, avec le tarif choisi plus haut. Les arrêts (vitesse sous 5 km/h) sont comptés en attente. Gardez l'écran allumé et l'application ouverte. Les positions ne sont pas enregistrées, seuls les totaux le sont.</p>
+      <p class="fine">Ce prix est une estimation calculée par le téléphone, ce n'est pas un taximètre homologué.</p>
+      <div class="row">
+        <button class="btn primary" type="button" id="trackStart">Démarrer le suivi</button>
+        <button class="btn" type="button" id="trackStop" disabled>Arrêter le suivi</button>
+      </div>
+      <div id="trackMsg" class="notice" hidden></div>
+      <div class="gpsout" aria-live="off">
+        <div><span>Prix en direct</span><b id="tPrice">Aucun tarif</b></div>
+        <div><span>Km réels</span><b id="tKm">0,0 km</b></div>
+        <div><span>Durée</span><b id="tDur">0 min</b></div>
+        <div><span>Arrêts (attente)</span><b id="tWait">0 min</b></div>
+        <div><span>Départ</span><b id="tStart">&nbsp;</b></div>
+        <div><span>Arrivée</span><b id="tEnd">&nbsp;</b></div>
+      </div>
+      <p class="fine" id="tGap"></p>
+      <button class="btn primary" type="button" id="useReal" hidden>Utiliser ces kilomètres dans le calcul de la course</button>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card sticky" id="resultCard">
+      <header><h2>Résultat de la course</h2></header>
+      <div id="result"></div>
+      <div class="row">
+        <button class="btn primary" type="button" id="saveRide">Enregistrer la course</button>
+        <button class="btn" type="button" id="newRide">Nouvelle course</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ COURSES ============ -->
+<section id="tab-rides" hidden aria-label="Courses enregistrées">
+  <div class="col">
+    <div class="stats" id="rideStats"></div>
+    <div class="card">
+      <header><h2>Sauvegarde</h2></header>
+      <p class="fine">Les données sont enregistrées dans ce navigateur, sur cet appareil. Exportez régulièrement un fichier de sauvegarde et conservez-le ailleurs (courriel, ordinateur, clé USB).</p>
+      <div class="row">
+        <button class="btn" type="button" id="exportBtn">Exporter une sauvegarde</button>
+        <label class="btn" for="importFile" style="display:inline-flex;align-items:center">Restaurer une sauvegarde</label>
+        <input type="file" id="importFile" accept="application/json,.json" hidden>
+      </div>
+      <div id="importBox" class="notice warn" hidden></div>
+    </div>
+    <div class="list" id="rideList"></div>
+  </div>
+</section>
+
+<!-- ============ CLIENTS ============ -->
+<section id="tab-clients" hidden aria-label="Clients">
+  <div class="col">
+    <div class="card">
+      <header><h2>Clients</h2><button class="btn primary" type="button" id="clientNew">Nouveau client</button></header>
+      <label class="field"><span>Rechercher</span><input type="text" id="clientSearch" autocomplete="off" placeholder="Nom, téléphone, adresse"></label>
+    </div>
+    <div class="card" id="clientFormCard" hidden>
+      <header><h2 id="clientFormTitle">Nouveau client</h2></header>
+      <div class="grid">
+        <label class="field"><span>Nom et prénom</span><input type="text" id="c_nom" autocomplete="off"></label>
+        <label class="field"><span>Téléphone</span><input type="text" id="c_tel" inputmode="tel" autocomplete="off"></label>
+        <label class="field"><span>Courriel</span><input type="text" id="c_email" inputmode="email" autocomplete="off"></label>
+      </div>
+      <label class="field"><span>Adresse</span><input type="text" id="c_adresse" autocomplete="off"></label>
+      <label class="field"><span>Notes</span><textarea id="c_notes" rows="2"></textarea></label>
+      <div class="row"><button class="btn primary" type="button" id="clientSave">Enregistrer</button><button class="btn" type="button" id="clientCancel">Annuler</button></div>
+    </div>
+    <div class="list" id="clientListBox"></div>
+  </div>
+</section>
+
+<!-- ============ FACTURES ============ -->
+<section id="tab-invoices" hidden aria-label="Factures">
+  <div class="col">
+    <div id="proWarn" class="notice warn" hidden></div>
+    <div class="stats" id="invStats"></div>
+
+    <div class="card" id="billCard" hidden>
+      <header><h2>Nouvelle facture</h2></header>
+      <p id="billRide" class="fine"></p>
+      <label class="field"><span>Client</span><select id="bill_client"></select></label>
+      <div id="billNew" class="col">
+        <div class="grid">
+          <label class="field"><span>Nom et prénom</span><input type="text" id="bill_nom" autocomplete="off"></label>
+          <label class="field"><span>Téléphone</span><input type="text" id="bill_tel" inputmode="tel" autocomplete="off"></label>
+          <label class="field"><span>Courriel</span><input type="text" id="bill_email" inputmode="email" autocomplete="off"></label>
+        </div>
+        <label class="field"><span>Adresse</span><input type="text" id="bill_adresse" autocomplete="off"></label>
+      </div>
+      <label class="field"><span>Mode de règlement</span>
+        <select id="bill_mode"><option>Espèces</option><option>Carte bancaire</option><option>Chèque</option><option>Virement</option><option>Autre</option></select>
+      </label>
+      <div id="billLines"></div>
+      <p class="fine">Une fois émise, la facture reçoit son numéro et ne se modifie plus. Seuls le mode de règlement et l'état payé ou à payer peuvent changer. Pour corriger une erreur, vous l'annulez par un avoir.</p>
+      <div class="row"><button class="btn primary" type="button" id="billIssue">Émettre la facture</button><button class="btn" type="button" id="billCancel">Annuler</button></div>
+    </div>
+
+    <div class="card" id="invView" hidden>
+      <div id="invPrint"></div>
+      <div class="row">
+        <button class="btn primary" type="button" id="invShare">Envoyer ou partager le PDF</button>
+        <button class="btn" type="button" id="invPdf">Télécharger le PDF</button>
+        <button class="btn" type="button" id="invPrintBtn">Imprimer</button>
+      </div>
+      <div id="invPay" class="notice">
+        <label class="field"><span>Mode de règlement</span>
+          <select id="inv_mode"><option>Espèces</option><option>Carte bancaire</option><option>Chèque</option><option>Virement</option><option>Autre</option></select>
+        </label>
+        <div class="row">
+          <button class="btn primary" type="button" id="invPaid">Marquer comme payée</button>
+          <button class="btn" type="button" id="invUnpaid">Remettre à payer</button>
+        </div>
+      </div>
+      <div class="row">
+        <button class="btn danger" type="button" id="invAvoir">Annuler cette facture par un avoir</button>
+        <button class="btn" type="button" id="invClose">Fermer</button>
+      </div>
+    </div>
+
+    <div class="chips" id="invFilters">
+      <button class="chip" type="button" data-filter="all" aria-pressed="true">Toutes</button>
+      <button class="chip" type="button" data-filter="due" aria-pressed="false">À payer</button>
+      <button class="chip" type="button" data-filter="paid" aria-pressed="false">Payées</button>
+    </div>
+    <div class="list" id="invList"></div>
+  </div>
+</section>
+
+<!-- ============ DÉPENSES ============ -->
+<section id="tab-expenses" hidden aria-label="Dépenses">
+  <div class="col">
+    <div class="card">
+      <header><h2 id="expFormTitle">Nouvelle dépense</h2></header>
+      <div class="grid">
+        <label class="field"><span>Date</span><input type="date" id="e_date"></label>
+        <label class="field"><span>Catégorie</span><select id="e_cat"></select></label>
+        <label class="field"><span>Montant TTC payé</span><div class="unit"><input type="number" id="e_montant" inputmode="decimal" min="0" step="0.01"><em>€</em></div></label>
+        <label class="field" id="eLitresBox"><span>Litres (carburant)</span><div class="unit"><input type="number" id="e_litres" inputmode="decimal" min="0" step="0.01"><em>L</em></div></label>
+        <label class="field"><span>Kilométrage du compteur (facultatif)</span><div class="unit"><input type="number" id="e_km" inputmode="numeric" min="0" step="1"><em>km</em></div></label>
+      </div>
+      <label class="field"><span>Description ou fournisseur</span><input type="text" id="e_libelle" autocomplete="off" placeholder="Exemple : Total Longuyon, garage, assurance"></label>
+      <div class="row"><button class="btn primary" type="button" id="expSave">Enregistrer la dépense</button><button class="btn" type="button" id="expCancel">Vider</button></div>
+    </div>
+
+    <div class="card">
+      <header><h2>Bilan du mois</h2></header>
+      <label class="field"><span>Mois</span><select id="expMonth"></select></label>
+      <div class="stats" id="expStats"></div>
+      <div id="expByCat"></div>
+    </div>
+
+    <div class="card">
+      <header><h2>Réel contre estimation</h2></header>
+      <div id="expCompare"></div>
+    </div>
+
+    <div class="card" id="expSuggestCard" hidden>
+      <header><h2>Mettre vos réglages à jour</h2></header>
+      <div id="expSuggest" class="col"></div>
+    </div>
+
+    <div class="list" id="expList"></div>
+  </div>
+</section>
+
+<!-- ============ RÉGLAGES ============ -->
+<section id="tab-settings" hidden aria-label="Réglages">
+  <div class="col">
+    <div class="notice">
+      Saisissez ici vos tarifs officiels et vos coûts. L'application n'applique aucun tarif de sa propre initiative. Les réglages sont enregistrés automatiquement.
+      <div class="row"><button class="btn" type="button" id="fillExample">Remplir les champs vides avec des valeurs d'exemple</button></div>
+      <p class="fine" style="margin-top:8px">Les valeurs d'exemple servent seulement à essayer l'outil. Remplacez-les par vos vrais chiffres.</p>
+    </div>
+    <div id="settingsForm" class="col"></div>
+    <div id="proForm" class="col"></div>
+    <div class="notice">
+      Pneus, mécanique et réserve sont des provisions au kilomètre, c'est-à-dire des estimations. Dans l'onglet Dépenses, vous saisissez les dépenses réelles : elles servent au bilan du mois et à proposer des réglages plus justes. Le bilan réel ne retire jamais en plus ces provisions, pour ne pas compter deux fois la même dépense.
+    </div>
+  </div>
+</section>
+</main>
+</div>
+<div id="toast" role="status" aria-live="polite" hidden></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<script>
+/* ===== Services cartographiques (modifiables pour changer de fournisseur) ===== */
+var CONFIG = {
+  tiles: { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '&copy; contributeurs OpenStreetMap', maxZoom: 19 },
+  searchUrl: function (q) { return 'https://nominatim.openstreetmap.org/search?format=jsonv2&limit=5&accept-language=fr&countrycodes=fr,be,lu,de,ch&q=' + encodeURIComponent(q); },
+  reverseUrl: function (lat, lon) { return 'https://nominatim.openstreetmap.org/reverse?format=jsonv2&accept-language=fr&lat=' + lat + '&lon=' + lon; },
+  routeUrl: function (a, b) { return 'https://router.project-osrm.org/route/v1/driving/' + a.lon + ',' + a.lat + ';' + b.lon + ',' + b.lat + '?overview=full&geometries=geojson&alternatives=true'; }
+};
+
+/* ===== CALC_START : calculs (fonction pure, testée séparément) ===== */
+function num(v) { var n = parseFloat(String(v == null ? '' : v).replace(',', '.')); return isFinite(n) ? n : 0; }
+function coutPneuKm(s) { return s.pneusVieKm > 0 ? (s.pneusPrix * s.pneusNb) / s.pneusVieKm : 0; }
+function computeRide(i, s) {
+  var kmAller = Math.max(0, i.kmAller);
+  var kmRetour = i.retourMode === 'none' ? 0 : Math.max(0, i.kmRetour);
+  var kmExtra = Math.max(0, i.kmExtra);
+  var kmTotal = kmAller + kmRetour + kmExtra;
+  var kmClient = kmAller + (i.retourMode === 'client' ? kmRetour : 0) + kmExtra;
+  var kmVide = i.retourMode === 'vide' ? kmRetour : 0;
+  var attenteH = Math.max(0, i.attenteMin) / 60;
+  var fraisReels = Math.max(0, i.peages) + Math.max(0, i.stationnement) + Math.max(0, i.autres);
+  var fraisFactures = i.refacture ? fraisReels : 0;
+
+  var lignes = {
+    priseEnCharge: s.priseEnCharge,
+    kilometres: kmClient * s.tarifKm,
+    attente: attenteH * s.tarifAttente,
+    supplements: Math.max(0, i.supplements),
+    frais: fraisFactures
+  };
+  var prixCalcule = lignes.priseEnCharge + lignes.kilometres + lignes.attente + lignes.supplements + lignes.frais;
+  var prixConvenuUtilise = i.prixConvenu > 0;
+  var prix = prixConvenuUtilise ? i.prixConvenu : prixCalcule;
+
+  var litres = kmTotal * s.conso / 100;
+  var couts = {
+    carburant: litres * s.prixLitre,
+    pneus: kmTotal * coutPneuKm(s),
+    mecanique: kmTotal * s.provisionMeca,
+    chargesFixes: kmTotal * (s.kmMois > 0 ? s.chargesFixesMois / s.kmMois : 0),
+    reserve: kmTotal * s.reserveKm,
+    fraisReels: fraisReels
+  };
+  var coutTotal = couts.carburant + couts.pneus + couts.mecanique + couts.chargesFixes + couts.reserve + couts.fraisReels;
+  var resultat = prix - coutTotal;
+
+  var dureeMin = Math.max(0, i.dureeAllerMin) * (i.retourMode === 'none' ? 1 : 2) + Math.max(0, i.attenteMin);
+  var dureeH = dureeMin / 60;
+  var marge = s.margeSouhaitee >= 0 && s.margeSouhaitee < 100 ? s.margeSouhaitee : 0;
+  var prixMin = coutTotal / (1 - marge / 100);
+
+  return {
+    kmAller: kmAller, kmRetour: kmRetour, kmExtra: kmExtra, kmTotal: kmTotal, kmClient: kmClient, kmVide: kmVide,
+    lignes: lignes, prixCalcule: prixCalcule, prixConvenuUtilise: prixConvenuUtilise, prix: prix,
+    litres: litres, couts: couts, coutTotal: coutTotal, resultat: resultat,
+    margePct: prix > 0 ? resultat / prix * 100 : 0,
+    parKm: kmTotal > 0 ? resultat / kmTotal : 0,
+    parHeure: dureeH > 0 ? resultat / dureeH : 0,
+    coutParKm: kmTotal > 0 ? coutTotal / kmTotal : 0,
+    recetteParKm: kmTotal > 0 ? prix / kmTotal : 0,
+    dureeMin: dureeMin, prixMin: prixMin
+  };
+}
+/* ===== CALC_END ===== */
+
+/* ===== PDF_START : mise en page de la facture (jsPDF) ===== */
+var EURO = '€';
+function pdfMoney(n) {
+  var neg = n < 0, p = Math.abs(n).toFixed(2).split('.');
+  p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' ');
+  return (neg ? '-' : '') + p[0] + ',' + p[1] + ' ' + EURO;
+}
+function pdfDate(s) { var p = String(s || '').split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : (s || ''); }
+function buildInvoicePdf(JsPDF, inv) {
+  var doc = new JsPDF({ unit: 'mm', format: 'a4' });
+  var W = 210, M = 18, R = W - M, y;
+  var e = inv.emetteur, c = inv.client, isAvoir = inv.type === 'avoir';
+  var avecTva = !inv.tvaNA && inv.tvaTaux > 0;
+  function txt(t, x, yy, o) { doc.text(String(t), x, yy, o); }
+
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(13); txt(e.nom, M, M + 4);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  y = M + 10;
+  [e.adresse, e.ville, e.siret ? 'SIRET : ' + e.siret : '', e.tel ? 'Tél. : ' + e.tel : '', e.email].forEach(function (l) { if (l) { txt(l, M, y); y += 5; } });
+
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(22); txt(isAvoir ? 'AVOIR' : 'FACTURE', R, M + 5, { align: 'right' });
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10.5);
+  txt('N° ' + inv.numero, R, M + 13, { align: 'right' });
+  txt('Date : ' + pdfDate(inv.dateEmission), R, M + 18.5, { align: 'right' });
+  if (isAvoir && inv.avoirDe) txt('Annule la facture ' + inv.avoirDe, R, M + 24, { align: 'right' });
+
+  y = Math.max(y, M + 32) + 4;
+  var boxX = 105, boxW = R - boxX, cl = [];
+  doc.setFontSize(10);
+  [c.nom, c.adresse, c.tel ? 'Tél. : ' + c.tel : '', c.email].forEach(function (l) {
+    if (l) doc.splitTextToSize(String(l), boxW - 6).forEach(function (s) { cl.push(s); });
+  });
+  var boxH = 10 + cl.length * 5;
+  doc.setDrawColor(150); doc.setLineWidth(0.3); doc.rect(boxX, y, boxW, boxH);
+  doc.setFont('helvetica', 'bold'); doc.setFontSize(8.5); txt('CLIENT', boxX + 3, y + 5);
+  doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  cl.forEach(function (l, k) { txt(l, boxX + 3, y + 10 + k * 5); });
+  y += boxH + 10;
+
+  var co = inv.course;
+  if (co) {
+    doc.setFont('helvetica', 'bold'); txt('Course du ' + pdfDate(co.date) + (co.heure ? ' à ' + co.heure : ''), M, y); y += 6;
+    doc.setFont('helvetica', 'normal');
+    [['Départ : ', co.depart], ['Arrivée : ', co.arrivee]].forEach(function (a) {
+      if (!a[1]) return;
+      doc.splitTextToSize(a[0] + a[1], R - M).forEach(function (s) { txt(s, M, y); y += 5; });
+    });
+    y += 3;
+  }
+
+  doc.setFillColor(235, 235, 235); doc.rect(M, y, R - M, 8, 'F');
+  doc.setFont('helvetica', 'bold'); txt('Désignation', M + 2, y + 5.5); txt(avecTva ? 'Montant TTC' : 'Montant', R - 2, y + 5.5, { align: 'right' });
+  y += 8; doc.setFont('helvetica', 'normal');
+  inv.lignes.forEach(function (l) {
+    var parts = doc.splitTextToSize(String(l.libelle), R - M - 45);
+    parts.forEach(function (p, k) { txt(p, M + 2, y + 5 + k * 5); });
+    txt(pdfMoney(l.montant), R - 2, y + 5, { align: 'right' });
+    y += Math.max(1, parts.length) * 5 + 3;
+    doc.setDrawColor(215); doc.setLineWidth(0.2); doc.line(M, y, R, y);
+  });
+
+  y += 7;
+  function tot(label, val, bold) {
+    doc.setFont('helvetica', bold ? 'bold' : 'normal');
+    txt(label, R - 78, y); txt(val, R - 2, y, { align: 'right' }); y += 6;
+  }
+  if (avecTva) {
+    tot('Total HT', pdfMoney(inv.ht));
+    tot('TVA ' + String(inv.tvaTaux).replace('.', ',') + ' %', pdfMoney(inv.tva));
+    tot('Total TTC', pdfMoney(inv.total), true);
+  } else {
+    tot(isAvoir ? 'Total de l\'avoir' : 'Total à payer', pdfMoney(inv.total), true);
+  }
+
+  y += 4; doc.setFont('helvetica', 'normal'); doc.setFontSize(10);
+  if (y > 255) { doc.addPage(); y = M; }
+  if (!isAvoir) {
+    txt('Mode de règlement : ' + (inv.paiementMode || ''), M, y); y += 5.5;
+    txt(inv.statut === 'payee' ? 'Réglée le ' + pdfDate(inv.datePaiement) : 'À régler', M, y); y += 5.5;
+  }
+  if (e.mentions && String(e.mentions).trim()) {
+    y += 6; doc.setFontSize(8.5); doc.setTextColor(80, 80, 80);
+    doc.splitTextToSize(String(e.mentions).trim(), R - M).forEach(function (s) {
+      if (y > 285) { doc.addPage(); y = M; }
+      txt(s, M, y); y += 4.2;
+    });
+    doc.setTextColor(0, 0, 0);
+  }
+  return doc;
+}
+/* ===== PDF_END ===== */
+
+(function () {
+  'use strict';
+  var $ = function (id) { return document.getElementById(id); };
+  var STORE_S = 'tgp_reglages_v1', STORE_R = 'tgp_courses_v1';
+
+  /* ----- stockage ----- */
+  function loadJSON(k, fb) { try { var v = localStorage.getItem(k); return v ? JSON.parse(v) : fb; } catch (e) { return fb; } }
+  function saveJSON(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); return true; } catch (e) { return false; } }
+  function storageOK() { try { localStorage.setItem('tgp_test', '1'); localStorage.removeItem('tgp_test'); return true; } catch (e) { return false; } }
+
+  /* ----- format ----- */
+  var eurF = new Intl.NumberFormat('fr-FR', { style: 'currency', currency: 'EUR' });
+  var dec1 = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+  var dec2 = new Intl.NumberFormat('fr-FR', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  function eur(n) { return eurF.format(isFinite(n) ? n : 0); }
+  function km(n) { return dec1.format(isFinite(n) ? n : 0) + ' km'; }
+  function dur(min) {
+    min = Math.round(min || 0);
+    if (min < 60) return min + ' min';
+    var h = Math.floor(min / 60), m = min % 60;
+    return h + ' h ' + (m < 10 ? '0' : '') + m;
+  }
+  function esc(t) { return String(t == null ? '' : t).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function pad(n) { return (n < 10 ? '0' : '') + n; }
+  function todayStr() { var d = new Date(); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+  function hhmm(d) { return pad(d.getHours()) + ':' + pad(d.getMinutes()); }
+  function frDate(s) { if (!s) return ''; var p = s.split('-'); return p.length === 3 ? p[2] + '/' + p[1] + '/' + p[0] : s; }
+
+  var toastTimer = null;
+  function toast(msg) {
+    var t = $('toast'); t.textContent = msg; t.hidden = false;
+    clearTimeout(toastTimer); toastTimer = setTimeout(function () { t.hidden = true; }, 3500);
+  }
+  function showNotice(el, msg, kind) {
+    el.className = 'notice' + (kind ? ' ' + kind : '');
+    el.textContent = msg; el.hidden = !msg;
+  }
+
+  /* ----- réglages ----- */
+  var SETTINGS_FIELDS = [
+    { group: 'Coûts du véhicule', items: [
+      { key: 'conso', label: 'Consommation moyenne', unit: 'L/100 km', step: '0.1', ex: 6 },
+      { key: 'prixLitre', label: 'Prix du carburant', unit: '€/L', step: '0.001', ex: 1.7 },
+      { key: 'pneusPrix', label: "Prix d'un pneu", unit: '€', step: '0.01', ex: 90 },
+      { key: 'pneusNb', label: 'Nombre de pneus', unit: '', step: '1', def: 4, ex: 4 },
+      { key: 'pneusVieKm', label: 'Durée de vie des pneus', unit: 'km', step: '1000', ex: 40000 },
+      { key: 'provisionMeca', label: 'Provision entretien et mécanique', unit: '€/km', step: '0.001', ex: 0.06, hint: 'Vidanges, freins, distribution, réparations, contrôle technique.' },
+      { key: 'reserveKm', label: 'Réserve pour remplacer le véhicule', unit: '€/km', step: '0.001', ex: 0.05 }
+    ] },
+    { group: 'Charges fixes et objectif', items: [
+      { key: 'chargesFixesMois', label: 'Charges fixes mensuelles', unit: '€/mois', step: '1', ex: 600, hint: 'Assurance, crédit, téléphone, comptabilité, frais bancaires, abonnements.' },
+      { key: 'kmMois', label: 'Kilomètres professionnels par mois', unit: 'km', step: '100', ex: 3000, hint: 'Sert à répartir les charges fixes sur chaque kilomètre.' },
+      { key: 'margeSouhaitee', label: 'Marge souhaitée sur le prix', unit: '%', step: '1', ex: 20, hint: 'Prix minimum rentable = coût de la course ÷ (1 − marge).' }
+    ] }
+  ];
+  function defaultSettings() {
+    var s = {};
+    SETTINGS_FIELDS.forEach(function (g) { g.items.forEach(function (f) { s[f.key] = f.def || 0; }); });
+    s.grilles = [1, 2, 3].map(function (n) { return { nom: 'Tarif ' + n, pec: 0, km: 0, att: 0 }; });
+    s.grilleDefaut = 0;
+    return s;
+  }
+  function normalizeSettings(st) {
+    var d = defaultSettings();
+    st = st || {};
+    for (var k in d) { if (k !== 'grilles' && k !== 'grilleDefaut' && typeof st[k] === 'number') d[k] = st[k]; }
+    if (Array.isArray(st.grilles)) {
+      st.grilles.slice(0, 3).forEach(function (g, i) {
+        if (!g) return;
+        if (typeof g.nom === 'string' && g.nom.trim()) d.grilles[i].nom = g.nom.trim().slice(0, 20);
+        ['pec', 'km', 'att'].forEach(function (p) { if (typeof g[p] === 'number' && g[p] >= 0) d.grilles[i][p] = g[p]; });
+      });
+    } else if (typeof st.tarifKm === 'number') {
+      d.grilles[0].pec = num(st.priseEnCharge); d.grilles[0].km = st.tarifKm; d.grilles[0].att = num(st.tarifAttente);
+    }
+    if (typeof st.grilleDefaut === 'number' && st.grilleDefaut >= 0 && st.grilleDefaut < 3) d.grilleDefaut = st.grilleDefaut;
+    return d;
+  }
+  var settings = normalizeSettings(loadJSON(STORE_S, {}));
+  function grilleActive() {
+    var sel = $('f_grille');
+    var idx = sel && sel.value !== '' ? parseInt(sel.value, 10) : settings.grilleDefaut;
+    if (!(idx >= 0 && idx < 3)) idx = 0;
+    return idx;
+  }
+  function effSettings() {
+    var g = settings.grilles[grilleActive()], e = {};
+    for (var k in settings) e[k] = settings[k];
+    e.priseEnCharge = g.pec; e.tarifKm = g.km; e.tarifAttente = g.att;
+    return e;
+  }
+  function fillGrilleSelect() {
+    var sel = $('f_grille'), keep = sel.value !== '' ? parseInt(sel.value, 10) : settings.grilleDefaut, html = '', first = -1, ok = false;
+    settings.grilles.forEach(function (g, i) {
+      if (g.km > 0 || g.pec > 0) {
+        if (first < 0) first = i;
+        if (i === keep) ok = true;
+        html += '<option value="' + i + '">' + esc(g.nom) + ' : prise en charge ' + eur(g.pec) + ', ' + dec2.format(g.km) + ' €/km</option>';
+      }
+    });
+    if (!html) { sel.innerHTML = '<option value="0">Aucun tarif enregistré, voir Réglages</option>'; sel.value = '0'; return; }
+    sel.innerHTML = html;
+    sel.value = String(ok ? keep : first);
+  }
+
+  function buildSettingsForm() {
+    var html = '<div class="notice">Vous pouvez enregistrer jusqu\'à trois tarifs (par exemple un tarif de jour et un tarif de nuit). Dans le calculateur, vous choisissez celui à appliquer. Un tarif sans prise en charge ni prix au kilomètre n\'apparaît pas dans la liste.</div>';
+    settings.grilles.forEach(function (g, i) {
+      html += '<div class="card"><header><h2>Tarif ' + (i + 1) + '</h2></header><div class="grid">' +
+        '<label class="field"><span>Nom du tarif</span><input type="text" id="g' + i + '_nom" maxlength="20" value="' + esc(g.nom) + '"></label>' +
+        '<label class="field"><span>Prise en charge</span><div class="unit"><input type="number" id="g' + i + '_pec" inputmode="decimal" min="0" step="0.01" value="' + (g.pec || '') + '"><em>€</em></div></label>' +
+        '<label class="field"><span>Tarif au kilomètre</span><div class="unit"><input type="number" id="g' + i + '_km" inputmode="decimal" min="0" step="0.01" value="' + (g.km || '') + '"><em>€/km</em></div><small>Appliqué aux kilomètres facturés (aller, retour avec client, supplémentaires).</small></label>' +
+        '<label class="field"><span>Tarif d\'attente</span><div class="unit"><input type="number" id="g' + i + '_att" inputmode="decimal" min="0" step="0.01" value="' + (g.att || '') + '"><em>€/heure</em></div></label>' +
+        '</div></div>';
+    });
+    SETTINGS_FIELDS.forEach(function (g) {
+      html += '<div class="card"><header><h2>' + esc(g.group) + '</h2></header><div class="grid">';
+      g.items.forEach(function (f) {
+        html += '<label class="field"><span>' + esc(f.label) + '</span><div class="unit"><input type="number" id="s_' + f.key + '" inputmode="decimal" min="0" step="' + f.step + '" value="' + (settings[f.key] || '') + '">' +
+          (f.unit ? '<em>' + esc(f.unit) + '</em>' : '') + '</div>' + (f.hint ? '<small>' + esc(f.hint) + '</small>' : '') + '</label>';
+      });
+      html += '</div></div>';
+    });
+    html += '<div class="card"><header><h2>Coût estimé par kilomètre</h2></header><p class="num" id="kmCostLine"></p></div>';
+    $('settingsForm').innerHTML = html;
+    SETTINGS_FIELDS.forEach(function (g) { g.items.forEach(function (f) {
+      $('s_' + f.key).addEventListener('input', onSettingsInput);
+    }); });
+    [0, 1, 2].forEach(function (i) { ['nom', 'pec', 'km', 'att'].forEach(function (p) { $('g' + i + '_' + p).addEventListener('input', onSettingsInput); }); });
+    updateKmCostLine(); fillGrilleSelect();
+  }
+  function readSettings() {
+    SETTINGS_FIELDS.forEach(function (g) { g.items.forEach(function (f) { settings[f.key] = Math.max(0, num($('s_' + f.key).value)); }); });
+    [0, 1, 2].forEach(function (i) {
+      var g = settings.grilles[i], nom = $('g' + i + '_nom').value.trim();
+      g.nom = nom ? nom.slice(0, 20) : 'Tarif ' + (i + 1);
+      g.pec = Math.max(0, num($('g' + i + '_pec').value));
+      g.km = Math.max(0, num($('g' + i + '_km').value));
+      g.att = Math.max(0, num($('g' + i + '_att').value));
+    });
+  }
+  function updateKmCostLine() {
+    var carb = settings.conso * settings.prixLitre / 100;
+    var fixes = settings.kmMois > 0 ? settings.chargesFixesMois / settings.kmMois : 0;
+    var total = carb + coutPneuKm(settings) + settings.provisionMeca + fixes + settings.reserveKm;
+    $('kmCostLine').innerHTML = 'Carburant ' + dec2.format(carb) + ' + pneus ' + dec2.format(coutPneuKm(settings)) + ' + mécanique ' + dec2.format(settings.provisionMeca) +
+      ' + charges fixes ' + dec2.format(fixes) + ' + réserve ' + dec2.format(settings.reserveKm) + ' = <b>' + dec2.format(total) + ' € par km</b>';
+  }
+  function onSettingsInput() {
+    readSettings(); saveJSON(STORE_S, settings); updateKmCostLine(); fillGrilleSelect(); render();
+  }
+  function fillExample() {
+    var n = 0;
+    SETTINGS_FIELDS.forEach(function (g) { g.items.forEach(function (f) {
+      var el = $('s_' + f.key);
+      if (num(el.value) === 0 && f.ex) { el.value = f.ex; n++; }
+    }); });
+    [{ pec: 3, km: 1.5, att: 35 }, { pec: 3, km: 1.2, att: 35 }].forEach(function (x, i) {
+      if (num($('g' + i + '_pec').value) === 0 && num($('g' + i + '_km').value) === 0 && num($('g' + i + '_att').value) === 0) {
+        $('g' + i + '_pec').value = x.pec; $('g' + i + '_km').value = x.km; $('g' + i + '_att').value = x.att; n += 3;
+      }
+    });
+    readSettings(); saveJSON(STORE_S, settings); updateKmCostLine(); fillGrilleSelect(); render();
+    toast(n ? 'Valeurs d\'exemple ajoutées dans ' + n + ' champ' + (n > 1 ? 's' : '') + ' vide' + (n > 1 ? 's' : '') + '.' : 'Aucun champ vide à remplir.');
+  }
+
+  /* ----- état de la course ----- */
+  var state = { from: null, to: null, routes: [], sel: 0, retourManual: false, tracking: null };
+  var lastResult = null;
+
+  function readInputs() {
+    return {
+      kmAller: num($('f_kmAller').value), dureeAllerMin: num($('f_dureeAller').value),
+      retourMode: $('f_retourMode').value, kmRetour: num($('f_kmRetour').value), kmExtra: num($('f_kmExtra').value),
+      attenteMin: num($('f_attente').value), supplements: num($('f_supplements').value),
+      peages: num($('f_peages').value), stationnement: num($('f_stationnement').value), autres: num($('f_autres').value),
+      refacture: $('f_refacture').checked, prixConvenu: num($('f_prixConvenu').value)
+    };
+  }
+
+  function row(label, value, cls) { return '<div class="r ' + (cls || '') + '"><dt>' + label + '</dt><dd>' + value + '</dd></div>'; }
+
+  function render() {
+    var i = readInputs(), es = effSettings(), r = computeRide(i, es);
+    lastResult = r;
+    $('setupWarn').hidden = !(es.tarifKm === 0 || es.conso === 0);
+    $('kmSummary').textContent = 'Kilométrage total ' + km(r.kmTotal) + ' dont ' + km(r.kmClient) + ' facturés au client et ' + km(r.kmVide) + ' à vide non facturés. Durée estimée ' + dur(r.dureeMin) + '.';
+
+    var verdict = '';
+    if (r.prix > 0) {
+      if (r.resultat < 0) verdict = '<p class="verdict bad">Course à perte</p>';
+      else if (r.prix < r.prixMin - 0.005) verdict = '<p class="verdict warn">Prix inférieur au minimum rentable</p>';
+      else verdict = '<p class="verdict good">Prix au-dessus du minimum rentable</p>';
+    }
+    var priceNote = r.prixConvenuUtilise ? '<small>Prix convenu. Le prix calculé serait de ' + eur(r.prixCalcule) + '.</small>' : '<small>Prix calculé d\'après vos tarifs.</small>';
+    var l = r.lignes, c = r.couts;
+    var h = '<div class="price"><span class="label">Prix à facturer au client</span><strong>' + eur(r.prix) + '</strong>' + priceNote + '</div>' + verdict +
+      '<h3>Détail du prix calculé (' + esc(settings.grilles[grilleActive()].nom) + ')</h3><dl>' +
+      row('Prise en charge', eur(l.priseEnCharge)) +
+      row('Kilomètres facturés (' + km(r.kmClient) + ')', eur(l.kilometres)) +
+      row("Attente (" + dur(i.attenteMin) + ")", eur(l.attente)) +
+      row('Suppléments', eur(l.supplements)) +
+      row('Frais refacturés', eur(l.frais)) +
+      row('Total calculé', eur(r.prixCalcule), 'total') + '</dl>' +
+      '<h3>Coût réel de la course</h3><dl>' +
+      row('Carburant (' + dec1.format(r.litres) + ' L)', eur(c.carburant)) +
+      row('Pneus', eur(c.pneus)) +
+      row('Entretien et mécanique', eur(c.mecanique)) +
+      row('Part des charges fixes', eur(c.chargesFixes)) +
+      row('Réserve véhicule', eur(c.reserve)) +
+      row('Péages, stationnement, autres frais', eur(c.fraisReels)) +
+      row('Coût total', eur(r.coutTotal), 'total') + '</dl>' +
+      '<h3>Rentabilité</h3><dl>' +
+      row('Résultat estimé', '<span class="' + (r.resultat < 0 ? 'neg' : 'pos') + '">' + eur(r.resultat) + '</span>', 'total') +
+      row('Marge sur le prix', dec1.format(r.margePct) + ' %') +
+      row('Résultat par km roulé', eur(r.parKm)) +
+      row('Résultat par heure', eur(r.parHeure)) +
+      row('Coût par km roulé', eur(r.coutParKm)) +
+      row('Recette par km roulé', eur(r.recetteParKm)) +
+      row('Prix minimum rentable', eur(r.prixMin), 'total') + '</dl>' +
+      '<p class="fine">Le retour à vide est compté dans les coûts même s\'il n\'est pas facturé. Ce résultat est calculé avant cotisations sociales et impôts. Ce n\'est pas un bénéfice net.</p>';
+    $('result').innerHTML = h;
+    updateGap();
+  }
+
+  /* ----- adresses ----- */
+  var lastNom = 0;
+  function sleep(ms) { return new Promise(function (r) { setTimeout(r, ms); }); }
+  function fetchJSON(url, ms) {
+    var ctl = new AbortController(), t = setTimeout(function () { ctl.abort(); }, ms || 15000);
+    return fetch(url, { signal: ctl.signal, headers: { 'Accept': 'application/json' } }).then(function (res) {
+      clearTimeout(t);
+      if (!res.ok) throw new Error('http ' + res.status);
+      return res.json();
+    }, function (e) { clearTimeout(t); throw e; });
+  }
+  function nominatim(url) {
+    var wait = Math.max(0, lastNom + 1100 - Date.now());
+    lastNom = Date.now() + wait;
+    return (wait ? sleep(wait) : Promise.resolve()).then(function () { return fetchJSON(url); });
+  }
+  function cleanLabel(s) { return String(s || '').replace(/, France métropolitaine/g, '').replace(/, France$/, ''); }
+
+  function whichIds(which) { return which === 'from' ? { inp: 'f_depart', sug: 'sugFrom' } : { inp: 'f_arrivee', sug: 'sugTo' }; }
+
+  function searchAddress(which) {
+    var ids = whichIds(which), q = $(ids.inp).value.trim(), ul = $(ids.sug);
+    if (q.length < 3) { toast('Saisissez au moins 3 caractères.'); return Promise.resolve(); }
+    ul.hidden = false; ul.innerHTML = '<li class="info">Recherche en cours</li>';
+    return nominatim(CONFIG.searchUrl(q)).then(function (list) {
+      if (!list.length) { ul.innerHTML = '<li class="info">Aucune adresse trouvée. Ajoutez la ville ou le code postal.</li>'; return; }
+      ul.innerHTML = '';
+      list.forEach(function (p) {
+        var li = document.createElement('li'), b = document.createElement('button');
+        b.type = 'button'; b.textContent = cleanLabel(p.display_name);
+        b.addEventListener('click', function () {
+          setPoint(which, { lat: parseFloat(p.lat), lon: parseFloat(p.lon), label: cleanLabel(p.display_name) });
+        });
+        li.appendChild(b); ul.appendChild(li);
+      });
+    }).catch(function () {
+      ul.innerHTML = '<li class="info">Le service de recherche d\'adresses ne répond pas. Vérifiez la connexion Internet et réessayez.</li>';
+    });
+  }
+
+  function setPoint(which, pt) {
+    var ids = whichIds(which);
+    state[which] = pt; $(ids.inp).value = pt.label; $(ids.sug).hidden = true; $(ids.sug).innerHTML = '';
+    drawPoints();
+    if (state.from && state.to) calcRoute();
+    else if (map) map.setView([pt.lat, pt.lon], 13);
+  }
+
+  function useMyPosition(which) {
+    if (!navigator.geolocation) { toast('Ce navigateur ne sait pas se géolocaliser.'); return; }
+    toast('Demande de position en cours.');
+    navigator.geolocation.getCurrentPosition(function (pos) {
+      var lat = pos.coords.latitude, lon = pos.coords.longitude;
+      nominatim(CONFIG.reverseUrl(lat, lon)).then(function (d) {
+        setPoint(which, { lat: lat, lon: lon, label: cleanLabel(d && d.display_name) || ('Position GPS ' + lat.toFixed(5) + ', ' + lon.toFixed(5)) });
+      }).catch(function () {
+        setPoint(which, { lat: lat, lon: lon, label: 'Position GPS ' + lat.toFixed(5) + ', ' + lon.toFixed(5) });
+      });
+    }, function (err) {
+      var m = err && err.code === 1 ? 'Position refusée. Autorisez la localisation pour ce site dans les réglages du navigateur.'
+        : 'Position introuvable. Sortez à l\'air libre ou vérifiez que le GPS du téléphone est activé. Sur un fichier ouvert directement, le navigateur peut aussi bloquer la localisation.';
+      showNotice($('routeMsg'), m, 'warn'); toast('Position indisponible.');
+    }, { enableHighAccuracy: true, timeout: 20000, maximumAge: 0 });
+  }
+
+  /* ----- carte et itinéraires ----- */
+  var map = null, layerPts = null, layerRoutes = null;
+  function ensureMap() {
+    if (map) return true;
+    if (typeof L === 'undefined') { $('map').innerHTML = '<p class="map-off">La carte ne s\'affiche pas sans connexion Internet. Le calcul du prix reste utilisable en saisissant les kilomètres à la main.</p>'; return false; }
+    map = L.map('map').setView([46.6, 2.5], 5);
+    L.tileLayer(CONFIG.tiles.url, { attribution: CONFIG.tiles.attribution, maxZoom: CONFIG.tiles.maxZoom }).addTo(map);
+    layerRoutes = L.layerGroup().addTo(map); layerPts = L.layerGroup().addTo(map);
+    return true;
+  }
+  function drawPoints() {
+    if (!ensureMap()) return;
+    layerPts.clearLayers();
+    if (state.from) L.circleMarker([state.from.lat, state.from.lon], { radius: 9, color: '#ffffff', weight: 3, fillColor: '#1c5d99', fillOpacity: 1 }).bindTooltip('Départ').addTo(layerPts);
+    if (state.to) L.circleMarker([state.to.lat, state.to.lon], { radius: 9, color: '#ffffff', weight: 3, fillColor: '#f0b400', fillOpacity: 1 }).bindTooltip('Arrivée').addTo(layerPts);
+  }
+  function clearRoutes() { state.routes = []; state.sel = 0; $('routes').innerHTML = ''; if (layerRoutes) layerRoutes.clearLayers(); }
+
+  var autoPicked = [];
+  function ensurePoint(which) {
+    if (state[which]) return Promise.resolve(true);
+    var ids = whichIds(which), q = $(ids.inp).value.trim();
+    if (q.length < 3) return Promise.resolve(false);
+    return nominatim(CONFIG.searchUrl(q)).then(function (list) {
+      if (!list.length) return false;
+      var p = list[0];
+      state[which] = { lat: parseFloat(p.lat), lon: parseFloat(p.lon), label: cleanLabel(p.display_name) };
+      $(ids.inp).value = state[which].label; $(ids.sug).hidden = true; $(ids.sug).innerHTML = '';
+      autoPicked.push(state[which].label);
+      drawPoints();
+      return true;
+    });
+  }
+  function calcRoute() {
+    autoPicked = [];
+    showNotice($('routeMsg'), 'Recherche des adresses en cours.', '');
+    ensurePoint('from').then(function (okF) {
+      if (!okF) {
+        showNotice($('routeMsg'), $('f_depart').value.trim().length < 3 ? 'Saisissez l\'adresse de départ.' : 'Adresse de départ introuvable. Ajoutez la ville ou le code postal.', 'warn');
+        return;
+      }
+      return ensurePoint('to').then(function (okT) {
+        if (!okT) {
+          showNotice($('routeMsg'), $('f_arrivee').value.trim().length < 3 ? 'Saisissez l\'adresse d\'arrivée.' : 'Adresse d\'arrivée introuvable. Ajoutez la ville ou le code postal.', 'warn');
+          return;
+        }
+        fetchRoute();
+      });
+    }).catch(function () {
+      showNotice($('routeMsg'), 'Le service de recherche d\'adresses ne répond pas. Vérifiez la connexion Internet et réessayez.', 'warn');
+    });
+  }
+  function fetchRoute() {
+    showNotice($('routeMsg'), 'Calcul de l\'itinéraire en cours.', '');
+    fetchJSON(CONFIG.routeUrl(state.from, state.to), 20000).then(function (d) {
+      if (d.code !== 'Ok' || !d.routes || !d.routes.length) { clearRoutes(); showNotice($('routeMsg'), 'Aucun itinéraire trouvé entre ces deux adresses.', 'warn'); return; }
+      state.routes = d.routes.map(function (r) { return { km: r.distance / 1000, min: r.duration / 60, geom: r.geometry }; });
+      showNotice($('routeMsg'), autoPicked.length ? 'Adresse retenue automatiquement : ' + autoPicked.join(' ; ') + '. Si ce n\'est pas la bonne, modifiez-la puis touchez Rechercher pour choisir une autre proposition.' : '', '');
+      selectRoute(0, true);
+    }).catch(function () {
+      showNotice($('routeMsg'), 'Le service de calcul d\'itinéraire ne répond pas. Réessayez dans un instant, ou saisissez les kilomètres à la main.', 'warn');
+    });
+  }
+  function selectRoute(idx, fit) {
+    state.sel = idx;
+    var rs = state.routes, r = rs[idx];
+    $('f_kmAller').value = (Math.round(r.km * 10) / 10);
+    $('f_dureeAller').value = Math.round(r.min);
+    if (!state.retourManual) $('f_kmRetour').value = (Math.round(r.km * 10) / 10);
+    var fastest = 0, shortest = 0;
+    rs.forEach(function (x, k) { if (x.min < rs[fastest].min) fastest = k; if (x.km < rs[shortest].km) shortest = k; });
+    var box = $('routes'); box.innerHTML = '';
+    rs.forEach(function (x, k) {
+      var b = document.createElement('button'); b.type = 'button'; b.className = 'route'; b.setAttribute('aria-pressed', k === idx ? 'true' : 'false');
+      b.innerHTML = '<b>Itinéraire ' + (k + 1) + '</b><span class="num">' + km(x.km) + ' · ' + dur(x.min) + '</span>' +
+        (rs.length > 1 && k === fastest ? '<span class="tag">Plus rapide</span>' : '') + (rs.length > 1 && k === shortest ? '<span class="tag">Plus court</span>' : '');
+      b.addEventListener('click', function () { selectRoute(k, false); });
+      box.appendChild(b);
+    });
+    if (ensureMap()) {
+      layerRoutes.clearLayers();
+      rs.forEach(function (x, k) { if (k !== idx) L.geoJSON(x.geom, { style: { color: '#7d8b98', weight: 5, opacity: .7 } }).on('click', function () { selectRoute(k, false); }).addTo(layerRoutes); });
+      var sel = L.geoJSON(r.geom, { style: { color: '#1c5d99', weight: 6, opacity: .95 } }).addTo(layerRoutes);
+      if (fit) map.fitBounds(sel.getBounds(), { padding: [24, 24] });
+    }
+    render();
+  }
+
+  /* ----- suivi GPS réel ----- */
+  var trk = { id: null, km: 0, last: null, start: null, end: null, timer: null, wake: null, waitSec: 0, tPrev: null };
+  function haversine(a, b) {
+    var R = 6371, rad = Math.PI / 180, dLat = (b.lat - a.lat) * rad, dLon = (b.lon - a.lon) * rad;
+    var x = Math.sin(dLat / 2) * Math.sin(dLat / 2) + Math.cos(a.lat * rad) * Math.cos(b.lat * rad) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    return 2 * R * Math.asin(Math.sqrt(x));
+  }
+  function livePrice() {
+    var es = effSettings(), i = readInputs();
+    if (es.tarifKm <= 0 && es.priseEnCharge <= 0) return null;
+    var frais = i.refacture ? i.peages + i.stationnement + i.autres : 0;
+    return es.priseEnCharge + trk.km * es.tarifKm + (trk.waitSec / 3600) * es.tarifAttente + i.supplements + frais;
+  }
+  function trackShow() {
+    $('tKm').textContent = km(trk.km);
+    var lp = livePrice(), lpTxt = lp === null ? 'Aucun tarif' : eur(lp);
+    $('tPrice').textContent = lpTxt; $('tWait').textContent = dur(trk.waitSec / 60);
+    $('liveBar').hidden = trk.id === null;
+    if (trk.id !== null) { $('liveKm').textContent = km(trk.km); $('livePrice').textContent = lpTxt; }
+    var end = trk.end || (trk.id !== null ? new Date() : null);
+    $('tDur').textContent = trk.start && end ? dur((end - trk.start) / 60000) : '0 min';
+    $('tStart').textContent = trk.start ? hhmm(trk.start) : ' ';
+    $('tEnd').textContent = trk.end ? hhmm(trk.end) : ' ';
+  }
+  function updateGap() {
+    var el = $('tGap');
+    if (state.tracking && lastResult) {
+      var gap = state.tracking.km - lastResult.kmTotal;
+      el.textContent = 'Kilométrage prévu ' + km(lastResult.kmTotal) + ', kilométrage réel ' + km(state.tracking.km) + ', écart ' + (gap >= 0 ? '+' : '') + dec1.format(gap) + ' km. La distance réelle est enregistrée avec la course. Touchez le bouton ci-dessous pour la reprendre dans le calcul.';
+    } else el.textContent = '';
+  }
+  function requestWake() { try { if (navigator.wakeLock && trk.id !== null) { navigator.wakeLock.request('screen').then(function (w) { trk.wake = w; }, function () {}); } } catch (e) {} }
+  function trackStart() {
+    if (!navigator.geolocation) { showNotice($('trackMsg'), 'Ce navigateur ne sait pas se géolocaliser.', 'warn'); return; }
+    trk.km = 0; trk.last = null; trk.start = new Date(); trk.end = null; state.tracking = null; trk.waitSec = 0; trk.tPrev = null; $('useReal').hidden = true;
+    showNotice($('trackMsg'), 'En attente du signal GPS. Autorisez la localisation si le téléphone la demande.', '');
+    trk.id = navigator.geolocation.watchPosition(function (p) {
+      if (p.coords.accuracy > 50) return;
+      var sp = p.coords.speed;
+      if (trk.tPrev !== null && sp !== null && sp < 1.4) { trk.waitSec += Math.min(30, (p.timestamp - trk.tPrev) / 1000); }
+      trk.tPrev = p.timestamp;
+      var pt ={ lat: p.coords.latitude, lon: p.coords.longitude, t: p.timestamp };
+      if (!trk.last) { trk.last = pt; showNotice($('trackMsg'), 'Signal GPS reçu, le suivi est en cours.', ''); return; }
+      var d = haversine(trk.last, pt), dtH = (pt.t - trk.last.t) / 3600000;
+      if (d >= 0.015 && dtH > 0 && d / dtH < 220) { trk.km += d; trk.last = pt; trackShow(); }
+    }, function (err) {
+      var m = err.code === 1 ? 'Localisation refusée. Autorisez-la pour ce site dans les réglages du navigateur, puis relancez le suivi.' : 'Signal GPS indisponible pour le moment.';
+      showNotice($('trackMsg'), m, 'warn');
+      if (err.code === 1) trackStop(true);
+    }, { enableHighAccuracy: true, maximumAge: 0, timeout: 30000 });
+    $('trackStart').disabled = true; $('trackStop').disabled = false;
+    trk.timer = setInterval(trackShow, 1000); requestWake(); trackShow();
+  }
+  function trackStop(silent) {
+    if (trk.id !== null) { navigator.geolocation.clearWatch(trk.id); trk.id = null; }
+    clearInterval(trk.timer); trk.timer = null;
+    try { if (trk.wake) { trk.wake.release(); trk.wake = null; } } catch (e) {}
+    trk.end = new Date();
+    var lp = livePrice();
+    state.tracking = { km: Math.round(trk.km * 100) / 100, debut: hhmm(trk.start), fin: hhmm(trk.end), dureeMin: Math.round((trk.end - trk.start) / 60000),
+      waitMin: Math.round(trk.waitSec / 60), prixDirect: lp === null ? null : Math.round(lp * 100) / 100 };
+    $('trackStart').disabled = false; $('trackStop').disabled = true; $('useReal').hidden = !(trk.km > 0);
+    if (!silent) showNotice($('trackMsg'), 'Suivi arrêté. Les kilomètres réels seront enregistrés avec la course.', '');
+    trackShow(); updateGap();
+  }
+  document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') requestWake(); });
+  function useReal() {
+    var t = state.tracking; if (!t) return;
+    $('f_kmAller').value = Math.round(t.km * 10) / 10;
+    $('f_retourMode').value = 'none'; $('f_kmRetour').value = ''; $('f_kmExtra').value = '';
+    $('f_dureeAller').value = Math.max(0, t.dureeMin - t.waitMin);
+    $('f_attente').value = t.waitMin;
+    render(); toast('Kilomètres et attente mesurés repris dans le calcul.');
+  }
+
+  /* ----- courses enregistrées ----- */
+  var rides = loadJSON(STORE_R, []);
+  if (!Array.isArray(rides)) rides = [];
+  function saveRide() {
+    var i = readInputs(), r = computeRide(i, effSettings());
+    if (r.kmTotal <= 0 && r.prix <= 0) { toast('Renseignez un trajet avant d\'enregistrer.'); return; }
+    if (trk.id !== null) trackStop(true);
+    var ride = {
+      id: Date.now().toString(36), creeLe: new Date().toISOString(),
+      client: $('f_client').value.trim(), date: $('f_date').value, heure: $('f_heure').value,
+      depart: $('f_depart').value.trim(), arrivee: $('f_arrivee').value.trim(),
+      grille: settings.grilles[grilleActive()].nom, entrees: i, resultat: r, gps: state.tracking
+    };
+    rides.unshift(ride);
+    if (!saveJSON(STORE_R, rides)) { toast('Enregistrement impossible dans ce navigateur.'); rides.shift(); return; }
+    renderRides(); toast('Course enregistrée.');
+  }
+  function renderRides() {
+    $('rideCount').textContent = rides.length ? '(' + rides.length + ')' : '';
+    var ca = 0, res = 0, kms = 0, vide = 0;
+    rides.forEach(function (x) { ca += x.resultat.prix; res += x.resultat.resultat; kms += x.resultat.kmTotal; vide += x.resultat.kmVide; });
+    $('rideStats').innerHTML = '<div><span>Courses</span><b>' + rides.length + '</b></div><div><span>Chiffre d\'affaires</span><b>' + eur(ca) + '</b></div>' +
+      '<div><span>Résultat estimé</span><b>' + eur(res) + '</b></div><div><span>Kilomètres</span><b>' + km(kms) + '</b></div><div><span>Dont à vide</span><b>' + km(vide) + '</b></div>';
+    var box = $('rideList');
+    if (!rides.length) { box.innerHTML = '<div class="notice">Aucune course enregistrée. Calculez une course puis touchez « Enregistrer la course ».</div>'; return; }
+    box.innerHTML = rides.map(function (x) {
+      var r = x.resultat;
+      return '<article class="ride"><div class="head"><b>' + esc(x.client || 'Client non précisé') + '</b><span class="num">' + esc(frDate(x.date)) + ' ' + esc(x.heure || '') + '</span></div>' +
+        '<div class="route-txt">' + esc(x.depart || '?') + ' → ' + esc(x.arrivee || '?') + '</div>' +
+        '<div class="nums"><span>' + km(r.kmTotal) + '</span><span>Prix ' + eur(r.prix) + '</span><span>Coût ' + eur(r.coutTotal) + '</span>' +
+        '<span class="' + (r.resultat < 0 ? 'neg' : 'pos') + '">Résultat ' + eur(r.resultat) + '</span>' +
+        (x.grille ? '<span>' + esc(x.grille) + '</span>' : '') +
+        (x.gps ? '<span>Réel GPS ' + km(x.gps.km) + '</span>' : '') + '</div>' +
+        '<div class="row"><button class="btn primary" type="button" data-bill="' + esc(x.id) + '">' + (rideInvoice(x.id) ? 'Voir la facture ' + esc(rideInvoice(x.id).numero) : 'Facturer') + '</button><button class="btn danger" type="button" data-del="' + esc(x.id) + '">Supprimer</button></div></article>';
+    }).join('');
+  }
+  $('rideList').addEventListener('click', function (e) {
+    var bb = e.target.closest('button[data-bill]'); if (bb) { startBill(bb.dataset.bill); return; }
+    var b = e.target.closest('button[data-del]'); if (!b) return;
+    if (b.dataset.armed === '1') {
+      rides = rides.filter(function (x) { return x.id !== b.dataset.del; });
+      saveJSON(STORE_R, rides); renderRides(); toast('Course supprimée.');
+    } else {
+      b.dataset.armed = '1'; b.textContent = 'Confirmer la suppression';
+      setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Supprimer'; } }, 4000);
+    }
+  });
+
+  /* ----- clients, identité professionnelle, factures ----- */
+  var STORE_C = 'tgp_clients_v1', STORE_F = 'tgp_factures_v1', STORE_P = 'tgp_pro_v1';
+  var clients = loadJSON(STORE_C, []); if (!Array.isArray(clients)) clients = [];
+  var invoices = loadJSON(STORE_F, []); if (!Array.isArray(invoices)) invoices = [];
+  function defaultPro() { return { nom: '', adresse: '', ville: '', siret: '', tel: '', email: '', mentions: '', tvaMode: '', tvaTaux: 0, prefFacture: 'F', prefAvoir: 'AV' }; }
+  function normalizePro(p) {
+    var d = defaultPro(); p = p || {};
+    ['nom', 'adresse', 'ville', 'siret', 'tel', 'email', 'mentions'].forEach(function (k) { if (typeof p[k] === 'string') d[k] = p[k]; });
+    if (p.tvaMode === 'na' || p.tvaMode === 'taux') d.tvaMode = p.tvaMode;
+    if (typeof p.tvaTaux === 'number' && p.tvaTaux >= 0 && p.tvaTaux < 100) d.tvaTaux = p.tvaTaux;
+    ['prefFacture', 'prefAvoir'].forEach(function (k) { if (typeof p[k] === 'string' && p[k].trim()) d[k] = p[k].trim().slice(0, 8); });
+    return d;
+  }
+  var pro = normalizePro(loadJSON(STORE_P, {}));
+  function uid() { return Date.now().toString(36) + Math.random().toString(36).slice(2, 6); }
+  function key(s) { return String(s == null ? '' : s).trim().toLowerCase(); }
+  function r2(x) { return Math.round((x + 1e-9) * 100) / 100; }
+  function findIn(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
+
+  /* identité professionnelle (Réglages) */
+  var PRO_TXT = [['nom', 'Nom ou raison sociale'], ['adresse', 'Adresse'], ['ville', 'Code postal et ville'], ['siret', 'Numéro SIRET'], ['tel', 'Téléphone'], ['email', 'Courriel']];
+  function buildProForm() {
+    var h = '<div class="card"><header><h2>Votre entreprise (factures)</h2></header>' +
+      '<p class="fine">Ces informations apparaissent sur vos factures. L\'application n\'invente aucun taux de TVA ni aucune mention légale : recopiez ce que vous indiquent votre comptable ou l\'administration.</p><div class="grid">';
+    PRO_TXT.forEach(function (a) { h += '<label class="field"><span>' + a[1] + '</span><input type="text" id="p_' + a[0] + '" autocomplete="off" value="' + esc(pro[a[0]]) + '"></label>'; });
+    h += '</div>' +
+      '<label class="field"><span>Mentions légales en bas de facture</span><textarea id="p_mentions" rows="4">' + esc(pro.mentions) + '</textarea><small>Texte libre, imprimé tel quel. Exemple : forme juridique, mention de TVA, conditions de règlement. À faire valider par votre comptable.</small></label>' +
+      '<div class="grid">' +
+      '<label class="field"><span>TVA</span><select id="p_tvaMode"><option value="">À choisir</option><option value="na">TVA non applicable</option><option value="taux">TVA applicable, au taux ci-dessous</option></select><small>Les prix saisis dans l\'application sont considérés comme TTC.</small></label>' +
+      '<label class="field"><span>Taux de TVA</span><div class="unit"><input type="number" id="p_tvaTaux" inputmode="decimal" min="0" max="99" step="0.01" value="' + (pro.tvaTaux || '') + '"><em>%</em></div><small>À renseigner seulement si la TVA est applicable.</small></label>' +
+      '<label class="field"><span>Début des numéros de facture</span><input type="text" id="p_prefFacture" maxlength="8" value="' + esc(pro.prefFacture) + '"><small>Numéro généré : ' + esc(pro.prefFacture) + '-année-0001, dans l\'ordre, sans trou.</small></label>' +
+      '<label class="field"><span>Début des numéros d\'avoir</span><input type="text" id="p_prefAvoir" maxlength="8" value="' + esc(pro.prefAvoir) + '"></label>' +
+      '</div></div>';
+    $('proForm').innerHTML = h;
+    $('p_tvaMode').value = pro.tvaMode;
+    PRO_TXT.concat([['mentions'], ['tvaMode'], ['tvaTaux'], ['prefFacture'], ['prefAvoir']]).forEach(function (a) {
+      var el = $('p_' + a[0]); el.addEventListener('input', onProInput); el.addEventListener('change', onProInput);
+    });
+  }
+  function onProInput() {
+    PRO_TXT.forEach(function (a) { pro[a[0]] = $('p_' + a[0]).value.trim(); });
+    pro.mentions = $('p_mentions').value.trim();
+    pro.tvaMode = $('p_tvaMode').value; pro.tvaTaux = Math.min(99.99, Math.max(0, num($('p_tvaTaux').value)));
+    pro.prefFacture = $('p_prefFacture').value.trim() || 'F'; pro.prefAvoir = $('p_prefAvoir').value.trim() || 'AV';
+    saveJSON(STORE_P, pro); renderProWarn();
+  }
+  function proProblems() {
+    var m = [];
+    if (!pro.nom.trim()) m.push('nom');
+    if (!pro.adresse.trim()) m.push('adresse');
+    if (!pro.tvaMode) m.push('régime de TVA'); else if (pro.tvaMode === 'taux' && !(pro.tvaTaux > 0)) m.push('taux de TVA');
+    return m;
+  }
+  function renderProWarn() {
+    var m = proProblems(), box = $('proWarn');
+    if (m.length) showNotice(box, 'Pour émettre une facture, renseignez dans Réglages, rubrique Votre entreprise : ' + m.join(', ') + '.', 'warn');
+    else if (!pro.siret.trim() || !pro.mentions.trim()) showNotice(box, 'Pensez à renseigner votre numéro SIRET et vos mentions légales dans Réglages. L\'application ne les invente pas.', 'warn');
+    else showNotice(box, '', '');
+  }
+
+  /* clients */
+  var editingClient = null;
+  function saveClients() { return saveJSON(STORE_C, clients); }
+  function fillClientList() {
+    $('clientList').innerHTML = clients.map(function (c) { return '<option value="' + esc(c.nom) + '"></option>'; }).join('');
+  }
+  function clientStats(c) {
+    var k = key(c.nom), s = { rides: 0, fact: 0, net: 0, due: 0 };
+    rides.forEach(function (r) { if (key(r.client) === k) s.rides++; });
+    invoices.forEach(function (v) {
+      if (v.client.clientId === c.id || (!v.client.clientId && key(v.client.nom) === k)) {
+        s.net += v.total;
+        if (v.type === 'facture') { s.fact++; if (v.statut === 'impayee' && !v.annuleePar) s.due += v.total; }
+      }
+    });
+    return s;
+  }
+  function renderClients() {
+    var q = key($('clientSearch').value), box = $('clientListBox');
+    var list = clients.filter(function (c) { return !q || key([c.nom, c.tel, c.email, c.adresse].join(' ')).indexOf(q) >= 0; });
+    list.sort(function (a, b) { return key(a.nom) < key(b.nom) ? -1 : 1; });
+    if (!clients.length) { box.innerHTML = '<div class="notice">Aucun client enregistré. Touchez « Nouveau client », ou créez le client au moment de facturer.</div>'; return; }
+    if (!list.length) { box.innerHTML = '<div class="notice">Aucun client ne correspond à cette recherche.</div>'; return; }
+    box.innerHTML = list.map(function (c) {
+      var s = clientStats(c);
+      return '<article class="ride"><div class="head"><b>' + esc(c.nom) + '</b></div>' +
+        (c.tel ? '<div>Tél. ' + esc(c.tel) + '</div>' : '') + (c.email ? '<div>' + esc(c.email) + '</div>' : '') +
+        (c.adresse ? '<div class="route-txt">' + esc(c.adresse) + '</div>' : '') + (c.notes ? '<div class="fine">' + esc(c.notes) + '</div>' : '') +
+        '<div class="nums"><span>' + s.rides + ' course' + (s.rides > 1 ? 's' : '') + '</span><span>' + s.fact + ' facture' + (s.fact > 1 ? 's' : '') + '</span><span>Facturé ' + eur(s.net) + '</span>' +
+        (s.due > 0 ? '<span class="neg">À payer ' + eur(s.due) + '</span>' : '') + '</div>' +
+        '<div class="row"><button class="btn" type="button" data-edit="' + esc(c.id) + '">Modifier</button><button class="btn danger" type="button" data-cdel="' + esc(c.id) + '">Supprimer</button></div></article>';
+    }).join('');
+  }
+  function openClientForm(c) {
+    editingClient = c ? c.id : null;
+    $('clientFormTitle').textContent = c ? 'Modifier le client' : 'Nouveau client';
+    $('c_nom').value = c ? c.nom : ''; $('c_tel').value = c ? c.tel : ''; $('c_email').value = c ? c.email : '';
+    $('c_adresse').value = c ? c.adresse : ''; $('c_notes').value = c ? c.notes : '';
+    $('clientFormCard').hidden = false; $('c_nom').focus();
+  }
+  function saveClient() {
+    var nom = $('c_nom').value.trim();
+    if (!nom) { toast('Indiquez le nom du client.'); return; }
+    var data = { nom: nom, tel: $('c_tel').value.trim(), email: $('c_email').value.trim(), adresse: $('c_adresse').value.trim(), notes: $('c_notes').value.trim() };
+    var c = editingClient ? findIn(clients, editingClient) : null;
+    if (c) { for (var k in data) c[k] = data[k]; } else { data.id = uid(); clients.push(data); }
+    if (!saveClients()) { toast('Enregistrement impossible dans ce navigateur.'); return; }
+    $('clientFormCard').hidden = true; editingClient = null;
+    fillClientList(); renderClients(); toast('Client enregistré.');
+  }
+  $('clientNew').addEventListener('click', function () { openClientForm(null); });
+  $('clientCancel').addEventListener('click', function () { $('clientFormCard').hidden = true; editingClient = null; });
+  $('clientSave').addEventListener('click', saveClient);
+  $('clientSearch').addEventListener('input', renderClients);
+  $('clientListBox').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.edit) { openClientForm(findIn(clients, b.dataset.edit)); window.scrollTo(0, 0); return; }
+    if (b.dataset.cdel) {
+      if (b.dataset.armed === '1') {
+        clients = clients.filter(function (c) { return c.id !== b.dataset.cdel; });
+        saveClients(); fillClientList(); renderClients(); toast('Client supprimé. Ses factures déjà émises restent conservées.');
+      } else {
+        b.dataset.armed = '1'; b.textContent = 'Confirmer la suppression';
+        setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Supprimer'; } }, 4000);
+      }
+    }
+  });
+
+  /* factures */
+  var billRideId = null, curInvId = null, invFilter = 'all';
+  function saveInvoices() { return saveJSON(STORE_F, invoices); }
+  function rideInvoice(rideId) {
+    for (var i = 0; i < invoices.length; i++) { var v = invoices[i]; if (v.type === 'facture' && v.rideId === rideId && !v.annuleePar) return v; }
+    return null;
+  }
+  function invoiceLines(ride) {
+    var r = ride.resultat, l = r.lignes, lines = [];
+    if (r.prixConvenuUtilise) {
+      lines.push({ libelle: 'Course au prix convenu', montant: r2(r.prix) });
+    } else {
+      if (l.priseEnCharge > 0) lines.push({ libelle: 'Prise en charge', montant: r2(l.priseEnCharge) });
+      if (l.kilometres > 0) {
+        var tk = r.kmClient > 0 ? l.kilometres / r.kmClient : 0;
+        lines.push({ libelle: 'Parcours ' + dec1.format(r.kmClient) + ' km à ' + dec2.format(tk) + ' ' + EURO + '/km', montant: r2(l.kilometres) });
+      }
+      if (l.attente > 0) lines.push({ libelle: 'Attente ' + Math.round((ride.entrees && ride.entrees.attenteMin) || 0) + ' min', montant: r2(l.attente) });
+      if (l.supplements > 0) lines.push({ libelle: 'Suppléments', montant: r2(l.supplements) });
+      if (l.frais > 0) lines.push({ libelle: 'Frais refacturés (péages, stationnement, autres)', montant: r2(l.frais) });
+    }
+    var total = 0; lines.forEach(function (x) { total += x.montant; });
+    return { lignes: lines, total: r2(total) };
+  }
+  function nextSeq(type, year) {
+    var m = 0; invoices.forEach(function (v) { if (v.type === type && v.annee === year && v.seq > m) m = v.seq; });
+    return m + 1;
+  }
+  function numero(type, year, seq) {
+    var s = String(seq); while (s.length < 4) s = '0' + s;
+    return (type === 'avoir' ? pro.prefAvoir : pro.prefFacture) + '-' + year + '-' + s;
+  }
+  function vat(total, taux) {
+    if (!(taux > 0)) return { ht: total, tva: 0 };
+    var ht = r2(total / (1 + taux / 100)); return { ht: ht, tva: r2(total - ht) };
+  }
+  function toggleBillNew() { $('billNew').hidden = $('bill_client').value !== ''; }
+  function startBill(rideId) {
+    var ride = findIn(rides, rideId); if (!ride) return;
+    showTab('invoices');
+    var ex = rideInvoice(rideId); if (ex) { openInvoice(ex.id); return; }
+    var pb = proProblems();
+    if (pb.length) { $('billCard').hidden = true; toast('Complétez d\'abord Votre entreprise dans Réglages.'); return; }
+    var inv = invoiceLines(ride);
+    if (!(inv.total > 0)) { toast('Le prix de cette course est nul, impossible de facturer.'); return; }
+    billRideId = rideId;
+    $('billRide').textContent = 'Course du ' + frDate(ride.date) + ' ' + (ride.heure || '') + ' : ' + (ride.depart || '?') + ' → ' + (ride.arrivee || '?');
+    $('bill_client').innerHTML = '<option value="">Saisir un client</option>' + clients.map(function (c) { return '<option value="' + esc(c.id) + '">' + esc(c.nom) + '</option>'; }).join('');
+    var match = null; clients.forEach(function (c) { if (key(c.nom) === key(ride.client)) match = c; });
+    $('bill_client').value = match ? match.id : '';
+    $('bill_nom').value = ride.client || ''; $('bill_tel').value = ''; $('bill_email').value = ''; $('bill_adresse').value = '';
+    $('bill_mode').value = 'Espèces'; toggleBillNew();
+    var h = '<dl>'; inv.lignes.forEach(function (x) { h += row(esc(x.libelle), eur(x.montant)); });
+    h += row('Total à facturer' + (pro.tvaMode === 'taux' ? ' (TTC)' : ''), eur(inv.total), 'total') + '</dl>';
+    $('billLines').innerHTML = h;
+    $('invView').hidden = true; curInvId = null; $('billCard').hidden = false;
+    $('billCard').scrollIntoView({ block: 'start' });
+  }
+  function issueInvoice() {
+    if (proProblems().length) { toast('Complétez d\'abord Votre entreprise dans Réglages.'); renderProWarn(); return; }
+    var ride = findIn(rides, billRideId); if (!ride) return;
+    if (rideInvoice(ride.id)) { toast('Cette course est déjà facturée.'); return; }
+    var li = invoiceLines(ride); if (!(li.total > 0)) { toast('Prix nul, impossible de facturer.'); return; }
+    var cid = $('bill_client').value, cl, newClient = null;
+    if (cid) {
+      var c = findIn(clients, cid); if (!c) { toast('Client introuvable.'); return; }
+      cl = { clientId: c.id, nom: c.nom, adresse: c.adresse, tel: c.tel, email: c.email };
+    } else {
+      var nom = $('bill_nom').value.trim(); if (!nom) { toast('Indiquez le nom du client.'); return; }
+      var same = null; clients.forEach(function (c2) { if (key(c2.nom) === key(nom)) same = c2; });
+      if (same) { cl = { clientId: same.id, nom: same.nom, adresse: same.adresse, tel: same.tel, email: same.email }; }
+      else {
+        newClient = { id: uid(), nom: nom, tel: $('bill_tel').value.trim(), email: $('bill_email').value.trim(), adresse: $('bill_adresse').value.trim(), notes: '' };
+        cl = { clientId: newClient.id, nom: nom, adresse: newClient.adresse, tel: newClient.tel, email: newClient.email };
+      }
+    }
+    var year = new Date().getFullYear(), seq = nextSeq('facture', year);
+    var avecTva = pro.tvaMode === 'taux' && pro.tvaTaux > 0, vs = vat(li.total, avecTva ? pro.tvaTaux : 0);
+    var inv = {
+      id: uid(), type: 'facture', annee: year, seq: seq, numero: numero('facture', year, seq),
+      dateEmission: todayStr(), creeLe: new Date().toISOString(), rideId: ride.id,
+      emetteur: { nom: pro.nom, adresse: pro.adresse, ville: pro.ville, siret: pro.siret, tel: pro.tel, email: pro.email, mentions: pro.mentions },
+      client: cl, course: { date: ride.date, heure: ride.heure, depart: ride.depart, arrivee: ride.arrivee },
+      lignes: li.lignes, total: li.total, ht: vs.ht, tva: vs.tva, tvaTaux: avecTva ? pro.tvaTaux : 0, tvaNA: !avecTva,
+      paiementMode: $('bill_mode').value, statut: 'impayee', datePaiement: ''
+    };
+    invoices.unshift(inv);
+    if (newClient) clients.push(newClient);
+    if (!saveInvoices() || (newClient && !saveClients())) {
+      invoices.shift(); if (newClient) clients.pop(); toast('Enregistrement impossible dans ce navigateur.'); return;
+    }
+    $('billCard').hidden = true; billRideId = null;
+    fillClientList(); renderClients(); renderRides(); renderInvoices(); openInvoice(inv.id);
+    toast('Facture ' + inv.numero + ' émise.');
+  }
+  function invHtml(v) {
+    var e = v.emetteur, c = v.client, avoir = v.type === 'avoir', avecTva = !v.tvaNA && v.tvaTaux > 0;
+    function lines(a) { return a.filter(Boolean).map(esc).join('<br>'); }
+    var h = '<div class="doc"><div class="top2"><div><b>' + esc(e.nom) + '</b><br>' +
+      lines([e.adresse, e.ville, e.siret ? 'SIRET : ' + e.siret : '', e.tel ? 'Tél. : ' + e.tel : '', e.email]) + '</div>' +
+      '<div style="text-align:right"><h2>' + (avoir ? 'AVOIR' : 'FACTURE') + '</h2>N° ' + esc(v.numero) + '<br>Date : ' + esc(frDate(v.dateEmission)) +
+      (avoir && v.avoirDe ? '<br>Annule la facture ' + esc(v.avoirDe) : '') + '</div></div>' +
+      '<div><span class="muted">Client</span><br><b>' + esc(c.nom) + '</b><br>' + lines([c.adresse, c.tel ? 'Tél. : ' + c.tel : '', c.email]) + '</div>';
+    if (v.course && (v.course.depart || v.course.arrivee)) {
+      h += '<div><span class="muted">Course du ' + esc(frDate(v.course.date)) + (v.course.heure ? ' à ' + esc(v.course.heure) : '') + '</span><br>Départ : ' + esc(v.course.depart || '?') + '<br>Arrivée : ' + esc(v.course.arrivee || '?') + '</div>';
+    }
+    h += '<table><thead><tr><th>Désignation</th><th class="r">' + (avecTva ? 'Montant TTC' : 'Montant') + '</th></tr></thead><tbody>';
+    v.lignes.forEach(function (l) { h += '<tr><td>' + esc(l.libelle) + '</td><td class="r">' + eur(l.montant) + '</td></tr>'; });
+    if (avecTva) {
+      h += '<tr><td>Total HT</td><td class="r">' + eur(v.ht) + '</td></tr><tr><td>TVA ' + esc(dec2.format(v.tvaTaux)) + ' %</td><td class="r">' + eur(v.tva) + '</td></tr>' +
+        '<tr><td><b>Total TTC</b></td><td class="r"><b>' + eur(v.total) + '</b></td></tr>';
+    } else {
+      h += '<tr><td><b>' + (avoir ? 'Total de l\'avoir' : 'Total à payer') + '</b></td><td class="r"><b>' + eur(v.total) + '</b></td></tr>';
+    }
+    h += '</tbody></table>';
+    if (!avoir) {
+      h += '<div>' + (v.statut === 'payee' ? 'Réglée le ' + esc(frDate(v.datePaiement)) + ' par ' + esc(String(v.paiementMode).toLowerCase()) + '.' : 'À régler. Mode de règlement : ' + esc(v.paiementMode) + '.') + '</div>';
+    }
+    if (e.mentions) h += '<div class="muted" style="white-space:pre-wrap">' + esc(e.mentions) + '</div>';
+    return h + '</div>';
+  }
+  function openInvoice(id) {
+    var v = findIn(invoices, id); if (!v) return;
+    curInvId = id; $('billCard').hidden = true;
+    $('invPrint').innerHTML = invHtml(v);
+    $('inv_mode').value = v.paiementMode || 'Espèces';
+    $('invPay').hidden = v.type === 'avoir';
+    $('invAvoir').hidden = v.type === 'avoir' || !!v.annuleePar;
+    $('invAvoir').textContent = 'Annuler cette facture par un avoir'; $('invAvoir').dataset.armed = '0';
+    $('invPaid').hidden = v.statut === 'payee'; $('invUnpaid').hidden = v.statut !== 'payee';
+    $('invView').hidden = false; $('invView').scrollIntoView({ block: 'start' });
+  }
+  function invBadge(v) {
+    if (v.type === 'avoir') return '<span class="badge off">Avoir</span>';
+    if (v.annuleePar) return '<span class="badge off">Annulée par ' + esc(v.annuleePar) + '</span>';
+    return v.statut === 'payee' ? '<span class="badge ok">Payée</span>' : '<span class="badge due">À payer</span>';
+  }
+  function renderInvoices() {
+    var net = 0, paid = 0, due = 0;
+    invoices.forEach(function (v) {
+      net += v.total;
+      if (v.type === 'facture' && !v.annuleePar) { if (v.statut === 'payee') paid += v.total; else due += v.total; }
+    });
+    $('invStats').innerHTML = '<div><span>Documents</span><b>' + invoices.length + '</b></div><div><span>Facturé (net des avoirs)</span><b>' + eur(net) + '</b></div>' +
+      '<div><span>Encaissé</span><b>' + eur(paid) + '</b></div><div><span>Reste à encaisser</span><b>' + eur(due) + '</b></div>';
+    var list = invoices.filter(function (v) {
+      if (invFilter === 'due') return v.type === 'facture' && v.statut === 'impayee' && !v.annuleePar;
+      if (invFilter === 'paid') return v.type === 'facture' && v.statut === 'payee' && !v.annuleePar;
+      return true;
+    });
+    var box = $('invList');
+    if (!invoices.length) { box.innerHTML = '<div class="notice">Aucune facture. Dans l\'onglet Courses, touchez « Facturer » sur une course enregistrée.</div>'; return; }
+    if (!list.length) { box.innerHTML = '<div class="notice">Aucune facture dans cette catégorie.</div>'; return; }
+    box.innerHTML = list.map(function (v) {
+      return '<article class="ride"><div class="head"><b>' + esc(v.numero) + '</b><span class="num">' + esc(frDate(v.dateEmission)) + '</span></div>' +
+        '<div>' + esc(v.client.nom) + '</div><div class="nums"><span>' + eur(v.total) + '</span>' + invBadge(v) + '</div>' +
+        '<div class="row"><button class="btn" type="button" data-open="' + esc(v.id) + '">Ouvrir</button></div></article>';
+    }).join('');
+  }
+  function curInv() { return curInvId ? findIn(invoices, curInvId) : null; }
+  function setPay(paid) {
+    var v = curInv(); if (!v || v.type !== 'facture') return;
+    v.paiementMode = $('inv_mode').value;
+    v.statut = paid ? 'payee' : 'impayee'; v.datePaiement = paid ? todayStr() : '';
+    saveInvoices(); renderInvoices(); renderClients(); openInvoice(v.id); toast(paid ? 'Facture marquée comme payée.' : 'Facture remise à payer.');
+  }
+  function makeAvoir() {
+    var v = curInv(); if (!v || v.type !== 'facture' || v.annuleePar) return;
+    var year = new Date().getFullYear(), seq = nextSeq('avoir', year);
+    var a = {
+      id: uid(), type: 'avoir', annee: year, seq: seq, numero: numero('avoir', year, seq), avoirDe: v.numero,
+      dateEmission: todayStr(), creeLe: new Date().toISOString(), rideId: v.rideId,
+      emetteur: v.emetteur, client: v.client, course: v.course,
+      lignes: v.lignes.map(function (l) { return { libelle: l.libelle, montant: -l.montant }; }),
+      total: -v.total, ht: -v.ht, tva: -v.tva, tvaTaux: v.tvaTaux, tvaNA: v.tvaNA, paiementMode: v.paiementMode, statut: '', datePaiement: ''
+    };
+    v.annuleePar = a.numero;
+    invoices.unshift(a);
+    if (!saveInvoices()) { invoices.shift(); delete v.annuleePar; toast('Enregistrement impossible dans ce navigateur.'); return; }
+    renderInvoices(); renderClients(); renderRides(); openInvoice(a.id); toast('Avoir ' + a.numero + ' émis.');
+  }
+  function pdfDoc() {
+    var v = curInv(); if (!v) return null;
+    if (!window.jspdf || !window.jspdf.jsPDF) { toast('Le module PDF n\'est pas chargé. Vérifiez la connexion internet puis rechargez la page.'); return null; }
+    try { return { doc: buildInvoicePdf(window.jspdf.jsPDF, v), name: (v.type === 'avoir' ? 'avoir-' : 'facture-') + v.numero + '.pdf', inv: v }; }
+    catch (err) { toast('Création du PDF impossible.'); return null; }
+  }
+  function downloadBlob(blob, name) {
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = name;
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 3000);
+  }
+  function invDownload() { var p = pdfDoc(); if (!p) return; downloadBlob(p.doc.output('blob'), p.name); toast('PDF téléchargé.'); }
+  function invShare() {
+    var p = pdfDoc(); if (!p) return;
+    var blob = p.doc.output('blob');
+    try {
+      var file = new File([blob], p.name, { type: 'application/pdf' });
+      if (navigator.canShare && navigator.canShare({ files: [file] })) {
+        navigator.share({ files: [file], title: p.inv.numero, text: (p.inv.type === 'avoir' ? 'Avoir ' : 'Facture ') + p.inv.numero }).catch(function () {});
+        return;
+      }
+    } catch (err) { /* repli : téléchargement */ }
+    downloadBlob(blob, p.name); toast('Partage direct indisponible : PDF téléchargé, joignez-le à votre message.');
+  }
+  $('invList').addEventListener('click', function (e) { var b = e.target.closest('button[data-open]'); if (b) openInvoice(b.dataset.open); });
+  $('invFilters').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-filter]'); if (!b) return;
+    invFilter = b.dataset.filter;
+    document.querySelectorAll('#invFilters .chip').forEach(function (x) { x.setAttribute('aria-pressed', x === b ? 'true' : 'false'); });
+    renderInvoices();
+  });
+  $('bill_client').addEventListener('change', toggleBillNew);
+  $('billIssue').addEventListener('click', issueInvoice);
+  $('billCancel').addEventListener('click', function () { $('billCard').hidden = true; billRideId = null; });
+  $('invClose').addEventListener('click', function () { $('invView').hidden = true; curInvId = null; });
+  $('invPaid').addEventListener('click', function () { setPay(true); });
+  $('invUnpaid').addEventListener('click', function () { setPay(false); });
+  $('inv_mode').addEventListener('change', function () {
+    var v = curInv(); if (!v || v.type !== 'facture') return;
+    v.paiementMode = $('inv_mode').value; saveInvoices(); $('invPrint').innerHTML = invHtml(v);
+  });
+  $('invAvoir').addEventListener('click', function () {
+    var b = $('invAvoir');
+    if (b.dataset.armed === '1') { makeAvoir(); }
+    else {
+      b.dataset.armed = '1'; b.textContent = 'Confirmer l\'avoir (annulation)';
+      setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Annuler cette facture par un avoir'; } }, 4000);
+    }
+  });
+  $('invPdf').addEventListener('click', invDownload);
+  $('invShare').addEventListener('click', invShare);
+  $('invPrintBtn').addEventListener('click', function () { window.print(); });
+
+  /* ----- dépenses ----- */
+  var STORE_D = 'tgp_depenses_v1';
+  var expenses = loadJSON(STORE_D, []); if (!Array.isArray(expenses)) expenses = [];
+  var CATS = [
+    { k: 'carburant', l: 'Carburant', t: 'variable' }, { k: 'entretien', l: 'Entretien et réparations', t: 'variable' },
+    { k: 'pneus', l: 'Pneus', t: 'variable' }, { k: 'lavage', l: 'Lavage et nettoyage', t: 'variable' },
+    { k: 'assurance', l: 'Assurance', t: 'fixe' }, { k: 'credit', l: 'Crédit ou location du véhicule', t: 'fixe' },
+    { k: 'telephone', l: 'Téléphone et internet', t: 'fixe' }, { k: 'comptabilite', l: 'Comptabilité', t: 'fixe' },
+    { k: 'banque', l: 'Frais bancaires', t: 'fixe' }, { k: 'abonnement', l: 'Abonnements et licences', t: 'fixe' },
+    { k: 'autre', l: 'Autre dépense', t: 'variable' }
+  ];
+  function catOf(k) { for (var i = 0; i < CATS.length; i++) if (CATS[i].k === k) return CATS[i]; return CATS[CATS.length - 1]; }
+  var editingExp = null, expMonthSel = '';
+  function saveExpenses() { return saveJSON(STORE_D, expenses); }
+  function monthOf(s) { return String(s || '').slice(0, 7); }
+  function monthLabel(m) {
+    var p = m.split('-'); if (p.length !== 2) return m;
+    var s = new Date(parseInt(p[0], 10), parseInt(p[1], 10) - 1, 1).toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+  function buildExpForm() {
+    $('e_cat').innerHTML = '<optgroup label="Dépenses variables">' + CATS.filter(function (c) { return c.t === 'variable'; }).map(function (c) { return '<option value="' + c.k + '">' + c.l + '</option>'; }).join('') +
+      '</optgroup><optgroup label="Charges fixes">' + CATS.filter(function (c) { return c.t === 'fixe'; }).map(function (c) { return '<option value="' + c.k + '">' + c.l + '</option>'; }).join('') + '</optgroup>';
+    $('e_date').value = todayStr(); toggleLitres();
+  }
+  function toggleLitres() { $('eLitresBox').hidden = $('e_cat').value !== 'carburant'; }
+  function clearExpForm() {
+    editingExp = null; $('expFormTitle').textContent = 'Nouvelle dépense';
+    $('e_date').value = todayStr(); $('e_montant').value = ''; $('e_litres').value = ''; $('e_km').value = ''; $('e_libelle').value = '';
+    $('e_cat').value = 'carburant'; toggleLitres();
+  }
+  function saveExpense() {
+    var date = $('e_date').value, montant = num($('e_montant').value);
+    if (!date) { toast('Indiquez la date.'); return; }
+    if (!(montant > 0)) { toast('Indiquez le montant payé.'); return; }
+    var cat = $('e_cat').value, litres = cat === 'carburant' ? num($('e_litres').value) : 0;
+    var d = { date: date, cat: cat, montant: r2(montant), litres: litres > 0 ? litres : 0, km: Math.max(0, num($('e_km').value)), libelle: $('e_libelle').value.trim() };
+    var ex = editingExp ? findIn(expenses, editingExp) : null;
+    if (ex) { for (var k in d) ex[k] = d[k]; } else { d.id = uid(); d.creeLe = new Date().toISOString(); expenses.unshift(d); }
+    if (!saveExpenses()) { toast('Enregistrement impossible dans ce navigateur.'); return; }
+    expMonthSel = monthOf(date); clearExpForm(); renderExpenses(); toast('Dépense enregistrée.');
+  }
+  function monthRevenue(m) { var t = 0; rides.forEach(function (r) { if (monthOf(r.date) === m) t += r.resultat.prix; }); return t; }
+  function monthEstimates(m) {
+    var e = { carburant: 0, pneus: 0, entretien: 0, fixe: 0, km: 0, n: 0 };
+    rides.forEach(function (r) {
+      if (monthOf(r.date) !== m) return;
+      e.carburant += r.resultat.couts.carburant; e.pneus += r.resultat.couts.pneus; e.entretien += r.resultat.couts.mecanique; e.fixe += r.resultat.couts.chargesFixes; e.km += r.resultat.kmTotal; e.n++;
+    });
+    return e;
+  }
+  function fuelStats() {
+    var f = expenses.filter(function (x) { return x.cat === 'carburant' && x.litres > 0 && x.km > 0; });
+    f.sort(function (a, b) { return a.km - b.km; });
+    if (f.length < 2) return null;
+    var dist = f[f.length - 1].km - f[0].km, litres = 0;
+    for (var i = 1; i < f.length; i++) litres += f[i].litres;
+    return dist > 0 ? { conso: litres / dist * 100, dist: dist, n: f.length } : null;
+  }
+  function lastFuelPrice() {
+    var f = expenses.filter(function (x) { return x.cat === 'carburant' && x.litres > 0; });
+    f.sort(function (a, b) { return a.date !== b.date ? (a.date < b.date ? 1 : -1) : (a.km !== b.km ? b.km - a.km : ((a.creeLe || '') < (b.creeLe || '') ? 1 : -1)); });
+    return f.length ? f[0].montant / f[0].litres : 0;
+  }
+  function fixedMonthlyAvg() {
+    var fx = expenses.filter(function (x) { return catOf(x.cat).t === 'fixe'; });
+    if (!fx.length) return 0;
+    var min = null, max = null, tot = 0;
+    fx.forEach(function (x) { var m = monthOf(x.date); tot += x.montant; if (min === null || m < min) min = m; if (max === null || m > max) max = m; });
+    var a = min.split('-'), b = max.split('-');
+    var n = (parseInt(b[0], 10) - parseInt(a[0], 10)) * 12 + parseInt(b[1], 10) - parseInt(a[1], 10) + 1;
+    return n > 0 ? tot / n : 0;
+  }
+  function renderExpenses() {
+    var months = {}; months[monthOf(todayStr())] = 1;
+    expenses.forEach(function (x) { months[monthOf(x.date)] = 1; });
+    rides.forEach(function (r) { if (r.date) months[monthOf(r.date)] = 1; });
+    var ml = Object.keys(months).sort().reverse();
+    if (!expMonthSel || !months[expMonthSel]) expMonthSel = ml[0];
+    $('expMonth').innerHTML = ml.map(function (m) { return '<option value="' + m + '">' + esc(monthLabel(m)) + '</option>'; }).join('');
+    $('expMonth').value = expMonthSel;
+
+    var inM = expenses.filter(function (x) { return monthOf(x.date) === expMonthSel; });
+    var tot = 0, byCat = {}, lit = 0, fuelEur = 0;
+    inM.forEach(function (x) { tot += x.montant; byCat[x.cat] = (byCat[x.cat] || 0) + x.montant; if (x.cat === 'carburant') { fuelEur += x.montant; lit += x.litres; } });
+    var rev = monthRevenue(expMonthSel), res = rev - tot;
+    $('expStats').innerHTML = '<div><span>Recettes des courses</span><b>' + eur(rev) + '</b></div><div><span>Dépenses saisies</span><b>' + eur(tot) + '</b></div>' +
+      '<div><span>Résultat réel</span><b class="' + (res < 0 ? 'neg' : 'pos') + '">' + eur(res) + '</b></div>';
+    var h = '<dl>';
+    CATS.forEach(function (c) { if (byCat[c.k]) h += row(esc(c.l) + (c.t === 'fixe' ? ' (fixe)' : ''), eur(byCat[c.k])); });
+    h += row('Total des dépenses', eur(tot), 'total') + '</dl>' +
+      '<p class="fine">Résultat réel = recettes des courses enregistrées moins dépenses réelles saisies. Il est calculé avant cotisations sociales et impôts. Il ne retire pas en plus les provisions estimées du calculateur, pour ne jamais compter une dépense deux fois.</p>';
+    $('expByCat').innerHTML = inM.length ? h : '<p class="fine">Aucune dépense saisie pour ce mois.</p>';
+
+    var est = monthEstimates(expMonthSel), fixReel = 0;
+    CATS.forEach(function (c) { if (c.t === 'fixe') fixReel += byCat[c.k] || 0; });
+    var c = '<dl>' + row('Carburant, réel / estimé', eur(byCat.carburant || 0) + ' / ' + eur(est.carburant)) +
+      row('Pneus, réel / estimé', eur(byCat.pneus || 0) + ' / ' + eur(est.pneus)) +
+      row('Entretien, réel / estimé', eur(byCat.entretien || 0) + ' / ' + eur(est.entretien)) +
+      row('Charges fixes, réel / estimé', eur(fixReel) + ' / ' + eur(est.fixe)) + '</dl>' +
+      '<p class="fine">Les estimations viennent des ' + est.n + ' course' + (est.n > 1 ? 's' : '') + ' enregistrée' + (est.n > 1 ? 's' : '') + ' ce mois (' + km(est.km) + '). Si vous n\'enregistrez pas toutes vos courses, ou si un plein couvre plusieurs mois, l\'écart est normal. Les pneus et l\'entretien sont des achats ponctuels, comparez-les plutôt sur plusieurs mois.</p>';
+    $('expCompare').innerHTML = c;
+
+    var sug = [], fs = fuelStats(), lp = lastFuelPrice(), fm = fixedMonthlyAvg();
+    if (lp > 0) sug.push({ key: 'prixLitre', val: Math.round(lp * 1000) / 1000, txt: 'Prix du carburant : dernier plein à ' + dec2.format(lp) + ' €/L (réglage actuel ' + dec2.format(settings.prixLitre) + ').' });
+    if (fs) sug.push({ key: 'conso', val: Math.round(fs.conso * 10) / 10, txt: 'Consommation réelle : ' + dec1.format(fs.conso) + ' L/100 km sur ' + Math.round(fs.dist) + ' km et ' + fs.n + ' pleins (réglage actuel ' + dec1.format(settings.conso) + '). Calcul valable si vous faites le plein complet à chaque fois.' });
+    if (fm > 0) sug.push({ key: 'chargesFixesMois', val: Math.round(fm), txt: 'Charges fixes moyennes : ' + eur(fm) + ' par mois d\'après vos dépenses fixes (réglage actuel ' + eur(settings.chargesFixesMois) + ').' });
+    $('expSuggestCard').hidden = !sug.length;
+    $('expSuggest').innerHTML = sug.map(function (s) {
+      return '<div class="notice">' + esc(s.txt) + '<div class="row"><button class="btn" type="button" data-apply="' + s.key + '" data-val="' + s.val + '">Appliquer cette valeur</button></div></div>';
+    }).join('');
+
+    var box = $('expList');
+    if (!expenses.length) { box.innerHTML = '<div class="notice">Aucune dépense saisie. Ajoutez vos pleins, entretiens et charges fixes ci-dessus.</div>'; return; }
+    var sorted = inM.slice().sort(function (a, b) { return a.date < b.date ? 1 : -1; });
+    box.innerHTML = sorted.map(function (x) {
+      var cc = catOf(x.cat);
+      return '<article class="ride"><div class="head"><b>' + esc(cc.l) + '</b><span class="num">' + esc(frDate(x.date)) + '</span></div>' +
+        (x.libelle ? '<div class="route-txt">' + esc(x.libelle) + '</div>' : '') +
+        '<div class="nums"><span>' + eur(x.montant) + '</span>' + (x.litres > 0 ? '<span>' + dec2.format(x.litres) + ' L à ' + dec2.format(x.montant / x.litres) + ' €/L</span>' : '') + (x.km > 0 ? '<span>' + Math.round(x.km) + ' km</span>' : '') + '</div>' +
+        '<div class="row"><button class="btn" type="button" data-eedit="' + esc(x.id) + '">Modifier</button><button class="btn danger" type="button" data-edel="' + esc(x.id) + '">Supprimer</button></div></article>';
+    }).join('') || '<div class="notice">Aucune dépense pour ce mois.</div>';
+  }
+  $('e_cat').addEventListener('change', toggleLitres);
+  $('expSave').addEventListener('click', saveExpense);
+  $('expCancel').addEventListener('click', clearExpForm);
+  $('expMonth').addEventListener('change', function () { expMonthSel = $('expMonth').value; renderExpenses(); });
+  $('expSuggest').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-apply]'); if (!b) return;
+    settings[b.dataset.apply] = num(b.dataset.val); saveJSON(STORE_S, settings); buildSettingsForm(); render(); renderExpenses(); toast('Réglage mis à jour.');
+  });
+  $('expList').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.eedit) {
+      var x = findIn(expenses, b.dataset.eedit); if (!x) return;
+      editingExp = x.id; $('expFormTitle').textContent = 'Modifier la dépense';
+      $('e_date').value = x.date; $('e_cat').value = x.cat; $('e_montant').value = x.montant; $('e_litres').value = x.litres || ''; $('e_km').value = x.km || ''; $('e_libelle').value = x.libelle || '';
+      toggleLitres(); window.scrollTo(0, 0); return;
+    }
+    if (b.dataset.edel) {
+      if (b.dataset.armed === '1') {
+        expenses = expenses.filter(function (y) { return y.id !== b.dataset.edel; });
+        saveExpenses(); renderExpenses(); toast('Dépense supprimée.');
+      } else {
+        b.dataset.armed = '1'; b.textContent = 'Confirmer la suppression';
+        setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Supprimer'; } }, 4000);
+      }
+    }
+  });
+
+  /* adresse du client dans le calculateur */
+  function clientByName(n) { var m = null; clients.forEach(function (c) { if (key(c.nom) === key(n) && key(n)) m = c; }); return m; }
+  function updateClientAddr() {
+    var c = clientByName($('f_client').value), box = $('clientAddr');
+    if (!c) { box.hidden = true; return; }
+    box.hidden = false;
+    if (c.adresse) { $('clientAddrTxt').textContent = 'Adresse de ' + c.nom + ' : ' + c.adresse; $('addrAsFrom').hidden = false; $('addrAsTo').hidden = false; }
+    else { $('clientAddrTxt').textContent = c.nom + ' n\'a pas d\'adresse enregistrée. Ajoutez-la dans l\'onglet Clients, rubrique Modifier.'; $('addrAsFrom').hidden = true; $('addrAsTo').hidden = true; }
+  }
+  function useClientAddr(which) {
+    var c = clientByName($('f_client').value); if (!c || !c.adresse) return;
+    var ids = whichIds(which);
+    $(ids.inp).value = c.adresse; state[which] = null; clearRoutes(); drawPoints();
+    searchAddress(which);
+    toast('Adresse du client placée. Choisissez la bonne proposition, ou touchez Calculer l\'itinéraire.');
+  }
+  $('f_client').addEventListener('input', updateClientAddr);
+  $('f_client').addEventListener('change', updateClientAddr);
+  $('addrAsFrom').addEventListener('click', function () { useClientAddr('from'); });
+  $('addrAsTo').addEventListener('click', function () { useClientAddr('to'); });
+
+  /* ----- sauvegarde ----- */
+  function exportBackup() {
+    var data = { application: 'Taxi Gestion Pro', version: 3, exporteLe: new Date().toISOString(), reglages: settings, courses: rides, clients: clients, factures: invoices, entreprise: pro, depenses: expenses };
+    var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'taxi-gestion-pro-sauvegarde-' + todayStr() + '.json';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(a.href); }, 2000);
+    toast('Sauvegarde exportée.');
+  }
+  var pendingImport = null;
+  $('importFile').addEventListener('change', function (e) {
+    var f = e.target.files[0]; if (!f) return;
+    var rd = new FileReader();
+    rd.onload = function () {
+      try {
+        var d = JSON.parse(rd.result);
+        if (!d || d.application !== 'Taxi Gestion Pro' || !Array.isArray(d.courses)) throw new Error('format');
+        pendingImport = d;
+        var box = $('importBox'); box.hidden = false;
+        var nc = Array.isArray(d.clients) ? d.clients.length : 0, nf = Array.isArray(d.factures) ? d.factures.length : 0, nd = Array.isArray(d.depenses) ? d.depenses.length : 0;
+        box.innerHTML = 'Ce fichier contient ' + d.courses.length + ' course' + (d.courses.length > 1 ? 's' : '') + ', ' + nc + ' client' + (nc > 1 ? 's' : '') + ', ' + nf + ' facture' + (nf > 1 ? 's' : '') + ' et ' + nd + ' dépense' + (nd > 1 ? 's' : '') + '. La restauration remplace les données actuelles correspondantes (courses, réglages' + (Array.isArray(d.clients) ? ', clients' : '') + (Array.isArray(d.factures) ? ', factures' : '') + (Array.isArray(d.depenses) ? ', dépenses' : '') + ').' +
+          '<div class="row"><button class="btn primary" type="button" id="importOk">Remplacer mes données</button><button class="btn" type="button" id="importNo">Annuler</button></div>';
+        $('importOk').addEventListener('click', doImport);
+        $('importNo').addEventListener('click', function () { pendingImport = null; box.hidden = true; });
+      } catch (err) { toast('Ce fichier n\'est pas une sauvegarde Taxi Gestion Pro.'); }
+      e.target.value = '';
+    };
+    rd.readAsText(f);
+  });
+  function doImport() {
+    if (!pendingImport) return;
+    rides = pendingImport.courses;
+    settings = normalizeSettings(pendingImport.reglages);
+    if (Array.isArray(pendingImport.clients)) { clients = pendingImport.clients; saveJSON(STORE_C, clients); }
+    if (Array.isArray(pendingImport.factures)) { invoices = pendingImport.factures; saveJSON(STORE_F, invoices); }
+    if (Array.isArray(pendingImport.depenses)) { expenses = pendingImport.depenses; saveJSON(STORE_D, expenses); }
+    if (pendingImport.entreprise) { pro = normalizePro(pendingImport.entreprise); saveJSON(STORE_P, pro); }
+    saveJSON(STORE_R, rides); saveJSON(STORE_S, settings);
+    pendingImport = null; $('importBox').hidden = true;
+    buildSettingsForm(); buildProForm(); fillClientList(); renderClients(); renderInvoices(); renderProWarn(); buildExpForm(); renderExpenses(); renderRides(); render(); toast('Sauvegarde restaurée.');
+  }
+
+  /* ----- onglets et formulaire ----- */
+  function showTab(name) {
+    ['calc', 'rides', 'clients', 'invoices', 'expenses', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+    if (name === 'clients') renderClients();
+    if (name === 'expenses') renderExpenses();
+    if (name === 'invoices') { renderInvoices(); renderProWarn(); }
+    document.querySelectorAll('.tab').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === name); });
+    if (name === 'calc' && map) setTimeout(function () { map.invalidateSize(); }, 50);
+    window.scrollTo(0, 0);
+  }
+  document.querySelectorAll('.tab').forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
+  $('goSettings').addEventListener('click', function () { showTab('settings'); });
+
+  function newRide() {
+    if (trk.id !== null) trackStop(true);
+    ['f_client', 'f_depart', 'f_arrivee', 'f_kmAller', 'f_dureeAller', 'f_kmRetour', 'f_kmExtra', 'f_attente', 'f_supplements', 'f_peages', 'f_stationnement', 'f_autres', 'f_prixConvenu']
+      .forEach(function (id) { $(id).value = ''; });
+    $('f_retourMode').value = 'none'; $('f_refacture').checked = true;
+    $('f_date').value = todayStr(); $('f_heure').value = hhmm(new Date());
+    state.from = null; state.to = null; state.retourManual = false; state.tracking = null;
+    trk.km = 0; trk.waitSec = 0; trk.tPrev = null; trk.start = null; trk.end = null; $('useReal').hidden = true;
+    $('sugFrom').hidden = true; $('sugTo').hidden = true; showNotice($('routeMsg'), '', ''); showNotice($('trackMsg'), '', '');
+    $('trackStart').disabled = false; $('trackStop').disabled = true;
+    clearRoutes(); if (layerPts) layerPts.clearLayers(); trackShow(); render(); updateClientAddr();
+  }
+
+  ['f_kmAller', 'f_dureeAller', 'f_kmRetour', 'f_kmExtra', 'f_attente', 'f_supplements', 'f_peages', 'f_stationnement', 'f_autres', 'f_prixConvenu', 'f_retourMode', 'f_refacture']
+    .forEach(function (id) { $(id).addEventListener('input', render); $(id).addEventListener('change', render); });
+  $('f_kmRetour').addEventListener('input', function () { state.retourManual = true; });
+  $('f_kmAller').addEventListener('input', function () { if (!state.retourManual) { $('f_kmRetour').value = $('f_kmAller').value; render(); } });
+  $('f_retourMode').addEventListener('change', function () {
+    if ($('f_retourMode').value !== 'none' && !$('f_kmRetour').value && $('f_kmAller').value) $('f_kmRetour').value = $('f_kmAller').value;
+    render();
+  });
+
+  [['f_depart', 'from', 'sugFrom'], ['f_arrivee', 'to', 'sugTo']].forEach(function (a) {
+    $(a[0]).addEventListener('input', function () { state[a[1]] = null; clearRoutes(); drawPoints(); });
+    $(a[0]).addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); searchAddress(a[1]); } });
+  });
+  $('goFrom').addEventListener('click', function () { searchAddress('from'); });
+  $('goTo').addEventListener('click', function () { searchAddress('to'); });
+  $('goRoute').addEventListener('click', calcRoute);
+  $('f_grille').addEventListener('change', function () { settings.grilleDefaut = grilleActive(); saveJSON(STORE_S, settings); render(); });
+  $('locFrom').addEventListener('click', function () { useMyPosition('from'); });
+  $('locTo').addEventListener('click', function () { useMyPosition('to'); });
+  $('trackStart').addEventListener('click', trackStart);
+  $('trackStop').addEventListener('click', function () { trackStop(false); });
+  $('useReal').addEventListener('click', useReal);
+  $('saveRide').addEventListener('click', saveRide);
+  $('newRide').addEventListener('click', newRide);
+  $('exportBtn').addEventListener('click', exportBackup);
+  $('fillExample').addEventListener('click', fillExample);
+
+  /* ----- démarrage ----- */
+  $('storageWarn').hidden = storageOK();
+  buildSettingsForm(); buildProForm(); fillClientList(); renderClients(); renderInvoices(); renderProWarn(); buildExpForm(); renderExpenses(); renderRides(); updateClientAddr();
+  $('f_date').value = todayStr(); $('f_heure').value = hhmm(new Date());
+  ensureMap(); trackShow(); render();
+})();
+</script>
+</body>
+</html>
