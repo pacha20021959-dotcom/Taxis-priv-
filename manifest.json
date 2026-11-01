@@ -1,0 +1,17 @@
+{
+  "name": "Taxi Gestion Pro",
+  "short_name": "Taxi Pro",
+  "description": "Calcul des courses, clients, factures et dépenses pour chauffeur de taxi",
+  "lang": "fr",
+  "start_url": "./appli.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#1c5d99",
+  "theme_color": "#1c5d99",
+  "icons": [
+    { "src": "icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icon-maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}
