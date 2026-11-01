@@ -829,12 +829,55 @@ dl{margin:0;display:grid;gap:0}
 #toast{position:fixed;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom, 0px));
   background:var(--ink);color:var(--bg);padding:10px 16px;border-radius:8px;z-index:2000;max-width:90vw;text-align:center}
 @media (prefers-reduced-motion: no-preference){ #toast{transition:opacity .2s} }
+#gate{position:fixed;inset:0;z-index:1000;background:var(--bg);color:var(--ink);display:flex;align-items:center;justify-content:center;padding:20px;overflow:auto}
+#gate[hidden]{display:none}
+.gate-box{width:100%;max-width:420px;display:grid;gap:14px;text-align:center}
+.gate-box img{width:132px;height:132px;border-radius:28px;margin:0 auto;box-shadow:0 2px 10px rgba(0,0,0,.25)}
+.gate-box .field{text-align:left}
+.chk{display:flex;gap:10px;align-items:flex-start;text-align:left;font-weight:600}
+.chk input{width:22px;height:22px;margin-top:2px;flex:none}
+body.locked .wrap{visibility:hidden}
 </style>
 </head>
-<body>
+<body class="locked">
+<div id="gate" role="dialog" aria-modal="true" aria-label="Page d'accueil">
+  <div class="gate-box">
+    <img src="taxi-192.png" alt="" onerror="this.hidden=true">
+    <div id="gSetup" class="col">
+      <h2>Bienvenue sur Taxi Pro</h2>
+      <p class="fine">Pour commencer, indiquez votre nom. Vous pouvez aussi protéger l'application par un mot de passe, mais ce n'est pas obligatoire.</p>
+      <label class="field"><span>Votre nom</span><input type="text" id="g_nom" autocomplete="name"></label>
+      <label class="chk"><input type="checkbox" id="g_usepw"><span>Protéger l'application par un mot de passe (facultatif)</span></label>
+      <div id="gPwBox" class="col" hidden>
+        <label class="field"><span>Mot de passe (4 caractères minimum)</span><input type="password" id="g_pw1" autocomplete="new-password"></label>
+        <label class="field"><span>Répétez le mot de passe</span><input type="password" id="g_pw2" autocomplete="new-password"></label>
+        <p class="fine">Notez-le quelque part : s'il est oublié, la seule solution est d'effacer les données de l'application.</p>
+      </div>
+      <p class="fine" id="gErr0" role="alert"></p>
+      <button class="btn primary" type="button" id="g_start">Commencer</button>
+    </div>
+    <div id="gWelcome" class="col" hidden>
+      <h2 id="gHelloW">Bienvenue</h2>
+      <p class="fine">Vous êtes sur l'application Taxi Pro.</p>
+      <button class="btn primary" type="button" id="g_enter">Entrer</button>
+    </div>
+    <div id="gLock" class="col" hidden>
+      <h2 id="gHelloL">Bienvenue</h2>
+      <p class="fine">Application protégée. Entrez votre mot de passe.</p>
+      <label class="field"><span>Mot de passe</span><input type="password" id="g_pw" autocomplete="current-password"></label>
+      <p class="fine" id="gErr" role="alert"></p>
+      <button class="btn primary" type="button" id="g_unlock">Déverrouiller</button>
+      <button class="btn" type="button" id="g_forgot">Mot de passe oublié</button>
+      <div id="gForgotBox" class="notice warn" hidden>
+        Le mot de passe ne peut pas être retrouvé. Vous pouvez effacer toutes les données de l'application sur ce téléphone (courses, clients, factures, dépenses, réglages) et repartir de zéro. Vous pourrez ensuite restaurer une sauvegarde si vous en avez une.
+        <div class="row"><button class="btn danger" type="button" id="g_reset">Effacer les données et réinitialiser</button></div>
+      </div>
+    </div>
+  </div>
+</div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v2.1</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v2.2</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="calc" type="button">Calcul</button>
     <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
@@ -1128,6 +1171,7 @@ dl{margin:0;display:grid;gap:0}
       <div class="row"><button class="btn primary" type="button" id="installBtn" hidden>Installer l'application sur le téléphone</button></div>
       <p class="fine" id="installHelp"></p>
     </div>
+    <div class="card" id="accessCard"></div>
     <div id="settingsForm" class="col"></div>
     <div id="proForm" class="col"></div>
     <div class="notice">
@@ -2893,6 +2937,127 @@ function buildInvoicePdf(JsPDF, inv) {
   $('exportBtn').addEventListener('click', exportBackup);
   $('fillExample').addEventListener('click', fillExample);
 
+  /* ----- page d'accueil et mot de passe ----- */
+  var STORE_PF = 'tgp_profil_v1';
+  var profil = loadJSON(STORE_PF, null);
+  if (!profil || typeof profil !== 'object') profil = { nom: '' };
+  function hasPw() { return !!(profil.hash && profil.salt); }
+  function cryptoOK() { return typeof crypto !== 'undefined' && crypto && crypto.subtle && typeof TextEncoder !== 'undefined'; }
+  function toB64(buf) { var a = new Uint8Array(buf), s = ''; for (var i = 0; i < a.length; i++) s += String.fromCharCode(a[i]); return btoa(s); }
+  function fromB64(b) { var s = atob(b), a = new Uint8Array(s.length); for (var i = 0; i < s.length; i++) a[i] = s.charCodeAt(i); return a; }
+  function deriveHash(pw, salt, it) {
+    return crypto.subtle.importKey('raw', new TextEncoder().encode(pw), 'PBKDF2', false, ['deriveBits']).then(function (k) {
+      return crypto.subtle.deriveBits({ name: 'PBKDF2', hash: 'SHA-256', salt: fromB64(salt), iterations: it }, k, 256);
+    }).then(toB64);
+  }
+  function newSecret(pw) {
+    var salt = toB64(crypto.getRandomValues(new Uint8Array(16))), it = 150000;
+    return deriveHash(pw, salt, it).then(function (h) { return { salt: salt, hash: h, it: it }; });
+  }
+  function checkPw(pw) { return deriveHash(pw, profil.salt, profil.it || 150000).then(function (h) { return h === profil.hash; }); }
+  function saveProfil() { return saveJSON(STORE_PF, profil); }
+  function setLocked(v) { try { document.body.classList.toggle('locked', v); } catch (e) {} }
+
+  var gateFails = 0, gateWait = 0;
+  function showGate() {
+    var setup = !profil.nom;
+    $('gSetup').hidden = !setup; $('gLock').hidden = setup || !hasPw(); $('gWelcome').hidden = setup || hasPw();
+    $('gHelloW').textContent = 'Bienvenue ' + profil.nom; $('gHelloL').textContent = 'Bienvenue ' + profil.nom;
+    $('g_pw').value = ''; $('gErr').textContent = ''; $('gErr0').textContent = ''; $('gForgotBox').hidden = true;
+    $('gate').hidden = false; setLocked(true);
+  }
+  function enterApp() {
+    $('gate').hidden = true; setLocked(false); window.scrollTo(0, 0);
+    if (map) setTimeout(function () { map.invalidateSize(); }, 80);
+  }
+  function gSetup() {
+    var nom = $('g_nom').value.trim(), err = $('gErr0');
+    if (!nom) { err.textContent = 'Indiquez votre nom pour continuer.'; return Promise.resolve(); }
+    if (!$('g_usepw').checked) { profil = { nom: nom }; saveProfil(); buildAccessCard(); enterApp(); return Promise.resolve(); }
+    if (!cryptoOK()) { err.textContent = 'Ce navigateur ne permet pas le mot de passe. Ouvrez l\'application depuis le site en https.'; return Promise.resolve(); }
+    var p1 = $('g_pw1').value, p2 = $('g_pw2').value;
+    if (p1.length < 4) { err.textContent = 'Le mot de passe doit avoir au moins 4 caractères.'; return Promise.resolve(); }
+    if (p1 !== p2) { err.textContent = 'Les deux mots de passe ne sont pas identiques.'; return Promise.resolve(); }
+    return newSecret(p1).then(function (s) { profil = { nom: nom, salt: s.salt, hash: s.hash, it: s.it }; saveProfil(); buildAccessCard(); enterApp(); });
+  }
+  function gUnlock() {
+    var err = $('gErr');
+    if (Date.now() < gateWait) { err.textContent = 'Trop d\'essais. Patientez quelques secondes.'; return Promise.resolve(); }
+    return checkPw($('g_pw').value).then(function (ok) {
+      if (ok) { gateFails = 0; enterApp(); return; }
+      gateFails++;
+      if (gateFails >= 5) { gateFails = 0; gateWait = Date.now() + 30000; err.textContent = 'Trop d\'essais. Patientez 30 secondes.'; }
+      else err.textContent = 'Mot de passe incorrect.';
+      $('g_pw').value = '';
+    });
+  }
+  function wipeAll() {
+    try { var ks = []; for (var i = 0; i < localStorage.length; i++) { var k = localStorage.key(i); if (k && k.indexOf('tgp_') === 0) ks.push(k); } ks.forEach(function (k) { localStorage.removeItem(k); }); } catch (e) {}
+    try { location.reload(); } catch (e) {}
+  }
+  $('g_usepw').addEventListener('change', function () { $('gPwBox').hidden = !$('g_usepw').checked; });
+  $('g_start').addEventListener('click', gSetup);
+  $('g_enter').addEventListener('click', enterApp);
+  $('g_unlock').addEventListener('click', gUnlock);
+  $('g_pw').addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); gUnlock(); } });
+  $('g_nom').addEventListener('keydown', function (e) { if (e.key === 'Enter' && !$('g_usepw').checked) { e.preventDefault(); gSetup(); } });
+  $('g_forgot').addEventListener('click', function () { $('gForgotBox').hidden = !$('gForgotBox').hidden; });
+  $('g_reset').addEventListener('click', function () {
+    var b = $('g_reset');
+    if (b.dataset.armed === '1') { wipeAll(); return; }
+    b.dataset.armed = '1'; b.textContent = 'Confirmer : tout effacer';
+    setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Effacer les données et réinitialiser'; } }, 5000);
+  });
+
+  /* réglages : accès */
+  function buildAccessCard() {
+    var h = '<header><h2>Accès à l\'application</h2></header>' +
+      '<label class="field"><span>Votre nom</span><input type="text" id="a_nom" autocomplete="off" value="' + esc(profil.nom) + '"></label>' +
+      '<div class="row"><button class="btn" type="button" data-act="name">Enregistrer le nom</button></div>';
+    if (!hasPw()) {
+      h += '<p class="fine">Mot de passe : non activé. L\'application s\'ouvre sur la page de bienvenue, sans code.</p>' +
+        '<label class="field"><span>Nouveau mot de passe (4 caractères minimum)</span><input type="password" id="a_new" autocomplete="new-password"></label>' +
+        '<label class="field"><span>Répétez le mot de passe</span><input type="password" id="a_new2" autocomplete="new-password"></label>' +
+        '<div class="row"><button class="btn primary" type="button" data-act="enable">Activer le mot de passe</button></div>';
+    } else {
+      h += '<p class="fine">Mot de passe : activé.</p>' +
+        '<label class="field"><span>Mot de passe actuel</span><input type="password" id="a_old" autocomplete="current-password"></label>' +
+        '<label class="field"><span>Nouveau mot de passe (pour le changer)</span><input type="password" id="a_new" autocomplete="new-password"></label>' +
+        '<label class="field"><span>Répétez le nouveau mot de passe</span><input type="password" id="a_new2" autocomplete="new-password"></label>' +
+        '<div class="row"><button class="btn primary" type="button" data-act="change">Changer le mot de passe</button><button class="btn danger" type="button" data-act="remove">Retirer le mot de passe</button></div>';
+    }
+    h += '<div class="row"><button class="btn" type="button" data-act="lock">Verrouiller maintenant</button></div>' +
+      '<p class="fine">Le mot de passe empêche d\'ouvrir l\'application sans le connaître, mais les données du téléphone ne sont pas chiffrées. S\'il est oublié, la seule solution est d\'effacer les données de l\'application : exportez des sauvegardes régulièrement.</p>';
+    $('accessCard').innerHTML = h;
+  }
+  function accessAct(act) {
+    if (act === 'lock') { showGate(); return Promise.resolve(); }
+    if (act === 'name') {
+      var nom = $('a_nom').value.trim(); if (!nom) { toast('Indiquez votre nom.'); return Promise.resolve(); }
+      profil.nom = nom; saveProfil(); toast('Nom enregistré.'); return Promise.resolve();
+    }
+    if (!cryptoOK()) { toast('Mot de passe indisponible dans ce navigateur.'); return Promise.resolve(); }
+    var n1 = $('a_new').value, n2 = $('a_new2').value;
+    function checkNew() {
+      if (n1.length < 4) { toast('Le mot de passe doit avoir au moins 4 caractères.'); return false; }
+      if (n1 !== n2) { toast('Les deux mots de passe ne sont pas identiques.'); return false; }
+      return true;
+    }
+    if (act === 'enable') {
+      if (!checkNew()) return Promise.resolve();
+      return newSecret(n1).then(function (s) { profil.salt = s.salt; profil.hash = s.hash; profil.it = s.it; saveProfil(); buildAccessCard(); toast('Mot de passe activé.'); });
+    }
+    return checkPw($('a_old').value).then(function (ok) {
+      if (!ok) { toast('Le mot de passe actuel est incorrect.'); return; }
+      if (act === 'remove') { delete profil.salt; delete profil.hash; delete profil.it; saveProfil(); buildAccessCard(); toast('Mot de passe retiré.'); return; }
+      if (!checkNew()) return;
+      return newSecret(n1).then(function (s) { profil.salt = s.salt; profil.hash = s.hash; profil.it = s.it; saveProfil(); buildAccessCard(); toast('Mot de passe changé.'); });
+    });
+  }
+  $('accessCard').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (b) accessAct(b.dataset.act);
+  });
+
   /* ----- installation et fonctionnement hors connexion ----- */
   var installEvt = null, swReady = false;
   function standalone() { try { return window.matchMedia('(display-mode: standalone)').matches || navigator.standalone === true; } catch (e) { return false; } }
@@ -2919,6 +3084,7 @@ function buildInvoicePdf(JsPDF, inv) {
     }
   } catch (e) {}
   updateAppCard(); updateOnline();
+  buildAccessCard(); showGate();
 
   /* ----- démarrage ----- */
   $('storageWarn').hidden = storageOK();
