@@ -857,7 +857,7 @@ dl{margin:0;display:grid;gap:0}
 .chk input{width:22px;height:22px;margin-top:2px;flex:none}
 body.locked .wrap{visibility:hidden}
 
-/* ===== Design 3D Premium (v3.2) : habillage uniquement, aucune logique modifiée ===== */
+/* ===== Design 3D Premium (v3.2, compteur v3.3) : habillage uniquement, aucune logique modifiée ===== */
 :root{
   --bg:#e8eff7; --surface:#f5f8fc; --field:#ebf1f8; --ink:#14233a; --muted:#4f6079; --line:#cdd9e7;
   --accent:#1e4f9c; --accent-ink:#ffffff; --signal:#f0b400;
@@ -892,8 +892,8 @@ body{background:linear-gradient(180deg,var(--bg) 0,color-mix(in srgb,var(--bg) 8
 .top{background:var(--bg);box-shadow:0 10px 14px -12px rgba(var(--shadow),.45);border-radius:0 0 18px 18px;padding-left:2px;padding-right:2px}
 .brand-mark{border-radius:9px;box-shadow:0 3px 0 rgba(var(--shadow),.35),0 5px 10px rgba(var(--shadow),.25)}
 .brand h1{font-weight:800;letter-spacing:.015em}
-.tabs{gap:3px;padding:2px 2px 8px}
-.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1 1 0;min-width:42px;min-height:58px;padding:7px 0;font-size:.62rem;font-weight:700;border-radius:14px;letter-spacing:-.01em}
+.tabs{gap:3px;margin:0 -12px;padding:2px 8px 8px}
+.tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1 0 auto;min-width:0;min-height:58px;padding:7px 3px;font-size:.54rem;font-weight:700;border-radius:14px;letter-spacing:-.02em;white-space:nowrap}
 .tab::before{content:"";width:22px;height:22px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
 .tab[data-tab="calc"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E")}
 .tab[data-tab="rides"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E")}
@@ -954,6 +954,24 @@ h3{color:var(--accent)}
 #toast{border-radius:14px;box-shadow:0 10px 22px rgba(var(--shadow),.4)}
 .badge{box-shadow:0 1px 2px rgba(var(--shadow),.15)}
 
+/* Compteur de vitesse */
+.speedo{display:grid;justify-items:center;gap:6px;padding:6px 0 2px;text-align:center}
+.speedo[hidden]{display:none}
+.speedo .dial{position:relative;width:176px;height:176px}
+.speedo .dial::before{content:"";position:absolute;inset:16px;border-radius:50%;
+  background:linear-gradient(180deg,var(--card-top),var(--card-bot));
+  box-shadow:0 8px 16px -6px rgba(var(--shadow),.45),inset 0 2px 0 rgba(255,255,255,.6),inset 0 -3px 6px rgba(var(--shadow),.12)}
+.speedo svg{position:absolute;inset:0;width:100%;height:100%;transform:rotate(135deg)}
+.speedo circle{fill:none;stroke-width:11;stroke-linecap:round}
+.speedo .trk{stroke:var(--line);stroke-dasharray:339.3 452.4}
+.speedo .arc{stroke:var(--accent);stroke-dasharray:0 452.4;transition:stroke-dasharray .6s ease}
+.speedo .inner{position:absolute;inset:0;display:grid;align-content:center;justify-items:center;gap:0}
+.speedo .inner b{font-size:3rem;line-height:1;font-weight:800;font-variant-numeric:tabular-nums;color:var(--ink)}
+.speedo .inner span{font-size:.85rem;font-weight:700;color:var(--muted);letter-spacing:.04em}
+.speedo .spdnote{min-height:1.2em;font-weight:700;color:var(--warn);font-size:.9rem}
+@media (prefers-reduced-motion: reduce){.speedo .arc{transition:none}}
+.tab{flex:1 0 auto}
+
 /* Page d'accueil */
 .gate-box{background:linear-gradient(180deg,rgba(20,40,70,.78),rgba(8,18,30,.8));border:1px solid rgba(255,255,255,.22);
   box-shadow:0 24px 48px rgba(0,0,0,.5),inset 0 1px 0 rgba(255,255,255,.2);-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);border-radius:26px;padding:24px 20px}
@@ -1010,7 +1028,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.2</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.3</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="calc" type="button">Calcul</button>
     <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
@@ -1305,6 +1323,14 @@ h3{color:var(--accent)}
         <button class="btn danger" type="button" id="trStop" disabled>Arrêter le suivi GPS</button>
       </div>
       <div id="trMsg" class="notice" hidden></div>
+      <div id="trSpeedo" class="speedo" hidden role="img" aria-label="Vitesse indisponible">
+        <div class="dial">
+          <svg viewBox="0 0 176 176" aria-hidden="true"><circle class="trk" cx="88" cy="88" r="72"/><circle id="trSpdArc" class="arc" cx="88" cy="88" r="72"/></svg>
+          <div class="inner"><b id="trSpd">&ndash;</b><span>km/h</span></div>
+        </div>
+        <p class="spdnote" id="trSpdNote"></p>
+        <p class="fine">Vitesse estimée par le GPS du téléphone : elle peut être moins précise à très basse vitesse ou quand le signal est faible.</p>
+      </div>
       <div class="gpsout" aria-live="off">
         <div><span>Prix au tarif choisi</span><b id="trPrice">Aucun tarif</b></div>
         <div><span>Kilomètres</span><b id="trKm">0,0 km</b></div>
@@ -3095,8 +3121,49 @@ function buildInvoicePdf(JsPDF, inv) {
       tStored = pt;
     }
   }
+  /* Compteur de vitesse : affichage seulement, n'intervient dans aucun calcul (prix, km, attente, durée). */
+  var tSp = null;
+  function speedReset() { tSp = { v: null, at: 0, seen: 0, prev: null, bad: 0 }; }
+  function speedUpdate(p) {
+    if (!tSp) speedReset();
+    var c = p.coords, acc = c.accuracy, t = p.timestamp;
+    if (!(acc <= 50)) return;
+    var pt = { lat: c.latitude, lon: c.longitude, t: t }, raw = null;
+    if (typeof c.speed === 'number' && isFinite(c.speed) && c.speed >= 0) raw = c.speed;
+    else if (tSp.prev) {
+      var dt = (t - tSp.prev.t) / 1000;
+      if (dt >= 0.5 && dt <= 30) { var dm = haversine(tSp.prev, pt) * 1000; raw = dm < Math.max(5, acc * 0.5) ? 0 : dm / dt; }
+    }
+    tSp.prev = pt;
+    if (raw === null || raw * 3.6 > 250) return;
+    if (tSp.v !== null && tSp.at) {
+      var gap = (t - tSp.at) / 1000;
+      if (gap > 0 && gap <= 10 && Math.abs(raw - tSp.v) > 12 * gap + 6 && tSp.bad < 2) { tSp.bad++; return; }
+    }
+    tSp.bad = 0;
+    tSp.v = tSp.v === null ? raw : tSp.v + 0.5 * (raw - tSp.v);
+    if (raw < 0.5 && tSp.v < 1) tSp.v = 0;
+    tSp.at = t; tSp.seen = Date.now();
+  }
+  function speedView() {
+    if (!tcur || !tSp || tSp.v === null) return { kmh: null, note: 'Vitesse indisponible' };
+    var age = (Date.now() - tSp.seen) / 1000, kmh = tSp.v * 3.6;
+    if (age > 15) { if (kmh >= 9) return { kmh: null, note: 'Vitesse indisponible : signal GPS faible ou perdu.' }; kmh = 0; }
+    return { kmh: kmh < 2 ? 0 : Math.round(kmh), note: '' };
+  }
+  function renderSpeed() {
+    var box = $('trSpeedo'), act = !!tcur;
+    box.hidden = !act; if (!act) return;
+    var v = speedView();
+    $('trSpd').textContent = v.kmh === null ? '\u2013' : String(v.kmh);
+    $('trSpdArc').setAttribute('stroke-dasharray', (v.kmh === null ? 0 : 339.3 * Math.min(v.kmh, 180) / 180).toFixed(1) + ' 452.4');
+    $('trSpdNote').textContent = v.note;
+    box.setAttribute('aria-label', v.kmh === null ? 'Vitesse indisponible' : 'Vitesse : ' + v.kmh + ' kilomètres par heure');
+  }
   function onTraceFix(p) {
-    var s = tcur; if (!s || p.coords.accuracy > 50) return;
+    var s = tcur; if (!s) return;
+    speedUpdate(p);
+    if (p.coords.accuracy > 50) return;
     var pt = { lat: p.coords.latitude, lon: p.coords.longitude, t: p.timestamp };
     s.acc = Math.round(p.coords.accuracy); s.nbFix = (s.nbFix || 0) + 1; s.lastFix = pt.t;
     if (tPrev && s.compteAttente !== false) {
@@ -3132,7 +3199,7 @@ function buildInvoicePdf(JsPDF, inv) {
       s = { id: uid(), debut: new Date().toISOString(), fin: null, km: 0, kmEstime: 0, coupures: 0, nbFix: 0, pts: [], last: null, lastFix: 0, acc: 0, grille: parseInt($('trGrille').value, 10) || 0, waitSec: 0, compteAttente: $('trWait').checked };
       trace.sessions.unshift(s);
     }
-    tcur = s; tGot = false; tStored = null; tPrev = null;
+    tcur = s; tGot = false; tStored = null; tPrev = null; speedReset();
     if (typeof s.grille !== 'number') s.grille = 0;
     if (typeof s.waitSec !== 'number') s.waitSec = 0;
     $('trGrille').value = String(s.grille); $('trWait').checked = s.compteAttente !== false;
@@ -3146,7 +3213,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function traceStop() {
     locStop(tH); tH = null; clearInterval(tTimer); tTimer = null; releaseTraceWake();
     if (tcur) tcur.fin = new Date().toISOString();
-    tcur = null; trace.actif = false; saveTrace(true);
+    tcur = null; tSp = null; trace.actif = false; saveTrace(true);
     showNotice($('trMsg'), 'Suivi arrêté.', '');
     renderTrace(); renderTraceList();
   }
@@ -3166,7 +3233,7 @@ function buildInvoicePdf(JsPDF, inv) {
     var act = !!tcur, s = tcur || trace.sessions[0];
     $('trState').className = 'trstate ' + (act ? 'on' : 'off');
     $('trState').textContent = act ? 'SUIVI GPS ACTIF depuis ' + hhmm(new Date(s.debut)) : 'Suivi arrêté';
-    $('trStart').disabled = act; $('trStop').disabled = !act;
+    $('trStart').disabled = act; $('trStop').disabled = !act; renderSpeed();
     $('gpsBar').hidden = !act; $('recDot').hidden = !act;
     if (s) {
       var end = s.fin ? new Date(s.fin) : new Date();
