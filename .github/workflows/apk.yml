@@ -1,4 +1,4 @@
-name: Construire l'application Android
+Commename: Construire l'application Android
 
 on:
   workflow_dispatch:
@@ -11,6 +11,11 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+
+      - name: Verifier la cle de signature
+        run: |
+          if [ ! -f taxi-pro.keystore ]; then echo "ERREUR : le fichier taxi-pro.keystore est absent du depot."; exit 1; fi
+          keytool -list -keystore taxi-pro.keystore -storepass android | tail -3
 
       - uses: actions/setup-node@v4
         with:
@@ -40,7 +45,7 @@ jobs:
           JSON
           npx cap add android
 
-      - name: Icones, notification, permissions
+      - name: Icones, notification, permissions, signature
         run: |
           pip install pillow
           cd build/android/app/src/main
@@ -57,27 +62,22 @@ jobs:
               src.resize((s,s), Image.LANCZOS).save(p+'/ic_launcher.png')
               src.resize((s,s), Image.LANCZOS).save(p+'/ic_launcher_round.png')
               mask.resize((fg[d],fg[d]), Image.LANCZOS).save(p+'/ic_launcher_foreground.png')
-          # icone de notification (pin blanc)
           os.makedirs('res/drawable', exist_ok=True)
           open('res/drawable/ic_stat_gps.xml','w').write('''<vector xmlns:android="http://schemas.android.com/apk/res/android" android:width="24dp" android:height="24dp" android:viewportWidth="24" android:viewportHeight="24"><path android:fillColor="#FFFFFF" android:pathData="M12,2C8.13,2 5,5.13 5,9c0,5.25 7,13 7,13s7,-7.75 7,-13c0,-3.87 -3.13,-7 -7,-7zM12,11.5c-1.38,0 -2.5,-1.12 -2.5,-2.5s1.12,-2.5 2.5,-2.5 2.5,1.12 2.5,2.5 -1.12,2.5 -2.5,2.5z"/></vector>''')
-          # permission localisation en arriere-plan
           m = open('AndroidManifest.xml').read()
           if 'ACCESS_BACKGROUND_LOCATION' not in m:
               m = m.replace('</manifest>', '    <uses-permission android:name="android.permission.ACCESS_BACKGROUND_LOCATION" />\n    <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />\n</manifest>')
           open('AndroidManifest.xml','w').write(m)
-          # numero de version
           g = '../../build.gradle'
           t = open(g).read()
           t = re.sub(r'versionCode \d+', 'versionCode '+os.environ.get('RUN','1'), t)
+          sign = "android {\n    signingConfigs {\n        debug {\n            storeFile file(System.getenv('GITHUB_WORKSPACE') + '/taxi-pro.keystore')\n            storePassword 'android'\n            keyAlias 'androiddebugkey'\n            keyPassword 'android'\n        }\n    }\n"
+          assert "android {\n" in t
+          t = t.replace("android {\n", sign, 1)
           open(g,'w').write(t)
           PY
         env:
           RUN: ${{ github.run_number }}
-
-      - name: Cle de signature stable
-        run: |
-          mkdir -p ~/.android
-          if [ -f taxi-pro.keystore ]; then cp taxi-pro.keystore ~/.android/debug.keystore; else echo "ATTENTION: taxi-pro.keystore absent"; fi
 
       - name: Construire l'APK
         run: |
@@ -87,6 +87,17 @@ jobs:
           chmod +x gradlew
           ./gradlew assembleDebug --no-daemon
           cp app/build/outputs/apk/debug/app-debug.apk ../../taxi-pro.apk
+
+      - name: Verifier la signature de l'APK
+        run: |
+          BT=$(ls -d $ANDROID_HOME/build-tools/* | sort -V | tail -1)
+          $BT/apksigner verify --print-certs taxi-pro.apk | tee sig.txt
+          if grep -qi "38ce7048f2aaa16aeb572bcef4cd23b238885ec37ec667f725cd7bb4edaf7dc8" sig.txt; then
+            echo "OK : l'APK est signe avec la cle stable taxi-pro.keystore."
+          else
+            echo "ERREUR : la signature n'est pas celle de taxi-pro.keystore."
+            exit 1
+          fi
 
       - uses: actions/upload-artifact@v4
         with:
@@ -98,3 +109,4 @@ jobs:
           tag_name: apk-${{ github.run_number }}
           name: Taxi Pro APK ${{ github.run_number }}
           files: taxi-pro.apk
+          nt ouvrir ce fichier pour copier sont contenus
