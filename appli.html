@@ -1028,7 +1028,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.3</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.5</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="calc" type="button">Calcul</button>
     <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
@@ -1136,7 +1136,7 @@ h3{color:var(--accent)}
       <label class="field"><span>Prix convenu avec le client (facultatif)</span><div class="unit"><input type="number" id="f_prixConvenu" inputmode="decimal" min="0" step="0.01"><em>€</em></div><small>Si vous le remplissez, il remplace le prix calculé.</small></label>
     </div>
 
-    <div class="card">
+    <div class="card" id="oldTrackCard" hidden>
       <header><h2>Suivi GPS de la course</h2></header>
       <p class="fine">Touchez Démarrer au départ de la course : le prix s'affiche et monte au fur et à mesure des kilomètres roulés, avec le tarif choisi plus haut. Les arrêts (vitesse sous 5 km/h) sont comptés en attente. Gardez l'écran allumé et l'application ouverte. Les positions ne sont pas enregistrées, seuls les totaux le sont.</p>
       <p class="fine">Ce prix est une estimation calculée par le téléphone, ce n'est pas un taximètre homologué.</p>
@@ -1317,10 +1317,19 @@ h3{color:var(--accent)}
       <header><h2>Suivi GPS autonome</h2></header>
       <label class="field"><span>Tarif appliqué au suivi</span><select id="trGrille"></select><small>Le prix se calcule avec ce tarif : prise en charge, kilomètres et attente. Démarrez un suivi par course.</small></label>
       <label class="chk"><input type="checkbox" id="trWait" checked><span>Compter les arrêts comme temps d'attente</span></label>
+      <label class="field"><span>Type de course</span><select id="trTrip">
+        <option value="none">Aller simple</option>
+        <option value="client">Aller-retour, retour facturé</option>
+        <option value="vide">Aller + retour à vide, non facturé</option>
+      </select></label>
       <div id="trState" class="trstate off" role="status">Suivi arrêté</div>
       <div class="row">
         <button class="btn primary" type="button" id="trStart">Démarrer le suivi GPS</button>
         <button class="btn danger" type="button" id="trStop" disabled>Arrêter le suivi GPS</button>
+      </div>
+      <div id="trTurnBox" class="notice" hidden>
+        <div>Course aller-retour : au moment où vous prenez le client, ou arrivez à destination, touchez le bouton pour marquer le début du retour.</div>
+        <div class="row"><button class="btn primary" type="button" id="trTurn" disabled>Début du retour</button></div>
       </div>
       <div id="trMsg" class="notice" hidden></div>
       <div id="trSpeedo" class="speedo" hidden role="img" aria-label="Vitesse indisponible">
@@ -1341,6 +1350,7 @@ h3{color:var(--accent)}
         <div><span>Relevés</span><b id="trFix">0</b></div>
         <div><span>Dernière position</span><b id="trLast">Aucune</b></div>
       </div>
+      <p class="fine">Ce prix est une estimation calculée par le téléphone, ce n'est pas un taximètre homologué.</p>
       <p class="fine" id="trCut"></p>
       <p class="fine" id="trMode"></p>
     </div>
@@ -2470,6 +2480,7 @@ function buildInvoicePdf(JsPDF, inv) {
     $('trackStart').disabled = false; $('trackStop').disabled = true; $('useReal').hidden = !(trk.km > 0);
     if (!silent) showNotice($('trackMsg'), 'Suivi arrêté. Les kilomètres réels seront enregistrés avec la course.', '');
     trackShow(); updateGap();
+    if (!silent) autoReal();
   }
   document.addEventListener('visibilitychange', function () { if (document.visibilityState === 'visible') requestWake(); });
   function useReal() {
@@ -2488,14 +2499,23 @@ function buildInvoicePdf(JsPDF, inv) {
     $('f_attente').value = t.waitMin;
     render(); toast(msg);
   }
+  /* Si le calcul n'a aucun kilomètre mais que le suivi a mesuré un trajet, reprend les kilomètres mesurés automatiquement. */
+  function autoReal() {
+    var t = state.tracking; if (!t || !(t.km > 0)) return false;
+    var r = computeRide(readInputs(), effSettings());
+    if (r.kmTotal > 0) return false;
+    useReal(); return true;
+  }
 
   /* ----- courses enregistrées ----- */
   var rides = loadJSON(STORE_R, []);
   if (!Array.isArray(rides)) rides = [];
   function saveRide() {
     var i = readInputs(), r = computeRide(i, effSettings());
-    if (r.kmTotal <= 0 && r.prix <= 0) { toast('Renseignez un trajet avant d\'enregistrer.'); return; }
+    var mesure = trk.km > 0 || (state.tracking && state.tracking.km > 0);
+    if (r.kmTotal <= 0 && r.prix <= 0 && !mesure) { toast('Renseignez un trajet avant d\'enregistrer.'); return; }
     if (trk.id !== null) trackStop(true);
+    if (autoReal()) { i = readInputs(); r = computeRide(i, effSettings()); }
     var ride = {
       id: Date.now().toString(36), creeLe: new Date().toISOString(),
       client: $('f_client').value.trim(), date: $('f_date').value, heure: $('f_heure').value,
@@ -3196,13 +3216,13 @@ function buildInvoicePdf(JsPDF, inv) {
     if (auto && open) s = open;
     else {
       if (open) open.fin = new Date().toISOString();
-      s = { id: uid(), debut: new Date().toISOString(), fin: null, km: 0, kmEstime: 0, coupures: 0, nbFix: 0, pts: [], last: null, lastFix: 0, acc: 0, grille: parseInt($('trGrille').value, 10) || 0, waitSec: 0, compteAttente: $('trWait').checked };
+      s = { id: uid(), debut: new Date().toISOString(), fin: null, km: 0, kmEstime: 0, coupures: 0, nbFix: 0, pts: [], last: null, lastFix: 0, acc: 0, grille: parseInt($('trGrille').value, 10) || 0, waitSec: 0, mode: $('trTrip').value || 'none', turnKm: null, compteAttente: $('trWait').checked };
       trace.sessions.unshift(s);
     }
     tcur = s; tGot = false; tStored = null; tPrev = null; speedReset();
     if (typeof s.grille !== 'number') s.grille = 0;
     if (typeof s.waitSec !== 'number') s.waitSec = 0;
-    $('trGrille').value = String(s.grille); $('trWait').checked = s.compteAttente !== false;
+    $('trGrille').value = String(s.grille); $('trWait').checked = s.compteAttente !== false; $('trTrip').value = s.mode || 'none';
     tLast = s.last ? { lat: s.last[0], lon: s.last[1], t: s.last[2] } : null;
     trace.actif = true; saveTrace(true);
     showNotice($('trMsg'), auto ? 'Suivi GPS repris. En attente du signal.' : 'En attente du signal GPS. Autorisez la localisation si le téléphone la demande.', '');
@@ -3218,10 +3238,20 @@ function buildInvoicePdf(JsPDF, inv) {
     renderTrace(); renderTraceList();
   }
   function traceGrille(s) { var i = typeof s.grille === 'number' && s.grille >= 0 && s.grille < 3 ? s.grille : settings.grilleDefaut; return settings.grilles[i] || settings.grilles[0]; }
+  function traceBilledKm(s) { return (s.mode === 'vide' && typeof s.turnKm === 'number') ? s.turnKm : s.km; }
   function tracePrice(s) {
     var g = traceGrille(s);
     if (!(g.km > 0 || g.pec > 0)) return null;
-    return g.pec + s.km * g.km + ((s.waitSec || 0) / 3600) * g.att;
+    return g.pec + traceBilledKm(s) * g.km + ((s.waitSec || 0) / 3600) * g.att;
+  }
+  function round2(x) { return Math.round(x * 100) / 100; }
+  /* Entrées du calcul d'une course à partir d'un trajet suivi (même logique que « Utiliser ces kilomètres »). */
+  function traceInputs(s) {
+    var end = s.fin ? new Date(s.fin) : new Date(), mode = s.mode || 'none', ret = mode !== 'none', aller = s.km, retour = 0;
+    if (ret) { if (typeof s.turnKm === 'number') { aller = s.turnKm; retour = s.km - s.turnKm; } else { aller = s.km / 2; retour = s.km / 2; } }
+    var wait = (s.waitSec || 0) / 60, total = (end - new Date(s.debut)) / 60000;
+    return { kmAller: round2(aller), dureeAllerMin: Math.max(0, Math.round((total - wait) / (ret ? 2 : 1))), retourMode: mode, kmRetour: ret ? round2(retour) : 0, kmExtra: 0,
+      attenteMin: Math.round(wait), supplements: 0, peages: 0, stationnement: 0, autres: 0, refacture: true, prixConvenu: 0 };
   }
   function traceCost(s) {
     var g = traceGrille(s), e = {};
@@ -3234,6 +3264,9 @@ function buildInvoicePdf(JsPDF, inv) {
     $('trState').className = 'trstate ' + (act ? 'on' : 'off');
     $('trState').textContent = act ? 'SUIVI GPS ACTIF depuis ' + hhmm(new Date(s.debut)) : 'Suivi arrêté';
     $('trStart').disabled = act; $('trStop').disabled = !act; renderSpeed();
+    var showTurn = act && (tcur.mode || 'none') !== 'none';
+    $('trTurnBox').hidden = !showTurn; $('trTurn').disabled = !(showTurn && typeof tcur.turnKm !== 'number');
+    $('trTurn').textContent = showTurn && typeof tcur.turnKm === 'number' ? 'Retour en cours depuis ' + dec1.format(tcur.turnKm) + ' km' : 'Début du retour';
     $('gpsBar').hidden = !act; $('recDot').hidden = !act;
     if (s) {
       var end = s.fin ? new Date(s.fin) : new Date();
@@ -3257,19 +3290,38 @@ function buildInvoicePdf(JsPDF, inv) {
       return '<article class="ride"><div class="head"><b>' + esc(frDate(dateOf(d0))) + ' ' + hhmm(d0) + (s.fin ? ' à ' + hhmm(end) : ' (en cours)') + '</b><span class="num">' + km(s.km) + '</span></div>' +
         '<div class="nums">' + (tracePrice(s) === null ? '' : '<span>Prix ' + eur(tracePrice(s)) + ' (' + esc(traceGrille(s).nom) + ')</span>') + '<span>Durée ' + dur((end - d0) / 60000) + '</span><span>' + (s.pts ? s.pts.length : 0) + ' points</span>' +
         (s.coupures ? '<span>' + s.coupures + ' coupure' + (s.coupures > 1 ? 's' : '') + '</span>' : '') + '</div>' +
-        '<div class="row"><button class="btn" type="button" data-tuse="' + esc(s.id) + '">Utiliser dans le calcul</button>' +
+        (s.mode && s.mode !== 'none' ? '<div class="nums"><span>' + (s.mode === 'vide' ? 'Retour à vide' : 'Aller-retour') + (typeof s.turnKm === 'number' ? ' : aller ' + km(s.turnKm) + ', retour ' + km(s.km - s.turnKm) : ' : début du retour non marqué, kilomètres partagés en deux') + '</span></div>' : '') +
+        '<div class="row">' + (act ? '' : (rides.some(function (x) { return x.id === s.rideId; }) ? '<span class="badge ok">Enregistrée dans Courses</span>' : '<button class="btn primary" type="button" data-tsave="' + esc(s.id) + '">Enregistrer comme course</button>')) +
+        '<button class="btn" type="button" data-tuse="' + esc(s.id) + '">Utiliser dans le calcul</button>' +
         ((s.pts && s.pts.length > 1) ? '<button class="btn" type="button" data-tgpx="' + esc(s.id) + '">Exporter GPX</button>' : '') +
         (act ? '' : '<button class="btn danger" type="button" data-tdel="' + esc(s.id) + '">Supprimer</button>') + '</div></article>';
     }).join('');
   }
   function traceUse(id) {
     var s = findIn(trace.sessions, id); if (!s) return;
-    var end = s.fin ? new Date(s.fin) : new Date();
-    $('f_kmAller').value = Math.round(s.km * 10) / 10; $('f_retourMode').value = 'none'; $('f_kmRetour').value = ''; $('f_kmExtra').value = '';
-    $('f_dureeAller').value = Math.max(0, Math.round((end - new Date(s.debut)) / 60000 - (s.waitSec || 0) / 60)); state.retourManual = false;
-    $('f_attente').value = Math.round((s.waitSec || 0) / 60);
+    var i = traceInputs(s), ret = i.retourMode !== 'none';
+    $('f_kmAller').value = i.kmAller; $('f_retourMode').value = i.retourMode; $('f_kmRetour').value = ret ? i.kmRetour : ''; $('f_kmExtra').value = '';
+    $('f_dureeAller').value = i.dureeAllerMin; state.retourManual = ret;
+    $('f_attente').value = i.attenteMin;
     if (typeof s.grille === 'number') { $('f_grille').value = String(s.grille); settings.grilleDefaut = s.grille; saveJSON(STORE_S, settings); }
     render(); showTab('calc'); toast('Kilomètres du suivi repris dans le calcul.');
+  }
+  function traceSave(id) {
+    var s = findIn(trace.sessions, id); if (!s || s === tcur) return;
+    if (rides.some(function (x) { return x.id === s.rideId; })) { toast('Cette course est déjà enregistrée.'); return; }
+    var i = traceInputs(s), g = traceGrille(s), es = {};
+    for (var k in settings) es[k] = settings[k];
+    es.priseEnCharge = g.pec; es.tarifKm = g.km; es.tarifAttente = g.att;
+    var r = computeRide(i, es), d0 = new Date(s.debut), end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s);
+    var ride = {
+      id: Date.now().toString(36), creeLe: new Date().toISOString(), client: '', date: dateOf(d0), heure: hhmm(d0), depart: '', arrivee: '',
+      grille: g.nom, entrees: i, resultat: r,
+      gps: { km: Math.round(s.km * 100) / 100, turnKm: typeof s.turnKm === 'number' ? Math.round(s.turnKm * 100) / 100 : null, debut: hhmm(d0), fin: hhmm(end),
+        dureeMin: Math.round((end - d0) / 60000), waitMin: Math.round((s.waitSec || 0) / 60), prixDirect: tp === null ? null : Math.round(tp * 100) / 100 }
+    };
+    rides.unshift(ride);
+    if (!saveJSON(STORE_R, rides)) { rides.shift(); toast('Enregistrement impossible dans ce navigateur.'); return; }
+    s.rideId = ride.id; saveTrace(true); renderRides(); renderTraceList(); toast('Course enregistrée dans l\'onglet Courses.');
   }
   function traceGpx(id) {
     var s = findIn(trace.sessions, id); if (!s || !s.pts || s.pts.length < 2) return;
@@ -3280,11 +3332,21 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   $('trStart').addEventListener('click', function () { traceStart(false); });
   $('trStop').addEventListener('click', traceStop);
+  $('trTrip').addEventListener('change', function () {
+    if (tcur) { tcur.mode = $('trTrip').value || 'none'; if (tcur.mode === 'none') tcur.turnKm = null; saveTrace(true); }
+    renderTrace(); renderTraceList();
+  });
+  $('trTurn').addEventListener('click', function () {
+    if (!tcur || typeof tcur.turnKm === 'number') return;
+    tcur.turnKm = tcur.km; saveTrace(true); renderTrace(); renderTraceList();
+    toast('Début du retour marqué à ' + dec1.format(tcur.km) + ' km.');
+  });
   $('trGrille').addEventListener('change', function () { if (tcur) { tcur.grille = parseInt($('trGrille').value, 10) || 0; saveTrace(true); } renderTrace(); renderTraceList(); });
   $('trWait').addEventListener('change', function () { if (tcur) { tcur.compteAttente = $('trWait').checked; saveTrace(true); } });
   $('gpsBarStop').addEventListener('click', traceStop);
   $('trList').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
+    if (b.dataset.tsave) { traceSave(b.dataset.tsave); return; }
     if (b.dataset.tuse) { traceUse(b.dataset.tuse); return; }
     if (b.dataset.tgpx) { traceGpx(b.dataset.tgpx); return; }
     if (b.dataset.tdel) {
