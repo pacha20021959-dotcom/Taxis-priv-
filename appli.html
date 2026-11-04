@@ -980,6 +980,35 @@ h3{color:var(--accent)}
 .gate-box input[type=text],.gate-box input[type=password]{border-radius:14px;box-shadow:inset 0 2px 5px rgba(0,0,0,.2)}
 .gate-box .btn{min-height:50px}
 .gate-box .btn:not(.primary):not(.danger){background:linear-gradient(180deg,#ffffff,#dfe8f3);border-color:#c3d0e0}
+
+/* Écran de conduite */
+.drive{position:fixed;inset:0;z-index:1500;overflow-y:auto;overscroll-behavior:contain;background:linear-gradient(180deg,var(--bg),color-mix(in srgb,var(--bg) 85%,#7d96b8));
+  padding:max(12px,env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(20px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px))}
+.drive[hidden]{display:none}
+.drive-in{max-width:520px;margin:0 auto;display:grid;gap:14px}
+.drive-top{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 12px;border-radius:16px;color:#fff;font-weight:800;
+  background:linear-gradient(180deg,#d6402f,#a21d12);box-shadow:0 4px 0 #6d120b,0 10px 16px -6px rgba(180,35,24,.5)}
+.drive-top .btn{min-height:40px;color:#14212e}
+.drive-live{display:flex;align-items:center;gap:10px}
+.drive-top.done{background:linear-gradient(180deg,var(--pri-top),var(--pri-bot));box-shadow:0 4px 0 var(--pri-edge),0 10px 16px -6px rgba(23,64,138,.45)}
+.drive-top.done .recdot{display:none}
+.drive-body{display:grid;gap:14px;text-align:center}
+.drive-body[hidden]{display:none}
+.drive .speedo .dial{width:min(62vw,250px);height:min(62vw,250px)}
+.drive .speedo .inner b{font-size:min(17vw,4.4rem)}
+.drive-price{display:grid;gap:2px;padding:14px;border-radius:18px;background:linear-gradient(180deg,var(--card-top),var(--card-bot));border:1px solid var(--line);
+  box-shadow:0 10px 22px -12px rgba(var(--shadow),.35),inset 0 1px 0 rgba(255,255,255,.7)}
+.drive-price span{font-size:.85rem;color:var(--muted);font-weight:700}
+.drive-price b{font-size:min(15vw,3.6rem);line-height:1.05;font-variant-numeric:tabular-nums;color:var(--accent)}
+.drive .gpsout{grid-template-columns:repeat(3,1fr)}
+.drive .gpsout b{font-size:1rem}
+.btn.big{min-height:60px;font-size:1.15rem;border-radius:16px;width:100%}
+.gpsbar .btn + .btn{margin-left:0}
+.more{display:inline-block}
+.more summary{list-style:none;display:inline-flex;align-items:center;justify-content:center}
+.more summary::-webkit-details-marker{display:none}
+.more[open]{flex-basis:100%}
+.more .row{margin-top:8px}
 </style>
 </head>
 <body class="locked">
@@ -1026,9 +1055,43 @@ h3{color:var(--accent)}
     </div>
   </div>
 </div>
+<div id="drive" class="drive" hidden role="dialog" aria-modal="true" aria-label="Écran de conduite">
+  <div class="drive-in">
+    <div class="drive-top" id="driveTop"><span class="drive-live"><i class="recdot big" aria-hidden="true"></i> <span id="dLiveTxt">SUIVI GPS ACTIF</span></span><button class="btn" type="button" id="dMin">Réduire</button></div>
+    <div id="dLive" class="drive-body">
+      <div class="speedo">
+        <div class="dial">
+          <svg viewBox="0 0 176 176" aria-hidden="true"><circle class="trk" cx="88" cy="88" r="72"/><circle id="dSpdArc" class="arc" cx="88" cy="88" r="72"/></svg>
+          <div class="inner"><b id="dSpd">&ndash;</b><span>km/h</span></div>
+        </div>
+        <p class="spdnote" id="dSpdNote"></p>
+      </div>
+      <div class="drive-price"><span id="dTarif">Prix au tarif choisi</span><b id="dPrice">0,00 &euro;</b></div>
+      <div class="gpsout">
+        <div><span>Kilomètres</span><b id="dKm">0,0 km</b></div>
+        <div><span>Durée</span><b id="dDur">0 min</b></div>
+        <div><span>Attente</span><b id="dWait">0 min</b></div>
+      </div>
+      <button class="btn primary big" type="button" id="dTurn" hidden>Début du retour</button>
+      <button class="btn danger big" type="button" id="dStop">Arrêter le suivi</button>
+      <p class="fine">Prix estimé par le téléphone : ce n'est pas un taximètre homologué. La vitesse est une estimation du GPS, moins précise à très basse vitesse ou quand le signal est faible.</p>
+    </div>
+    <div id="dDone" class="drive-body" hidden>
+      <h2>Course terminée</h2>
+      <div class="drive-price"><span id="dDoneTarif">Prix au tarif choisi</span><b id="dDonePrice">0,00 &euro;</b></div>
+      <div class="gpsout">
+        <div><span>Kilomètres</span><b id="dDoneKm">0,0 km</b></div>
+        <div><span>Durée</span><b id="dDoneDur">0 min</b></div>
+        <div><span>Attente</span><b id="dDoneWait">0 min</b></div>
+      </div>
+      <button class="btn primary big" type="button" id="dSave">Enregistrer comme course</button>
+      <button class="btn big" type="button" id="dSkip">Ne pas enregistrer</button>
+    </div>
+  </div>
+</div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.5</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.6</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="calc" type="button">Calcul</button>
     <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
@@ -1038,7 +1101,7 @@ h3{color:var(--accent)}
     <button class="tab" data-tab="trace" type="button">Suivi<span id="recDot" class="recdot" hidden></span></button>
     <button class="tab" data-tab="settings" type="button">Réglages</button>
   </nav>
-  <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
+  <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
 
@@ -1326,6 +1389,7 @@ h3{color:var(--accent)}
       <div class="row">
         <button class="btn primary" type="button" id="trStart">Démarrer le suivi GPS</button>
         <button class="btn danger" type="button" id="trStop" disabled>Arrêter le suivi GPS</button>
+        <button class="btn" type="button" id="trOpenDrive" hidden>Ouvrir le compteur</button>
       </div>
       <div id="trTurnBox" class="notice" hidden>
         <div>Course aller-retour : au moment où vous prenez le client, ou arrivez à destination, touchez le bouton pour marquer le début du retour.</div>
@@ -3179,6 +3243,9 @@ function buildInvoicePdf(JsPDF, inv) {
     $('trSpdArc').setAttribute('stroke-dasharray', (v.kmh === null ? 0 : 339.3 * Math.min(v.kmh, 180) / 180).toFixed(1) + ' 452.4');
     $('trSpdNote').textContent = v.note;
     box.setAttribute('aria-label', v.kmh === null ? 'Vitesse indisponible' : 'Vitesse : ' + v.kmh + ' kilomètres par heure');
+    $('dSpd').textContent = v.kmh === null ? '\u2013' : String(v.kmh);
+    $('dSpdArc').setAttribute('stroke-dasharray', (v.kmh === null ? 0 : 339.3 * Math.min(v.kmh, 180) / 180).toFixed(1) + ' 452.4');
+    $('dSpdNote').textContent = v.note;
   }
   function onTraceFix(p) {
     var s = tcur; if (!s) return;
@@ -3259,11 +3326,34 @@ function buildInvoicePdf(JsPDF, inv) {
     e.priseEnCharge = g.pec; e.tarifKm = g.km; e.tarifAttente = g.att;
     return computeRide({ kmAller: s.km, dureeAllerMin: 0, retourMode: 'none', kmRetour: 0, kmExtra: 0, attenteMin: 0, supplements: 0, peages: 0, stationnement: 0, autres: 0, refacture: false, prixConvenu: 0 }, e).coutTotal;
   }
-  function renderTrace() {
+  function renderTrace() { renderTraceMain(); renderDrive(); }
+  var driveDone = null;
+  function fillDrive(s, pre) {
+    var end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s), g = traceGrille(s);
+    $(pre + 'Price').textContent = tp === null ? 'Aucun tarif' : eur(tp);
+    $(pre + 'Km').textContent = km(s.km); $(pre + 'Dur').textContent = dur((end - new Date(s.debut)) / 60000); $(pre + 'Wait').textContent = dur((s.waitSec || 0) / 60);
+    $(pre === 'd' ? 'dTarif' : 'dDoneTarif').textContent = 'Prix au ' + g.nom.toLowerCase();
+  }
+  function renderDrive() {
+    if ($('drive').hidden || !tcur) return;
+    fillDrive(tcur, 'd');
+    var showTurn = (tcur.mode || 'none') !== 'none';
+    $('dTurn').hidden = !showTurn; $('dTurn').disabled = !(showTurn && typeof tcur.turnKm !== 'number');
+    $('dTurn').textContent = showTurn && typeof tcur.turnKm === 'number' ? 'Retour en cours depuis ' + dec1.format(tcur.turnKm) + ' km' : 'Début du retour';
+  }
+  function driveHead(done) { $('driveTop').classList.toggle('done', done); $('dLiveTxt').textContent = done ? 'SUIVI TERMINÉ' : 'SUIVI GPS ACTIF'; $('dMin').textContent = done ? 'Fermer' : 'Réduire'; }
+  function openDrive() { if (!tcur) return; driveHead(false); $('dLive').hidden = false; $('dDone').hidden = true; $('drive').hidden = false; renderSpeed(); renderDrive(); }
+  function closeDrive() { $('drive').hidden = true; }
+  function userStop() {
+    var s = tcur; traceStop();
+    if (s && s.km > 0.05) { driveDone = s; fillDrive(s, 'dDone'); driveHead(true); $('dLive').hidden = true; $('dDone').hidden = false; $('drive').hidden = false; }
+    else closeDrive();
+  }
+  function renderTraceMain() {
     var act = !!tcur, s = tcur || trace.sessions[0];
     $('trState').className = 'trstate ' + (act ? 'on' : 'off');
     $('trState').textContent = act ? 'SUIVI GPS ACTIF depuis ' + hhmm(new Date(s.debut)) : 'Suivi arrêté';
-    $('trStart').disabled = act; $('trStop').disabled = !act; renderSpeed();
+    $('trStart').disabled = act; $('trStop').disabled = !act; $('trOpenDrive').hidden = !act; renderSpeed();
     var showTurn = act && (tcur.mode || 'none') !== 'none';
     $('trTurnBox').hidden = !showTurn; $('trTurn').disabled = !(showTurn && typeof tcur.turnKm !== 'number');
     $('trTurn').textContent = showTurn && typeof tcur.turnKm === 'number' ? 'Retour en cours depuis ' + dec1.format(tcur.turnKm) + ' km' : 'Début du retour';
@@ -3292,9 +3382,9 @@ function buildInvoicePdf(JsPDF, inv) {
         (s.coupures ? '<span>' + s.coupures + ' coupure' + (s.coupures > 1 ? 's' : '') + '</span>' : '') + '</div>' +
         (s.mode && s.mode !== 'none' ? '<div class="nums"><span>' + (s.mode === 'vide' ? 'Retour à vide' : 'Aller-retour') + (typeof s.turnKm === 'number' ? ' : aller ' + km(s.turnKm) + ', retour ' + km(s.km - s.turnKm) : ' : début du retour non marqué, kilomètres partagés en deux') + '</span></div>' : '') +
         '<div class="row">' + (act ? '' : (rides.some(function (x) { return x.id === s.rideId; }) ? '<span class="badge ok">Enregistrée dans Courses</span>' : '<button class="btn primary" type="button" data-tsave="' + esc(s.id) + '">Enregistrer comme course</button>')) +
-        '<button class="btn" type="button" data-tuse="' + esc(s.id) + '">Utiliser dans le calcul</button>' +
-        ((s.pts && s.pts.length > 1) ? '<button class="btn" type="button" data-tgpx="' + esc(s.id) + '">Exporter GPX</button>' : '') +
-        (act ? '' : '<button class="btn danger" type="button" data-tdel="' + esc(s.id) + '">Supprimer</button>') + '</div></article>';
+        (act ? '' : '<button class="btn danger" type="button" data-tdel="' + esc(s.id) + '">Supprimer</button>') +
+        '<details class="more"><summary class="btn">Plus</summary><div class="row"><button class="btn" type="button" data-tuse="' + esc(s.id) + '">Utiliser dans le calcul</button>' +
+        ((s.pts && s.pts.length > 1) ? '<button class="btn" type="button" data-tgpx="' + esc(s.id) + '">Exporter GPX</button>' : '') + '</div></details></div></article>';
     }).join('');
   }
   function traceUse(id) {
@@ -3330,20 +3420,28 @@ function buildInvoicePdf(JsPDF, inv) {
     x += '</trkseg></trk></gpx>\n';
     downloadBlob(new Blob([x], { type: 'application/gpx+xml' }), 'trace-' + dateOf(new Date(s.debut)) + '-' + hhmm(new Date(s.debut)).replace(':', 'h') + '.gpx');
   }
-  $('trStart').addEventListener('click', function () { traceStart(false); });
-  $('trStop').addEventListener('click', traceStop);
+  $('trStart').addEventListener('click', function () { traceStart(false); if (tcur) openDrive(); });
+  $('trStop').addEventListener('click', userStop);
+  $('dStop').addEventListener('click', userStop);
+  $('dMin').addEventListener('click', closeDrive);
+  $('trOpenDrive').addEventListener('click', openDrive);
+  $('gpsBarOpen').addEventListener('click', openDrive);
+  $('dSkip').addEventListener('click', function () { driveDone = null; closeDrive(); });
+  $('dSave').addEventListener('click', function () { var d = driveDone; driveDone = null; closeDrive(); if (d) { traceSave(d.id); showTab('rides'); } });
+  $('dTurn').addEventListener('click', traceTurn);
   $('trTrip').addEventListener('change', function () {
     if (tcur) { tcur.mode = $('trTrip').value || 'none'; if (tcur.mode === 'none') tcur.turnKm = null; saveTrace(true); }
     renderTrace(); renderTraceList();
   });
-  $('trTurn').addEventListener('click', function () {
+  function traceTurn() {
     if (!tcur || typeof tcur.turnKm === 'number') return;
     tcur.turnKm = tcur.km; saveTrace(true); renderTrace(); renderTraceList();
     toast('Début du retour marqué à ' + dec1.format(tcur.km) + ' km.');
-  });
+  }
+  $('trTurn').addEventListener('click', traceTurn);
   $('trGrille').addEventListener('change', function () { if (tcur) { tcur.grille = parseInt($('trGrille').value, 10) || 0; saveTrace(true); } renderTrace(); renderTraceList(); });
   $('trWait').addEventListener('change', function () { if (tcur) { tcur.compteAttente = $('trWait').checked; saveTrace(true); } });
-  $('gpsBarStop').addEventListener('click', traceStop);
+  $('gpsBarStop').addEventListener('click', userStop);
   $('trList').addEventListener('click', function (e) {
     var b = e.target.closest('button'); if (!b) return;
     if (b.dataset.tsave) { traceSave(b.dataset.tsave); return; }
