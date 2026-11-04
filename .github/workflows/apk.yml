@@ -1,4 +1,4 @@
-Commename: Construire l'application Android
+name: Construire l'application Android
 
 on:
   workflow_dispatch:
@@ -109,4 +109,3 @@ jobs:
           tag_name: apk-${{ github.run_number }}
           name: Taxi Pro APK ${{ github.run_number }}
           files: taxi-pro.apk
-          nt ouvrir ce fichier pour copier sont contenus
