@@ -1114,7 +1114,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.8</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.9</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="service" type="button">Service</button>
     <button class="tab" data-tab="docs" type="button">Documents</button>
@@ -3379,7 +3379,7 @@ function buildInvoicePdf(JsPDF, inv) {
     s.acc = Math.round(p.coords.accuracy); s.nbFix = (s.nbFix || 0) + 1; s.lastFix = pt.t;
     if (tPrev && s.compteAttente !== false) {
       var dts = (pt.t - tPrev.t) / 1000;
-      if (dts > 0 && dts <= 3600 && haversine(tPrev, pt) * 1000 / dts < 1.4) s.waitSec = (s.waitSec || 0) + dts;
+      if (dts > 0 && dts <= 14400 && haversine(tPrev, pt) * 1000 / dts < 1.4) s.waitSec = twait(s) + dts;
     }
     tPrev = pt;
     if (!tGot) { tGot = true; showNotice($('trMsg'), 'Signal GPS reçu, le suivi est en cours.', ''); }
@@ -3423,24 +3423,30 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function traceStop() {
     locStop(tH); tH = null; clearInterval(tTimer); tTimer = null; releaseTraceWake();
-    if (tcur) tcur.fin = new Date().toISOString();
+    if (tcur) { tcur.waitSec = twait(tcur); tcur.fin = new Date().toISOString(); }
     tcur = null; tSp = null; trace.actif = false; saveTrace(true);
     showNotice($('trMsg'), 'Suivi arrêté.', '');
     renderTrace(); renderTraceList();
+  }
+  /* Temps d'attente : cumul déjà acquis, plus l'arrêt en cours. Quand le mobile est immobile, le GPS n'envoie plus de position (filtre de 25 m) : un silence de plus de 25 s sans signal vaut attente. */
+  function twait(s) {
+    var w = s.waitSec || 0;
+    if (s === tcur && tPrev && s.compteAttente !== false) { var sil = (Date.now() - tPrev.t) / 1000; if (sil > 25 && sil <= 14400) w += sil; }
+    return w;
   }
   function traceGrille(s) { var i = typeof s.grille === 'number' && s.grille >= 0 && s.grille < 3 ? s.grille : settings.grilleDefaut; return settings.grilles[i] || settings.grilles[0]; }
   function traceBilledKm(s) { return (s.mode === 'vide' && typeof s.turnKm === 'number') ? s.turnKm : s.km; }
   function tracePrice(s) {
     var g = traceGrille(s);
     if (!(g.km > 0 || g.pec > 0)) return null;
-    return g.pec + traceBilledKm(s) * g.km + ((s.waitSec || 0) / 3600) * g.att;
+    return g.pec + traceBilledKm(s) * g.km + (twait(s) / 3600) * g.att;
   }
   function round2(x) { return Math.round(x * 100) / 100; }
   /* Entrées du calcul d'une course à partir d'un trajet suivi (même logique que « Utiliser ces kilomètres »). */
   function traceInputs(s) {
     var end = s.fin ? new Date(s.fin) : new Date(), mode = s.mode || 'none', ret = mode !== 'none', aller = s.km, retour = 0;
     if (ret) { if (typeof s.turnKm === 'number') { aller = s.turnKm; retour = s.km - s.turnKm; } else { aller = s.km / 2; retour = s.km / 2; } }
-    var wait = (s.waitSec || 0) / 60, total = (end - new Date(s.debut)) / 60000;
+    var wait = twait(s) / 60, total = (end - new Date(s.debut)) / 60000;
     return { kmAller: round2(aller), dureeAllerMin: Math.max(0, Math.round((total - wait) / (ret ? 2 : 1))), retourMode: mode, kmRetour: ret ? round2(retour) : 0, kmExtra: 0,
       attenteMin: Math.round(wait), supplements: 0, peages: 0, stationnement: 0, autres: 0, refacture: true, prixConvenu: 0 };
   }
@@ -3455,7 +3461,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function fillDrive(s, pre) {
     var end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s), g = traceGrille(s);
     $(pre + 'Price').textContent = tp === null ? 'Aucun tarif' : eur(tp);
-    $(pre + 'Km').textContent = km(s.km); $(pre + 'Dur').textContent = dur((end - new Date(s.debut)) / 60000); $(pre + 'Wait').textContent = dur((s.waitSec || 0) / 60);
+    $(pre + 'Km').textContent = km(s.km); $(pre + 'Dur').textContent = dur((end - new Date(s.debut)) / 60000); $(pre + 'Wait').textContent = dur(twait(s) / 60);
     $(pre === 'd' ? 'dTarif' : 'dDoneTarif').textContent = 'Prix au ' + g.nom.toLowerCase();
   }
   function renderDrive() {
@@ -3485,7 +3491,7 @@ function buildInvoicePdf(JsPDF, inv) {
     if (s) {
       var end = s.fin ? new Date(s.fin) : new Date();
       var tp = tracePrice(s), tc = traceCost(s);
-      $('trPrice').textContent = tp === null ? 'Aucun tarif' : eur(tp); $('trWaitT').textContent = dur((s.waitSec || 0) / 60);
+      $('trPrice').textContent = tp === null ? 'Aucun tarif' : eur(tp); $('trWaitT').textContent = dur(twait(s) / 60);
       $('trCost').textContent = eur(tc); $('trRes').textContent = tp === null ? 'Aucun tarif' : eur(tp - tc);
       $('trKm').textContent = km(s.km); $('trDur').textContent = dur((end - new Date(s.debut)) / 60000); $('trFix').textContent = String(s.nbFix || 0);
       $('trLast').textContent = s.lastFix ? ago(Date.now() - s.lastFix) + (s.acc ? ', ±' + s.acc + ' m' : '') : 'Aucune';
@@ -3531,7 +3537,7 @@ function buildInvoicePdf(JsPDF, inv) {
       id: Date.now().toString(36), creeLe: new Date().toISOString(), client: '', date: dateOf(d0), heure: hhmm(d0), depart: '', arrivee: '',
       grille: g.nom, entrees: i, resultat: r,
       gps: { km: Math.round(s.km * 100) / 100, turnKm: typeof s.turnKm === 'number' ? Math.round(s.turnKm * 100) / 100 : null, debut: hhmm(d0), fin: hhmm(end),
-        dureeMin: Math.round((end - d0) / 60000), waitMin: Math.round((s.waitSec || 0) / 60), prixDirect: tp === null ? null : Math.round(tp * 100) / 100 }
+        dureeMin: Math.round((end - d0) / 60000), waitMin: Math.round(twait(s) / 60), prixDirect: tp === null ? null : Math.round(tp * 100) / 100 }
     };
     rides.unshift(ride);
     if (!saveJSON(STORE_R, rides)) { rides.shift(); toast('Enregistrement impossible dans ce navigateur.'); return; }
