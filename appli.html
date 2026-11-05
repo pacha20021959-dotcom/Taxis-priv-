@@ -903,6 +903,13 @@ body{background:linear-gradient(180deg,var(--bg) 0,color-mix(in srgb,var(--bg) 8
 .tab[data-tab="trace"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E")}
 .tab[data-tab="settings"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E")}
 .tab[data-tab="service"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E")}
+.tab[data-tab="docs"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E")}
+.dc-ride{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;min-width:0}
+.dc-prev{overflow-x:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;color:#111}
+.dc-t{width:100%;border-collapse:collapse;font-size:.62rem;table-layout:fixed}
+.dc-t td{border:1px solid #444;padding:3px 3px;vertical-align:middle;overflow-wrap:anywhere}
+.dc-t.nb td{border-color:transparent}
+.dc-prev p{margin:2px 0}
 
 .sv-actions{display:grid;gap:10px}
 .sv-row{display:flex;justify-content:space-between;gap:10px;border-bottom:1px solid var(--line);padding:7px 0;align-items:baseline}
@@ -1107,9 +1114,10 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.7</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.8</span></div>
   <nav class="tabs" aria-label="Rubriques">
     <button class="tab is-active" data-tab="service" type="button">Service</button>
+    <button class="tab" data-tab="docs" type="button">Documents</button>
     <button class="tab" data-tab="calc" type="button">Calcul</button>
     <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
     <button class="tab" data-tab="clients" type="button">Clients</button>
@@ -1194,6 +1202,29 @@ h3{color:var(--accent)}
     </div>
     <div id="svHistBody"></div>
     <p class="fine">Quand un véhicule est choisi, tous ses pleins sont affichés, quel que soit le chauffeur.</p>
+  </div>
+</div>
+</section>
+
+<!-- ============ MES DOCUMENTS ============ -->
+<section id="tab-docs" hidden aria-label="Mes documents">
+<div class="col">
+  <div class="card"><header><h2>Mes documents</h2></header>
+    <p class="fine" id="dcSoc"></p>
+    <div id="dcToDo"></div>
+  </div>
+  <div id="dcMsg" class="notice" hidden role="status"></div>
+  <div class="card" id="dcEdit" hidden></div>
+  <div class="card" id="dcView" hidden></div>
+  <div class="card"><header><h2>Journées validées</h2></header>
+    <div class="sv-two">
+      <label class="field"><span>Chauffeur</span><select id="dc_fch"><option value="">Tous les chauffeurs</option></select></label>
+      <label class="field"><span>Véhicule</span><select id="dc_fve"><option value="">Tous les véhicules</option></select></label>
+      <label class="field"><span>Du</span><input type="date" id="dc_du"></label>
+      <label class="field"><span>Au</span><input type="date" id="dc_au"></label>
+    </div>
+    <div id="dcList"></div>
+    <p class="fine">Les journées validées ne sont jamais supprimées. Les documents gardent le nom et le logo de la société tels qu'ils étaient à la validation.</p>
   </div>
 </div>
 </section>
@@ -2712,10 +2743,11 @@ function buildInvoicePdf(JsPDF, inv) {
   var STORE_C = 'tgp_clients_v1', STORE_F = 'tgp_factures_v1', STORE_P = 'tgp_pro_v1';
   var clients = loadJSON(STORE_C, []); if (!Array.isArray(clients)) clients = [];
   var invoices = loadJSON(STORE_F, []); if (!Array.isArray(invoices)) invoices = [];
-  function defaultPro() { return { nom: '', adresse: '', ville: '', siret: '', tel: '', email: '', mentions: '', tvaMode: '', tvaTaux: 0, prefFacture: 'F', prefAvoir: 'AV' }; }
+  function defaultPro() { return { nom: '', adresse: '', ville: '', siret: '', tel: '', email: '', emailPatron: '', logo: '', logoW: 0, logoH: 0, mentions: '', tvaMode: '', tvaTaux: 0, prefFacture: 'F', prefAvoir: 'AV' }; }
   function normalizePro(p) {
     var d = defaultPro(); p = p || {};
-    ['nom', 'adresse', 'ville', 'siret', 'tel', 'email', 'mentions'].forEach(function (k) { if (typeof p[k] === 'string') d[k] = p[k]; });
+    ['nom', 'adresse', 'ville', 'siret', 'tel', 'email', 'emailPatron', 'mentions'].forEach(function (k) { if (typeof p[k] === 'string') d[k] = p[k]; });
+    if (typeof p.logo === 'string' && /^data:image\/(png|jpeg);base64,/.test(p.logo) && p.logo.length < 600000 && p.logoW > 0 && p.logoH > 0) { d.logo = p.logo; d.logoW = p.logoW; d.logoH = p.logoH; }
     if (p.tvaMode === 'na' || p.tvaMode === 'taux') d.tvaMode = p.tvaMode;
     if (typeof p.tvaTaux === 'number' && p.tvaTaux >= 0 && p.tvaTaux < 100) d.tvaTaux = p.tvaTaux;
     ['prefFacture', 'prefAvoir'].forEach(function (k) { if (typeof p[k] === 'string' && p[k].trim()) d[k] = p[k].trim().slice(0, 8); });
@@ -2728,10 +2760,10 @@ function buildInvoicePdf(JsPDF, inv) {
   function findIn(list, id) { for (var i = 0; i < list.length; i++) if (list[i].id === id) return list[i]; return null; }
 
   /* identité professionnelle (Réglages) */
-  var PRO_TXT = [['nom', 'Nom ou raison sociale'], ['adresse', 'Adresse'], ['ville', 'Code postal et ville'], ['siret', 'Numéro SIRET'], ['tel', 'Téléphone'], ['email', 'Courriel']];
+  var PRO_TXT = [['nom', 'Nom ou raison sociale'], ['adresse', 'Adresse'], ['ville', 'Code postal et ville'], ['siret', 'Numéro d\'entreprise (SIRET, BCE ou TVA)'], ['tel', 'Téléphone'], ['email', 'Courriel'], ['emailPatron', 'Courriel du patron (envoi des feuilles de route)']];
   function buildProForm() {
-    var h = '<div class="card"><header><h2>Votre entreprise (factures)</h2></header>' +
-      '<p class="fine">Ces informations apparaissent sur vos factures. L\'application n\'invente aucun taux de TVA ni aucune mention légale : recopiez ce que vous indiquent votre comptable ou l\'administration.</p><div class="grid">';
+    var h = '<div class="card"><header><h2>Informations de la société</h2></header>' +
+      '<p class="fine">Ces informations apparaissent sur vos factures et dans l\'en-tête des feuilles de route. Si le nom est vide, les documents portent TAXI PRO. L\'application n\'invente aucun taux de TVA ni aucune mention légale : recopiez ce que vous indiquent votre comptable ou l\'administration.</p><div class="grid">';
     PRO_TXT.forEach(function (a) { h += '<label class="field"><span>' + a[1] + '</span><input type="text" id="p_' + a[0] + '" autocomplete="off" value="' + esc(pro[a[0]]) + '"></label>'; });
     h += '</div>' +
       '<label class="field"><span>Mentions légales en bas de facture</span><textarea id="p_mentions" rows="4">' + esc(pro.mentions) + '</textarea><small>Texte libre, imprimé tel quel. Exemple : forme juridique, mention de TVA, conditions de règlement. À faire valider par votre comptable.</small></label>' +
@@ -2741,7 +2773,12 @@ function buildInvoicePdf(JsPDF, inv) {
       '<label class="field"><span>Début des numéros de facture</span><input type="text" id="p_prefFacture" maxlength="8" value="' + esc(pro.prefFacture) + '"><small>Numéro généré : ' + esc(pro.prefFacture) + '-année-0001, dans l\'ordre, sans trou.</small></label>' +
       '<label class="field"><span>Début des numéros d\'avoir</span><input type="text" id="p_prefAvoir" maxlength="8" value="' + esc(pro.prefAvoir) + '"></label>' +
       '</div></div>';
+    h += '<div class="card"><header><h2>Logo de la société</h2></header>' + (pro.logo ? '<img src="' + pro.logo + '" alt="Logo" style="max-width:160px;max-height:80px;object-fit:contain">' : '<p class="fine">Aucun logo.</p>') +
+      '<div class="row"><label class="btn" for="p_logoFile" style="display:inline-flex;align-items:center">Choisir un logo</label><input type="file" id="p_logoFile" accept="image/*" hidden>' + (pro.logo ? '<button class="btn danger" type="button" id="p_logoDel">Retirer le logo</button>' : '') + '</div>' +
+      '<p class="fine">Les anciens documents gardent le logo et le nom d\'origine.</p></div>';
     $('proForm').innerHTML = h;
+    $('p_logoFile').addEventListener('change', function (e) { proLogoLoad(e.target.files[0]); });
+    if ($('p_logoDel')) $('p_logoDel').addEventListener('click', function () { pro.logo = ''; pro.logoW = 0; pro.logoH = 0; saveJSON(STORE_P, pro); buildProForm(); });
     $('p_tvaMode').value = pro.tvaMode;
     PRO_TXT.concat([['mentions'], ['tvaMode'], ['tvaTaux'], ['prefFacture'], ['prefAvoir']]).forEach(function (a) {
       var el = $('p_' + a[0]); el.addEventListener('input', onProInput); el.addEventListener('change', onProInput);
@@ -3554,7 +3591,7 @@ function buildInvoicePdf(JsPDF, inv) {
 
   /* ----- sauvegarde ----- */
   function exportBackup() {
-    var data = { application: 'Taxi Gestion Pro', version: 3, exporteLe: new Date().toISOString(), service: sv, reglages: settings, courses: rides, clients: clients, factures: invoices, entreprise: pro, depenses: expenses, suivis: trace.sessions };
+    var data = { application: 'Taxi Gestion Pro', version: 3, exporteLe: new Date().toISOString(), service: sv, documents: dcStore, reglages: settings, courses: rides, clients: clients, factures: invoices, entreprise: pro, depenses: expenses, suivis: trace.sessions };
     var blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
     downloadBlob(blob, 'taxi-gestion-pro-sauvegarde-' + todayStr() + '.json');
     toast('Sauvegarde exportée.');
@@ -3588,6 +3625,7 @@ function buildInvoicePdf(JsPDF, inv) {
     if (Array.isArray(pendingImport.suivis) && !tcur) { trace.sessions = pendingImport.suivis; trace.actif = false; saveJSON(STORE_T, trace); renderTrace(); renderTraceList(); }
     if (Array.isArray(pendingImport.depenses)) { expenses = pendingImport.depenses; saveJSON(STORE_D, expenses); }
     if (pendingImport.entreprise) { pro = normalizePro(pendingImport.entreprise); saveJSON(STORE_P, pro); }
+    if (pendingImport.documents && typeof pendingImport.documents === 'object') { dcStore = dcNormalize(pendingImport.documents); dcSave(); }
     if (pendingImport.service && typeof pendingImport.service === 'object') { sv = svNormalize(pendingImport.service); svSave(); svRender(); }
     saveJSON(STORE_R, rides); saveJSON(STORE_S, settings);
     pendingImport = null; $('importBox').hidden = true;
@@ -3596,8 +3634,9 @@ function buildInvoicePdf(JsPDF, inv) {
 
   /* ----- onglets et formulaire ----- */
   function showTab(name) {
-    ['service', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+    ['service', 'docs', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
     if (name === 'service') svRender();
+    if (name === 'docs') dcRenderTop();
     if (name === 'clients') renderClients();
     if (name === 'expenses') renderExpenses();
     if (name === 'trace') { renderTrace(); renderTraceList(); }
@@ -4035,9 +4074,12 @@ function buildInvoicePdf(JsPDF, inv) {
       h += row('Litres ajoutés', svN(lp.litres, 2) + ' L');
       h += row('Kilométrage au plein', svN(lp.km) + ' km');
     } else h += '<p class="fine">Aucun plein enregistré pour ce véhicule.</p>';
+    if (!a && !dcByService(x.id)) h += '<div class="row"><button class="btn primary" type="button" id="svToDocs">Préparer les feuilles de route</button></div>';
+    if (!a && dcByService(x.id)) h += '<div class="row"><button class="btn" type="button" id="svToDocs">Ouvrir les feuilles de route</button></div>';
     if (a) h += '<div class="row"><button class="btn" type="button" id="svPauseBtn">' + (openP ? 'Fin de pause' : 'Commencer une pause') + '</button></div>';
     box.innerHTML = h;
     var pb = $('svPauseBtn'); if (pb) pb.addEventListener('click', svPause);
+    var td = $('svToDocs'); if (td) td.addEventListener('click', function () { showTab('docs'); dcPrepare(x.id); });
   }
 
   /* historique */
@@ -4085,6 +4127,7 @@ function buildInvoicePdf(JsPDF, inv) {
       b.addEventListener('click', function () {
         if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'Sûr ?'; setTimeout(function () { if (b.isConnected) { b.dataset.armed = '0'; b.textContent = 'Suppr.'; } }, 4000); return; }
         var k = b.dataset.del.split(':');
+        if (k[0] === 's' && dcByService(k[1])) { toast('Cette journée a des feuilles validées : suppression impossible.'); return; }
         if (k[0] === 's') sv.services = sv.services.filter(function (x) { return x.id !== k[1]; }), sv.pleins.forEach(function (p) { if (p.serviceId === k[1]) p.serviceId = ''; });
         else sv.pleins = sv.pleins.filter(function (p) { return p.id !== k[1]; });
         svSave(); renderHist(); svRender(); toast('Supprimé.');
@@ -4109,6 +4152,542 @@ function buildInvoicePdf(JsPDF, inv) {
   $('sv_nom').addEventListener('input', function () { var c = svFindDriver($('sv_nom').value); if (c) $('sv_num').value = c.numero || ''; });
   var svTimer = null;
   function svTick() { if (svActive()) { if (!svTimer) svTimer = setInterval(function () { if (!$('tab-service').hidden && svActive()) svRender(); }, 60000); } else if (svTimer) { clearInterval(svTimer); svTimer = null; } }
+
+
+  /* ===== Mes documents : feuille de route et feuille détaillée des courses ===== */
+  var STORE_DOC = 'tgp_documents_v1';
+  function dcNormalize(o) {
+    o = (o && typeof o === 'object') ? o : {};
+    if (!Array.isArray(o.docs)) o.docs = [];
+    if (!o.logos || typeof o.logos !== 'object') o.logos = {};
+    return o;
+  }
+  var dcStore = dcNormalize(loadJSON(STORE_DOC, null));
+  var dcWork = null, dcOpenId = '', dcArmed = '';
+  function dcSave() { return saveJSON(STORE_DOC, dcStore); }
+  function dcByService(sid) { return dcStore.docs.filter(function (d) { return d.serviceId === sid; })[0] || null; }
+  function dcById(id) { return dcStore.docs.filter(function (d) { return d.id === id; })[0] || null; }
+  function dcHash(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return 'L' + (h >>> 0).toString(36) + s.length; }
+  function dN(n, dec) { var s = Number(n).toFixed(dec || 0), p = s.split('.'); p[0] = p[0].replace(/\B(?=(\d{3})+(?!\d))/g, ' '); return p.join(','); }
+  function dE(n) { return dN(n, 2) + ' EUR'; }
+  function dIsNum(v) { return v !== '' && v !== null && v !== undefined && isFinite(parseFloat(String(v).replace(',', '.'))); }
+  function dDiff(a, b) { return (dIsNum(a) && dIsNum(b)) ? num(b) - num(a) : null; }
+  function dSafe(t) { return String(t || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '-').replace(/^-|-$/g, ''); }
+  function dAddMin(hm, m) { var p = String(hm || '').split(':'); if (p.length < 2 || !(m > 0)) return ''; var t = (parseInt(p[0], 10) * 60 + parseInt(p[1], 10) + Math.round(m)) % 1440; return pad(Math.floor(t / 60)) + ':' + pad(t % 60); }
+
+  function dcSocNow() {
+    var nom = (pro.nom || '').trim() || 'TAXI PRO', logo = pro.logo || '', lid = '';
+    if (logo) { lid = dcHash(logo); }
+    return { nom: nom, adresse: pro.adresse || '', ville: pro.ville || '', tel: pro.tel || '', email: pro.email || '', numero: pro.siret || '', emailPatron: pro.emailPatron || '', logoId: lid, logoW: pro.logoW || 0, logoH: pro.logoH || 0, logo: logo };
+  }
+  function dcSocOf(doc) {
+    var s = doc.societe || {};
+    return { nom: s.nom, adresse: s.adresse, ville: s.ville, tel: s.tel, email: s.email, numero: s.numero, emailPatron: s.emailPatron, logo: s.logoId ? (dcStore.logos[s.logoId] || '') : '', logoW: s.logoW, logoH: s.logoH };
+  }
+
+  /* données de la journée, remplies depuis le service et les courses */
+  function dcBuildData(x) {
+    var c = svDriverById(x.chauffeurId), v = svVehById(x.vehiculeId), w = svWork(x);
+    var t0 = new Date(x.debut).getTime(), t1 = new Date(x.fin).getTime();
+    var d0 = todayStrOf(x.debut), d1 = todayStrOf(x.fin), used = {};
+    dcStore.docs.forEach(function (d) { (d.data.courses || []).forEach(function (k) { used[k.rideId] = 1; }); });
+    function ts(r) { return new Date(r.date + 'T' + (r.heure || '00:00') + ':00').getTime(); }
+    var cand = rides.filter(function (r) { return !used[r.id] && r.date >= d0 && r.date <= d1; }).sort(function (a, b) { return ts(a) - ts(b); });
+    var courses = cand.map(function (r) {
+      var inside = ts(r) >= t0 && ts(r) <= t1 + 60000, du = r.entrees ? num(r.entrees.dureeAllerMin) : 0;
+      return { rideId: r.id, inclus: inside, client: r.client || '', indexDep: '', embIdx: '', embLieu: r.depart || '', embHeure: r.heure || '', debIdx: '', debLieu: r.arrivee || '', debHeure: dAddMin(r.heure, du), prix: r2(r.resultat ? r.resultat.prix : 0), percu: r2(r.resultat ? r.resultat.prix : 0) };
+    });
+    var carb = 0; sv.pleins.forEach(function (p) { if (p.serviceId === x.id) carb += num(p.montant); });
+    var lav = 0, aut = 0;
+    expenses.forEach(function (e) { if (e.date >= d0 && e.date <= d1) { if (e.cat === 'lavage') lav += num(e.montant); else if (e.cat === 'autre') aut += num(e.montant); } });
+    return {
+      date: d0, chauffeurNom: c ? c.nom : '', numero: c ? c.numero || '' : '', immat: v ? v.immat : '',
+      debut: svFT(x.debut), fin: svFT(x.fin), interruptionsMin: w.pause, dureeMin: w.net, dureeBrute: w.total,
+      kmDebut: num(x.kmDebut), kmFin: num(x.kmFin),
+      taxiDebut: '', taxiFin: '', pcDebut: '', pcFin: '', ixDebut: '', ixFin: '', kcDebut: '', kcFin: '', chDebut: '', chFin: '',
+      carburant: r2(carb), ct: '', carwash: r2(lav), autre: r2(aut), remarques: '', courses: courses
+    };
+  }
+  function todayStrOf(iso) { var d = new Date(iso); return d.getFullYear() + '-' + pad(d.getMonth() + 1) + '-' + pad(d.getDate()); }
+
+  function dcCalc(d) {
+    var inc = (d.courses || []).filter(function (k) { return k.inclus; });
+    var sous = 0, percu = 0, credit = 0, kc = 0;
+    inc.forEach(function (k) { sous += num(k.prix); percu += num(k.percu); credit += Math.max(0, num(k.prix) - num(k.percu)); var a = dDiff(k.embIdx, k.debIdx); if (a !== null && a > 0) kc += a; });
+    var dep = num(d.carburant) + num(d.ct) + num(d.carwash) + num(d.autre);
+    return {
+      nb: inc.length, kmParc: dDiff(d.kmDebut, d.kmFin), taxi: dDiff(d.taxiDebut, d.taxiFin), pc: dDiff(d.pcDebut, d.pcFin), ix: dDiff(d.ixDebut, d.ixFin), kcT: dDiff(d.kcDebut, d.kcFin), ch: dDiff(d.chDebut, d.chFin),
+      sous: r2(sous), percu: r2(percu), credit: r2(credit), dep: r2(dep), total: r2(sous - dep - credit), kmChargeCourses: kc
+    };
+  }
+  function dcFlags(d) {
+    var f = [], inc = (d.courses || []).filter(function (k) { return k.inclus; });
+    if (!String(d.numero || '').trim()) f.push('numéro d\'identification du chauffeur');
+    if (!dIsNum(d.taxiDebut) || !dIsNum(d.taxiFin)) f.push('index du taximètre');
+    if (!dIsNum(d.pcDebut) || !dIsNum(d.pcFin)) f.push('prise en charge');
+    if (!dIsNum(d.ixDebut) || !dIsNum(d.ixFin)) f.push('index km (kms totaux)');
+    if (!dIsNum(d.kcDebut) || !dIsNum(d.kcFin)) f.push('km en charge');
+    if (!dIsNum(d.chDebut) || !dIsNum(d.chFin)) f.push('chutes');
+    if (!inc.length) f.push('aucune course dans la journée');
+    var mi = 0, mh = 0;
+    inc.forEach(function (k) { if (!dIsNum(k.indexDep) || !dIsNum(k.embIdx) || !dIsNum(k.debIdx)) mi++; if (!k.embHeure || !k.debHeure) mh++; });
+    if (mi) f.push('index km de ' + mi + ' course(s)');
+    if (mh) f.push('heures de ' + mh + ' course(s)');
+    return f;
+  }
+
+  /* ----- modèle de page commun au PDF, au DOCX et à l'aperçu ----- */
+  function dcModelRoute(d) {
+    var c = dcCalc(d), v = function (x, dec) { return dIsNum(x) ? dN(x, dec || 0) : ''; }, tt = function (x) { return x === null ? '' : dN(x, 0); };
+    var B = [];
+    B.push({ k: 'p', t: 'FEUILLE DE ROUTE JOURNALIÈRE', sz: 14, b: 1, al: 'c', gap: 3 });
+    B.push({ k: 't', w: [95, 95], h: 7, nb: 1, rows: [[{ t: 'DATE : ' + frDate(d.date), b: 1 }, { t: 'CHAUFFEUR : ' + d.chauffeurNom, b: 1 }], ['PLAQUE D\'IMMATRICULATION : ' + d.immat, 'N° D\'IDENTIFICATION : ' + (d.numero || '')]] });
+    B.push({ k: 'p', t: 'HEURES DES PRESTATIONS', sz: 10, b: 1, gap: 1 });
+    B.push({ k: 't', w: [42, 42, 58, 48], h: 7, nb: 1, rows: [['DÉBUT : ' + d.debut, 'FIN : ' + d.fin, 'INTERRUPTIONS : ' + (d.interruptionsMin ? svDur(d.interruptionsMin) : '0'), { t: 'TOTAL : ' + svDur(d.dureeMin), b: 1 }]] });
+    B.push({ k: 'sp', h: 4 });
+    B.push({ k: 't', w: [30, 30, 65, 65], h: 7, rows: [
+      [{ t: 'INDEX KM', b: 1 }, '', { t: 'TABLEAU DE BORD', b: 1, al: 'c' }, { t: 'TAXIMÈTRE', b: 1, al: 'c' }],
+      ['', 'DÉBUT', { t: v(d.kmDebut), al: 'c' }, { t: v(d.taxiDebut), al: 'c' }],
+      ['', 'FIN', { t: v(d.kmFin), al: 'c' }, { t: v(d.taxiFin), al: 'c' }],
+      ['', { t: 'TOTAL', b: 1 }, { t: c.kmParc === null ? '' : dN(c.kmParc), al: 'c', b: 1 }, { t: tt(c.taxi), al: 'c', b: 1 }]] });
+    B.push({ k: 'sp', h: 5 });
+    B.push({ k: 't', w: [30, 38, 40, 40, 42], h: 7, rows: [
+      { h: 11, c: ['', { t: 'PRISE EN CHARGE', b: 1, al: 'c' }, { t: 'INDEX KM (KMS TOTAUX)', b: 1, al: 'c' }, { t: 'KM EN CHARGE', b: 1, al: 'c' }, { t: 'CHUTES', b: 1, al: 'c' }] },
+      ['DÉBUT', { t: v(d.pcDebut, 2), al: 'c' }, { t: v(d.ixDebut, 1), al: 'c' }, { t: v(d.kcDebut, 1), al: 'c' }, { t: v(d.chDebut, 2), al: 'c' }],
+      ['FIN', { t: v(d.pcFin, 2), al: 'c' }, { t: v(d.ixFin, 1), al: 'c' }, { t: v(d.kcFin, 1), al: 'c' }, { t: v(d.chFin, 2), al: 'c' }],
+      [{ t: 'TOTAL', b: 1 }, { t: c.pc === null ? '' : dN(c.pc, 2), al: 'c', b: 1 }, { t: c.ix === null ? '' : dN(c.ix, 1), al: 'c', b: 1 }, { t: c.kcT === null ? '' : dN(c.kcT, 1), al: 'c', b: 1 }, { t: c.ch === null ? '' : dN(c.ch, 2), al: 'c', b: 1 }]] });
+    B.push({ k: 'sp', h: 5 });
+    B.push({ k: 't', w: [95, 95], h: 7, rows: [
+      [{ t: 'RECETTES ET DÉPENSES', b: 1 }, { t: 'MONTANT', b: 1, al: 'r' }],
+      ['SOUS-TOTAL DES RECETTES (prix taximètre, ' + c.nb + ' course(s))', { t: dE(c.sous), al: 'r' }],
+      ['CARBURANT', { t: dE(num(d.carburant)), al: 'r' }],
+      ['CT', { t: dIsNum(d.ct) ? dE(num(d.ct)) : '', al: 'r' }],
+      ['CAR WASH', { t: dE(num(d.carwash)), al: 'r' }],
+      ['AUTRE', { t: dE(num(d.autre)), al: 'r' }],
+      ['CRÉDIT (non encaissé)', { t: dE(c.credit), al: 'r' }],
+      [{ t: 'TOTAL GÉNÉRAL', b: 1 }, { t: dE(c.total), al: 'r', b: 1 }]] });
+    B.push({ k: 'p', t: 'Total général = sous-total des recettes moins carburant, CT, car wash, autre et crédit. Sommes réellement perçues auprès des clients : ' + dE(c.percu) + '.', sz: 8, i: 1, gap: 3 });
+    B.push({ k: 'p', t: 'REMARQUES', sz: 10, b: 1, gap: 1 });
+    B.push({ k: 't', w: [190], h: 18, rows: [[d.remarques || '']] });
+    B.push({ k: 'sp', h: 6 });
+    B.push({ k: 'p', t: 'SIGNATURE DU CHAUFFEUR', sz: 10, b: 1, al: 'r', gap: 14 });
+    var fl = dcFlags(d);
+    if (fl.length) B.push({ k: 'p', t: 'Vérification nécessaire, informations non renseignées : ' + fl.join(', ') + '.', sz: 8, i: 1, red: 1 });
+    return B;
+  }
+  function dcModelCourses(d) {
+    var inc = (d.courses || []).filter(function (k) { return k.inclus; }), c = dcCalc(d), B = [], PER = 20;
+    var pages = Math.max(1, Math.ceil(inc.length / PER));
+    for (var pg = 0; pg < pages; pg++) {
+      if (pg > 0) B.push({ k: 'pb' });
+      B.push({ k: 'p', t: 'FEUILLE DÉTAILLÉE DES COURSES CLIENTS', sz: 14, b: 1, al: 'c', gap: 2 });
+      B.push({ k: 'p', t: 'Date : ' + frDate(d.date) + '     Chauffeur : ' + d.chauffeurNom + '     Véhicule : ' + d.immat + '     Page ' + (pg + 1) + '/' + pages, sz: 9, al: 'c', gap: 3 });
+      var rows = [[{ t: 'N°', b: 1, al: 'c' }, { t: 'Index départ', b: 1, al: 'c' }, { t: 'EMBARQUEMENT', b: 1, al: 'c', span: 3 }, { t: 'DÉBARQUEMENT', b: 1, al: 'c', span: 3 }, { t: 'Prix taximètre', b: 1, al: 'c' }, { t: 'Sommes perçues', b: 1, al: 'c' }],
+        [{ t: '' }, { t: '' }, { t: 'Index', b: 1, al: 'c' }, { t: 'Lieu', b: 1, al: 'c' }, { t: 'Heure', b: 1, al: 'c' }, { t: 'Index', b: 1, al: 'c' }, { t: 'Lieu', b: 1, al: 'c' }, { t: 'Heure', b: 1, al: 'c' }, '', '']];
+      for (var i = 0; i < PER; i++) {
+        var k = inc[pg * PER + i], n = pg * PER + i + 1;
+        if (k) rows.push([{ t: String(n), al: 'c' }, { t: dIsNum(k.indexDep) ? dN(k.indexDep, 0) : '', al: 'c' }, { t: dIsNum(k.embIdx) ? dN(k.embIdx, 0) : '', al: 'c' }, { t: k.embLieu || '', sz: 7 }, { t: k.embHeure || '', al: 'c' }, { t: dIsNum(k.debIdx) ? dN(k.debIdx, 0) : '', al: 'c' }, { t: k.debLieu || '', sz: 7 }, { t: k.debHeure || '', al: 'c' }, { t: dN(num(k.prix), 2), al: 'r' }, { t: dN(num(k.percu), 2), al: 'r' }]);
+        else rows.push([{ t: String(n), al: 'c' }, '', '', '', '', '', '', '', '', '']);
+      }
+      if (pg === pages - 1) rows.push([{ t: 'TOTAUX (' + c.nb + ' course(s))', b: 1, span: 8 }, { t: dN(c.sous, 2), b: 1, al: 'r' }, { t: dN(c.percu, 2), b: 1, al: 'r' }]);
+      B.push({ k: 't', w: [8, 15, 15, 39, 12, 15, 39, 12, 17, 18], h: 9.6, head: 2, rows: rows });
+    }
+    var fl = dcFlags(d).filter(function (t) { return /course|index km de|heures de/.test(t); });
+    if (fl.length) B.push({ k: 'p', t: 'Vérification nécessaire : ' + fl.join(', ') + '.', sz: 8, i: 1, red: 1 });
+    return B;
+  }
+
+  /* ----- rendu PDF (jsPDF) ----- */
+  function dcImgFmt(u) { return /^data:image\/png/.test(u) ? 'PNG' : 'JPEG'; }
+  function dcPdfHeader(pdf, soc) {
+    var cx = 105;
+    if (soc.logo && soc.logoW && soc.logoH) {
+      var h = Math.min(20, 38 * soc.logoH / soc.logoW), w = h * soc.logoW / soc.logoH;
+      try { pdf.addImage(soc.logo, dcImgFmt(soc.logo), 10, 6, w, h); } catch (e) { /* logo illisible : ignoré */ }
+    }
+    pdf.setFont('helvetica', 'bold'); pdf.setFontSize(15); pdf.setTextColor(0);
+    pdf.text(String(soc.nom || 'TAXI PRO'), cx, 13, { align: 'center' });
+    pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8);
+    var l1 = [soc.adresse, soc.ville].filter(Boolean).join(', '), l2 = [soc.tel, soc.email].filter(Boolean).join('  -  '), l3 = soc.numero ? 'N° d\'entreprise : ' + soc.numero : '';
+    var y = 18; [l1, l2, l3].forEach(function (t) { if (t) { pdf.text(t, cx, y, { align: 'center' }); y += 4; } });
+    pdf.setDrawColor(0); pdf.setLineWidth(0.5); pdf.line(10, 31, 200, 31);
+  }
+  function dcPdfTable(pdf, blk, y0) {
+    var X = 10, y = y0, nb = !!blk.nb;
+    blk.rows.forEach(function (row) {
+      var cells = Array.isArray(row) ? row : row.c, h = (row.h || blk.h), x = X, ci = 0;
+      if (y + h > 282) { pdf.addPage(); y = 36; }
+      cells.forEach(function (c) {
+        if (typeof c === 'string') c = { t: c };
+        var span = c.span || 1, w = 0; for (var q = 0; q < span; q++) w += blk.w[ci + q] || 0;
+        if (!nb) { pdf.setDrawColor(40); pdf.setLineWidth(0.25); pdf.rect(x, y, w, h); }
+        var sz = c.sz || 9; pdf.setFont('helvetica', c.b ? 'bold' : 'normal'); pdf.setFontSize(sz); pdf.setTextColor(0);
+        var t = String(c.t == null ? '' : c.t);
+        if (t) {
+          var lines = pdf.splitTextToSize(t, w - 2.4), lh = sz * 0.4, maxL = Math.max(1, Math.floor((h - 1) / lh)); lines = lines.slice(0, maxL);
+          var ty = y + (h - lines.length * lh) / 2 + lh * 0.8;
+          if (h > 12) ty = y + 1.2 + lh * 0.8;
+          lines.forEach(function (ln, li) {
+            var tx = x + 1.2, al = 'left'; if (c.al === 'c') { tx = x + w / 2; al = 'center'; } else if (c.al === 'r') { tx = x + w - 1.2; al = 'right'; }
+            pdf.text(ln, tx, ty + li * lh, { align: al });
+          });
+        }
+        x += w; ci += span;
+      });
+      y += h;
+    });
+    return y;
+  }
+  function dcPdfBuild(kind, soc, d, meta) {
+    var J = window.jspdf && window.jspdf.jsPDF; if (!J) return null;
+    var pdf = new J({ unit: 'mm', format: 'a4' }), B = kind === 'route' ? dcModelRoute(d) : dcModelCourses(d), y = 36;
+    B.forEach(function (b) {
+      if (b.k === 'pb') { pdf.addPage(); y = 36; }
+      else if (b.k === 'sp') y += b.h;
+      else if (b.k === 'p') {
+        var sz = b.sz || 10; pdf.setFont('helvetica', b.b ? 'bold' : (b.i ? 'italic' : 'normal')); pdf.setFontSize(sz); if (b.red) pdf.setTextColor(180, 30, 30); else pdf.setTextColor(0);
+        var lines = pdf.splitTextToSize(b.t, 190), lh = sz * 0.42;
+        lines.forEach(function (ln) { y += lh; var tx = 10, al = 'left'; if (b.al === 'c') { tx = 105; al = 'center'; } else if (b.al === 'r') { tx = 200; al = 'right'; } pdf.text(ln, tx, y, { align: al }); });
+        y += (b.gap || 2); pdf.setTextColor(0);
+      } else if (b.k === 't') y = dcPdfTable(pdf, b, y);
+    });
+    var n = pdf.getNumberOfPages();
+    for (var p = 1; p <= n; p++) {
+      pdf.setPage(p); dcPdfHeader(pdf, soc);
+      pdf.setFont('helvetica', 'normal'); pdf.setFontSize(8); pdf.setTextColor(90);
+      pdf.text(String(soc.nom || '') + ' - ' + (kind === 'route' ? 'Feuille de route' : 'Courses clients') + ' du ' + frDate(d.date) + (meta && meta.version > 1 ? ' (version ' + meta.version + ')' : ''), 10, 291);
+      pdf.text('Page ' + p + ' / ' + n, 200, 291, { align: 'right' }); pdf.setTextColor(0);
+    }
+    return pdf.output('blob');
+  }
+
+  /* ----- rendu DOCX : archive zip et XML écrits à la main ----- */
+  var DX_CRC = null;
+  function dxCrc(u8) {
+    if (!DX_CRC) { DX_CRC = []; for (var n = 0; n < 256; n++) { var c = n; for (var k = 0; k < 8; k++) c = (c & 1) ? (0xEDB88320 ^ (c >>> 1)) : (c >>> 1); DX_CRC[n] = c >>> 0; } }
+    var crc = 0xFFFFFFFF; for (var i = 0; i < u8.length; i++) crc = DX_CRC[(crc ^ u8[i]) & 0xFF] ^ (crc >>> 8);
+    return (crc ^ 0xFFFFFFFF) >>> 0;
+  }
+  function dxZip(files) {
+    var enc = new TextEncoder(), parts = [], central = [], off = 0, dt = new Date();
+    var dTime = (dt.getHours() << 11) | (dt.getMinutes() << 5) | (dt.getSeconds() >> 1), dDate = ((dt.getFullYear() - 1980) << 9) | ((dt.getMonth() + 1) << 5) | dt.getDate();
+    files.forEach(function (f) {
+      var nm = enc.encode(f.name), data = f.data, crc = dxCrc(data);
+      var lh = new Uint8Array(30 + nm.length), v = new DataView(lh.buffer);
+      v.setUint32(0, 0x04034b50, true); v.setUint16(4, 20, true); v.setUint16(6, 0x0800, true); v.setUint16(8, 0, true); v.setUint16(10, dTime, true); v.setUint16(12, dDate, true);
+      v.setUint32(14, crc, true); v.setUint32(18, data.length, true); v.setUint32(22, data.length, true); v.setUint16(26, nm.length, true); v.setUint16(28, 0, true); lh.set(nm, 30);
+      var ch = new Uint8Array(46 + nm.length), c = new DataView(ch.buffer);
+      c.setUint32(0, 0x02014b50, true); c.setUint16(4, 20, true); c.setUint16(6, 20, true); c.setUint16(8, 0x0800, true); c.setUint16(10, 0, true); c.setUint16(12, dTime, true); c.setUint16(14, dDate, true);
+      c.setUint32(16, crc, true); c.setUint32(20, data.length, true); c.setUint32(24, data.length, true); c.setUint16(28, nm.length, true); c.setUint32(42, off, true); ch.set(nm, 46);
+      parts.push(lh, data); central.push(ch); off += lh.length + data.length;
+    });
+    var csize = 0; central.forEach(function (c) { csize += c.length; });
+    var end = new Uint8Array(22), e = new DataView(end.buffer);
+    e.setUint32(0, 0x06054b50, true); e.setUint16(8, files.length, true); e.setUint16(10, files.length, true); e.setUint32(12, csize, true); e.setUint32(16, off, true);
+    return new Blob(parts.concat(central, [end]), { type: 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' });
+  }
+  function xe(t) { return String(t == null ? '' : t).replace(/[&<>"]/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]; }); }
+  function tw(mm) { return Math.floor(mm * 56.7); }
+  function dxRun(t, o) {
+    o = o || {};
+    var rp = (o.b ? '<w:b/>' : '') + (o.i ? '<w:i/>' : '') + (o.red ? '<w:color w:val="B41E1E"/>' : '') + '<w:sz w:val="' + Math.round((o.sz || 10) * 2) + '"/>';
+    var parts = String(t == null ? '' : t).split('\n').map(function (s) { return '<w:t xml:space="preserve">' + xe(s) + '</w:t>'; }).join('<w:br/>');
+    return '<w:r><w:rPr>' + rp + '</w:rPr>' + parts + '</w:r>';
+  }
+  function dxPara(t, o) {
+    o = o || {}; var jc = o.al === 'c' ? 'center' : (o.al === 'r' ? 'right' : 'left');
+    return '<w:p><w:pPr><w:spacing w:before="0" w:after="' + Math.round((o.gap || 0) * 20) + '"/><w:jc w:val="' + jc + '"/></w:pPr>' + (t === '' || t == null ? '' : dxRun(t, o)) + '</w:p>';
+  }
+  function dxTable(blk) {
+    var bd = blk.nb ? 'nil' : 'single', tot = 0; blk.w.forEach(function (w) { tot += tw(w); });
+    var x = '<w:tbl><w:tblPr><w:tblW w:w="' + tot + '" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders>' +
+      ['top', 'left', 'bottom', 'right', 'insideH', 'insideV'].map(function (s) { return '<w:' + s + ' w:val="' + bd + '" w:sz="4" w:space="0" w:color="333333"/>'; }).join('') +
+      '</w:tblBorders><w:tblCellMar><w:left w:w="60" w:type="dxa"/><w:right w:w="60" w:type="dxa"/></w:tblCellMar></w:tblPr><w:tblGrid>' +
+      blk.w.map(function (w) { return '<w:gridCol w:w="' + tw(w) + '"/>'; }).join('') + '</w:tblGrid>';
+    blk.rows.forEach(function (row, ri) {
+      var cells = Array.isArray(row) ? row : row.c, h = row.h || blk.h, ci = 0;
+      x += '<w:tr><w:trPr><w:cantSplit/><w:trHeight w:val="' + tw(h) + '" w:hRule="atLeast"/>' + (blk.head && ri < blk.head ? '<w:tblHeader/>' : '') + '</w:trPr>';
+      cells.forEach(function (c) {
+        if (typeof c === 'string') c = { t: c };
+        var span = c.span || 1, w = 0; for (var q = 0; q < span; q++) w += blk.w[ci + q] || 0; ci += span;
+        var jc = c.al === 'c' ? 'center' : (c.al === 'r' ? 'right' : 'left');
+        x += '<w:tc><w:tcPr><w:tcW w:w="' + tw(w) + '" w:type="dxa"/>' + (span > 1 ? '<w:gridSpan w:val="' + span + '"/>' : '') + '<w:vAlign w:val="center"/></w:tcPr>' +
+          '<w:p><w:pPr><w:spacing w:before="0" w:after="0"/><w:jc w:val="' + jc + '"/></w:pPr>' + (c.t ? dxRun(c.t, { b: c.b, sz: c.sz || 9 }) : '') + '</w:p></w:tc>';
+      });
+      x += '</w:tr>';
+    });
+    return x + '</w:tbl>';
+  }
+  function dxB64(u) { var b = atob(u.split(',')[1] || ''), a = new Uint8Array(b.length); for (var i = 0; i < b.length; i++) a[i] = b.charCodeAt(i); return a; }
+  function dcDocxBuild(kind, soc, d, meta) {
+    var B = kind === 'route' ? dcModelRoute(d) : dcModelCourses(d), body = '';
+    B.forEach(function (b) {
+      if (b.k === 'p') body += dxPara(b.t, b);
+      else if (b.k === 'sp') body += '<w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="' + tw(b.h) + '" w:lineRule="exact"/></w:pPr></w:p>';
+      else if (b.k === 'pb') body += '<w:p><w:r><w:br w:type="page"/></w:r></w:p>';
+      else if (b.k === 't') body += dxTable(b);
+    });
+    body += '<w:p/>';
+    var NS = 'xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main" xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships" xmlns:wp="http://schemas.openxmlformats.org/drawingml/2006/wordprocessingDrawing"';
+    var hasLogo = !!(soc.logo && soc.logoW && soc.logoH), ext = hasLogo && /^data:image\/png/.test(soc.logo) ? 'png' : 'jpeg';
+    var lh = hasLogo ? Math.min(20, 38 * soc.logoH / soc.logoW) : 0, lw = hasLogo ? lh * soc.logoW / soc.logoH : 0, cx = Math.round(lw * 36000), cy = Math.round(lh * 36000);
+    var logoXml = hasLogo ? '<w:r><w:drawing><wp:inline distT="0" distB="0" distL="0" distR="0"><wp:extent cx="' + cx + '" cy="' + cy + '"/><wp:docPr id="1" name="Logo"/><a:graphic xmlns:a="http://schemas.openxmlformats.org/drawingml/2006/main"><a:graphicData uri="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:pic xmlns:pic="http://schemas.openxmlformats.org/drawingml/2006/picture"><pic:nvPicPr><pic:cNvPr id="0" name="logo"/><pic:cNvPicPr/></pic:nvPicPr><pic:blipFill><a:blip r:embed="rIdImg"/><a:stretch><a:fillRect/></a:stretch></pic:blipFill><pic:spPr><a:xfrm><a:off x="0" y="0"/><a:ext cx="' + cx + '" cy="' + cy + '"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></pic:spPr></pic:pic></a:graphicData></a:graphic></wp:inline></w:drawing></w:r>' : '';
+    var l1 = [soc.adresse, soc.ville].filter(Boolean).join(', '), l2 = [soc.tel, soc.email].filter(Boolean).join('  -  '), l3 = soc.numero ? 'N° d\'entreprise : ' + soc.numero : '';
+    var txt = dxPara(String(soc.nom || 'TAXI PRO'), { b: 1, sz: 15, al: 'c' }) + [l1, l2, l3].filter(Boolean).map(function (t) { return dxPara(t, { sz: 8, al: 'c' }); }).join('');
+    var hdr = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:hdr ' + NS + '><w:tbl><w:tblPr><w:tblW w:w="' + tw(190) + '" w:type="dxa"/><w:tblLayout w:type="fixed"/><w:tblBorders><w:top w:val="nil"/><w:left w:val="nil"/><w:bottom w:val="single" w:sz="8" w:space="0" w:color="000000"/><w:right w:val="nil"/><w:insideH w:val="nil"/><w:insideV w:val="nil"/></w:tblBorders></w:tblPr><w:tblGrid><w:gridCol w:w="' + tw(45) + '"/><w:gridCol w:w="' + tw(100) + '"/><w:gridCol w:w="' + tw(45) + '"/></w:tblGrid><w:tr><w:tc><w:tcPr><w:tcW w:w="' + tw(45) + '" w:type="dxa"/></w:tcPr><w:p><w:pPr><w:spacing w:before="0" w:after="0"/></w:pPr>' + logoXml + '</w:p></w:tc><w:tc><w:tcPr><w:tcW w:w="' + tw(100) + '" w:type="dxa"/></w:tcPr>' + txt + '</w:tc><w:tc><w:tcPr><w:tcW w:w="' + tw(45) + '" w:type="dxa"/></w:tcPr><w:p/></w:tc></w:tr></w:tbl><w:p><w:pPr><w:spacing w:before="0" w:after="0" w:line="20" w:lineRule="exact"/></w:pPr></w:p></w:hdr>';
+    var foot = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:ftr ' + NS + '><w:p><w:pPr><w:tabs><w:tab w:val="right" w:pos="' + tw(190) + '"/></w:tabs></w:pPr>' + dxRun(String(soc.nom || '') + ' - ' + (kind === 'route' ? 'Feuille de route' : 'Courses clients') + ' du ' + frDate(d.date) + (meta && meta.version > 1 ? ' (version ' + meta.version + ')' : ''), { sz: 8 }) +
+      '<w:r><w:tab/></w:r>' + dxRun('Page ', { sz: 8 }) + '<w:fldSimple w:instr=" PAGE "><w:r><w:rPr><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple>' + dxRun(' / ', { sz: 8 }) + '<w:fldSimple w:instr=" NUMPAGES "><w:r><w:rPr><w:sz w:val="16"/></w:rPr><w:t>1</w:t></w:r></w:fldSimple></w:p></w:ftr>';
+    var doc = '<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:document ' + NS + '><w:body>' + body + '<w:sectPr><w:headerReference w:type="default" r:id="rIdH"/><w:footerReference w:type="default" r:id="rIdF"/><w:pgSz w:w="11906" w:h="16838"/><w:pgMar w:top="1900" w:right="567" w:bottom="700" w:left="567" w:header="300" w:footer="300" w:gutter="0"/></w:sectPr></w:body></w:document>';
+    var enc = new TextEncoder(), files = [
+      { name: '[Content_Types].xml', data: enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Types xmlns="http://schemas.openxmlformats.org/package/2006/content-types"><Default Extension="rels" ContentType="application/vnd.openxmlformats-package.relationships+xml"/><Default Extension="xml" ContentType="application/xml"/><Default Extension="png" ContentType="image/png"/><Default Extension="jpeg" ContentType="image/jpeg"/><Override PartName="/word/document.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.document.main+xml"/><Override PartName="/word/styles.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.styles+xml"/><Override PartName="/word/header1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.header+xml"/><Override PartName="/word/footer1.xml" ContentType="application/vnd.openxmlformats-officedocument.wordprocessingml.footer+xml"/></Types>') },
+      { name: '_rels/.rels', data: enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/officeDocument" Target="word/document.xml"/></Relationships>') },
+      { name: 'word/document.xml', data: enc.encode(doc) },
+      { name: 'word/styles.xml', data: enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><w:styles xmlns:w="http://schemas.openxmlformats.org/wordprocessingml/2006/main"><w:docDefaults><w:rPrDefault><w:rPr><w:rFonts w:ascii="Arial" w:hAnsi="Arial" w:cs="Arial" w:eastAsia="Arial"/><w:sz w:val="20"/><w:lang w:val="fr-FR"/></w:rPr></w:rPrDefault><w:pPrDefault><w:pPr><w:spacing w:after="0" w:line="240" w:lineRule="auto"/></w:pPr></w:pPrDefault></w:docDefaults><w:style w:type="paragraph" w:default="1" w:styleId="Normal"><w:name w:val="Normal"/></w:style></w:styles>') },
+      { name: 'word/header1.xml', data: enc.encode(hdr) },
+      { name: 'word/footer1.xml', data: enc.encode(foot) },
+      { name: 'word/_rels/document.xml.rels', data: enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdS" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/styles" Target="styles.xml"/><Relationship Id="rIdH" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/header" Target="header1.xml"/><Relationship Id="rIdF" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/footer" Target="footer1.xml"/></Relationships>') }
+    ];
+    if (hasLogo) {
+      files.push({ name: 'word/_rels/header1.xml.rels', data: enc.encode('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships"><Relationship Id="rIdImg" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="media/logo.' + ext + '"/></Relationships>') });
+      files.push({ name: 'word/media/logo.' + ext, data: dxB64(soc.logo) });
+    }
+    return dxZip(files);
+  }
+
+  /* ----- aperçu écran à partir du même modèle ----- */
+  function dcModelHtml(B) {
+    var h = '';
+    B.forEach(function (b) {
+      if (b.k === 'p') h += '<p style="margin:2px 0 ' + (b.gap || 2) + 'px;font-size:' + ((b.sz || 10) * 0.085 + 0.2).toFixed(2) + 'rem;text-align:' + (b.al === 'c' ? 'center' : (b.al === 'r' ? 'right' : 'left')) + ';' + (b.b ? 'font-weight:700;' : '') + (b.i ? 'font-style:italic;' : '') + (b.red ? 'color:#b41e1e;' : '') + '">' + esc(b.t) + '</p>';
+      else if (b.k === 'sp') h += '<div style="height:' + Math.round(b.h * 1.5) + 'px"></div>';
+      else if (b.k === 'pb') h += '<hr>';
+      else if (b.k === 't') {
+        var tot = 0; b.w.forEach(function (w) { tot += w; });
+        h += '<div class="sv-wrap"><table class="dc-t' + (b.nb ? ' nb' : '') + '"><colgroup>' + b.w.map(function (w) { return '<col style="width:' + (w / tot * 100).toFixed(1) + '%">'; }).join('') + '</colgroup>';
+        b.rows.forEach(function (row) {
+          var cells = Array.isArray(row) ? row : row.c; h += '<tr>';
+          cells.forEach(function (c) { if (typeof c === 'string') c = { t: c }; h += '<td' + (c.span > 1 ? ' colspan="' + c.span + '"' : '') + ' style="text-align:' + (c.al === 'c' ? 'center' : (c.al === 'r' ? 'right' : 'left')) + ';' + (c.b ? 'font-weight:700;' : '') + '">' + esc(c.t == null ? '' : c.t) + '</td>'; });
+          h += '</tr>';
+        });
+        h += '</table></div>';
+      }
+    });
+    return h;
+  }
+
+  /* ----- fichiers, impression, envoi ----- */
+  function dcSocFor(doc) { return dcSocOf(doc); }
+  function dcFileName(doc, kind, ext) {
+    var d = doc.data; return (kind === 'route' ? 'feuille-de-route_' : 'courses-clients_') + d.date + '_' + dSafe(d.chauffeurNom) + '_' + dSafe(d.immat) + (doc.version > 1 ? '_v' + doc.version : '') + '.' + ext;
+  }
+  function dcMake(doc, kind, fmt) {
+    var soc = dcSocFor(doc), meta = { version: doc.version };
+    var blob = fmt === 'pdf' ? dcPdfBuild(kind, soc, doc.data, meta) : dcDocxBuild(kind, soc, doc.data, meta);
+    if (!blob) { toast('Le module PDF n\'est pas chargé. Vérifiez la connexion internet puis rechargez la page.'); return null; }
+    return { name: dcFileName(doc, kind, fmt === 'pdf' ? 'pdf' : 'docx'), blob: blob };
+  }
+  function dcMsg(t, kind) { showNotice($('dcMsg'), t, kind || ''); }
+  function dcDownload(doc, kind, fmt) {
+    var f = dcMake(doc, kind, fmt); if (!f) return;
+    downloadBlob(f.blob, f.name); dcMsg('Fichier préparé : ' + f.name, '');
+  }
+  function dcPrint(doc, kind) {
+    var f = dcMake(doc, kind, 'pdf'); if (!f) return;
+    if (NATIVE || !window.URL) { downloadBlob(f.blob, f.name); dcMsg('Choisissez « Imprimer » dans la fenêtre qui s\'ouvre, ou ouvrez le PDF puis imprimez-le.', ''); return; }
+    var u = URL.createObjectURL(f.blob), fr = document.createElement('iframe');
+    fr.style.cssText = 'position:fixed;right:0;bottom:0;width:0;height:0;border:0'; fr.src = u; document.body.appendChild(fr);
+    fr.onload = function () { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { window.open(u, '_blank'); } setTimeout(function () { fr.remove(); URL.revokeObjectURL(u); }, 60000); };
+  }
+  function dcSend(doc) {
+    var fs = [dcMake(doc, 'route', 'pdf'), dcMake(doc, 'route', 'docx'), dcMake(doc, 'courses', 'pdf'), dcMake(doc, 'courses', 'docx')];
+    if (fs.some(function (f) { return !f; })) return;
+    var soc = dcSocFor(doc), to = soc.emailPatron || pro.emailPatron || '';
+    var sujet = 'Feuilles de route du ' + frDate(doc.data.date) + ' - ' + doc.data.chauffeurNom + ' - ' + doc.data.immat;
+    var texte = 'Bonjour,\n\nVeuillez trouver ci-joint la feuille de route et la feuille détaillée des courses du ' + frDate(doc.data.date) + ' (' + doc.data.chauffeurNom + ', ' + doc.data.immat + ').\n\nCordialement,\n' + doc.data.chauffeurNom;
+    var fin = function () { dcMsg('La fenêtre de partage est ouverte avec les 4 fichiers' + (to ? ' : choisissez votre messagerie et le destinataire ' + to : '') + '. Taxi Pro ne peut pas savoir si le message part réellement : vérifiez-le dans votre messagerie.', 'warn'); };
+    if (FSP && SHP) {
+      Promise.all(fs.map(function (f) { return blobToB64(f.blob).then(function (b) { return FSP.writeFile({ path: f.name, data: b, directory: 'CACHE' }); }); }))
+        .then(function (rs) { return SHP.share({ title: sujet, text: (to ? 'Destinataire : ' + to + '\n\n' : '') + texte, files: rs.map(function (r) { return r.uri; }), dialogTitle: 'Envoyer les feuilles de route' }); })
+        .then(fin, function (e) { if (!/cancel/i.test(String(e && (e.message || e)))) toast('Le partage a échoué.'); });
+      return;
+    }
+    try {
+      var files = fs.map(function (f) { return new File([f.blob], f.name, { type: f.blob.type }); });
+      if (navigator.canShare && navigator.canShare({ files: files })) { navigator.share({ files: files, title: sujet, text: texte }).then(fin, function () {}); return; }
+    } catch (err) { /* repli ci-dessous */ }
+    fs.forEach(function (f, i) { setTimeout(function () { downloadBlob(f.blob, f.name); }, i * 400); });
+    dcMsg('Les 4 fichiers sont téléchargés. Votre messagerie va s\'ouvrir : joignez-les au message avant de l\'envoyer.', 'warn');
+    setTimeout(function () { location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(texte); }, 2200);
+  }
+
+  /* ----- écran : à valider, liste, ouverture ----- */
+  function dcRenderTop() {
+    var s = dcSocNow();
+    $('dcSoc').textContent = 'Société : ' + s.nom + (pro.nom ? '' : ' (nom par défaut, à personnaliser dans Réglages, Informations de la société)') + (s.emailPatron ? '. Courriel du patron : ' + s.emailPatron : '. Courriel du patron non renseigné (Réglages).');
+    var todo = sv.services.filter(function (x) { return x.fin && !dcByService(x.id); }).sort(function (a, b) { return a.fin < b.fin ? 1 : -1; });
+    var h = todo.length ? '<p class="sv-sep">Journées à valider</p>' : '<p class="fine">Aucune journée terminée en attente. Terminez un service dans l\'onglet Service pour préparer ses feuilles.</p>';
+    todo.forEach(function (x) { h += '<div class="sv-row"><span>' + svFD(x.debut) + ', ' + esc(svDName(x.chauffeurId)) + ', ' + esc(svVName(x.vehiculeId)) + '</span><button class="btn primary" type="button" data-prep="' + esc(x.id) + '">Préparer</button></div>'; });
+    $('dcToDo').innerHTML = h;
+    var fc = $('dc_fch').value, fv = $('dc_fve').value;
+    var ch = {}, ve = {}; dcStore.docs.forEach(function (d) { ch[d.data.chauffeurNom] = 1; ve[d.data.immat] = 1; });
+    $('dc_fch').innerHTML = '<option value="">Tous les chauffeurs</option>' + Object.keys(ch).sort().map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
+    $('dc_fve').innerHTML = '<option value="">Tous les véhicules</option>' + Object.keys(ve).sort().map(function (n) { return '<option>' + esc(n) + '</option>'; }).join('');
+    $('dc_fch').value = fc; $('dc_fve').value = fv; if ($('dc_fch').value !== fc) $('dc_fch').value = ''; if ($('dc_fve').value !== fv) $('dc_fve').value = '';
+    dcRenderList();
+  }
+  function dcRenderList() {
+    var fc = $('dc_fch').value, fv = $('dc_fve').value, du = $('dc_du').value, au = $('dc_au').value;
+    var l = dcStore.docs.filter(function (d) { return (!fc || d.data.chauffeurNom === fc) && (!fv || d.data.immat === fv) && (!du || d.data.date >= du) && (!au || d.data.date <= au); }).sort(function (a, b) { return a.data.date < b.data.date ? 1 : (a.data.date > b.data.date ? -1 : (a.validatedAt < b.validatedAt ? 1 : -1)); });
+    if (!l.length) { $('dcList').innerHTML = '<p class="fine">Aucune journée validée pour ces critères.</p>'; return; }
+    $('dcList').innerHTML = l.map(function (d) {
+      var c = dcCalc(d.data);
+      return '<div class="sv-row"><span>' + frDate(d.data.date) + ' · ' + esc(d.data.chauffeurNom) + ' · ' + esc(d.data.immat) + '<br><small>' + c.nb + ' course(s), ' + dE(c.total) + (d.version > 1 ? ', version ' + d.version : '') + ' · ' + esc((d.societe && d.societe.nom) || '') + '</small></span><button class="btn" type="button" data-open="' + esc(d.id) + '">Ouvrir</button></div>';
+    }).join('');
+  }
+  function dcCloseAll() { dcWork = null; dcOpenId = ''; $('dcEdit').hidden = true; $('dcView').hidden = true; dcArmed = ''; }
+
+  function dcPrepare(sid) {
+    var ex = dcByService(sid); if (ex) { dcOpen(ex.id); return; }
+    var x = sv.services.filter(function (s) { return s.id === sid; })[0]; if (!x || !x.fin) { dcMsg('Ce service n\'est pas terminé.', 'warn'); return; }
+    dcCloseAll(); dcWork = { mode: 'new', serviceId: sid, data: dcBuildData(x) };
+    dcRenderEdit(); $('dcEdit').scrollIntoView({ block: 'start' });
+  }
+  function dcFld(label, k, o) {
+    o = o || {}; var v = dcWork.data[k];
+    return '<label class="field"><span>' + label + '</span><input type="' + (o.t || 'number') + '" data-k="' + k + '" ' + (o.t === 'text' ? '' : 'inputmode="decimal" step="any" ') + 'value="' + esc(v === '' || v == null ? '' : v) + '"></label>';
+  }
+  function dcRf(i, label, f, t) {
+    var v = dcWork.data.courses[i][f];
+    return '<label class="field"><span>' + label + '</span><input type="' + (t || 'text') + '" data-r="' + i + '" data-f="' + f + '"' + (t === 'number' ? ' inputmode="decimal" step="any"' : '') + ' value="' + esc(v === '' || v == null ? '' : v) + '"></label>';
+  }
+  function dcRenderEdit() {
+    var d = dcWork.data, h = '<header><h2>' + (dcWork.mode === 'fix' ? 'Correction de la journée' : 'Vérification avant validation') + '</h2></header>';
+    h += '<div class="notice">' + frDate(d.date) + ' · ' + esc(d.chauffeurNom) + ' · ' + esc(d.immat) + '<br>Début ' + d.debut + ', fin ' + d.fin + ', interruptions ' + (d.interruptionsMin ? svDur(d.interruptionsMin) : '0') + ', total travaillé ' + svDur(d.dureeMin) + '. Ces informations viennent de votre service : rien à ressaisir.</div>';
+    h += dcFld('Numéro d\'identification du chauffeur', 'numero', { t: 'text' });
+    h += '<p class="sv-sep">Index km du tableau de bord</p><div class="sv-two">' + dcFld('Début', 'kmDebut') + dcFld('Fin', 'kmFin') + '</div>';
+    h += '<p class="sv-sep">Taximètre (index)</p><div class="sv-two">' + dcFld('Début', 'taxiDebut') + dcFld('Fin', 'taxiFin') + '</div>';
+    h += '<p class="sv-sep">Prise en charge</p><div class="sv-two">' + dcFld('Début', 'pcDebut') + dcFld('Fin', 'pcFin') + '</div>';
+    h += '<p class="sv-sep">Index km (kms totaux)</p><div class="sv-two">' + dcFld('Début', 'ixDebut') + dcFld('Fin', 'ixFin') + '</div>';
+    h += '<p class="sv-sep">Km en charge</p><div class="sv-two">' + dcFld('Début', 'kcDebut') + dcFld('Fin', 'kcFin') + '</div>';
+    h += '<p class="sv-sep">Chutes</p><div class="sv-two">' + dcFld('Début', 'chDebut') + dcFld('Fin', 'chFin') + '</div>';
+    h += '<p class="sv-sep">Dépenses (en euros)</p><p class="fine">Carburant : somme de vos pleins de ce service. Car wash et autre : vos dépenses de ce jour dans l\'onglet Dépenses.</p><div class="sv-two">' + dcFld('Carburant', 'carburant') + dcFld('CT', 'ct') + dcFld('Car wash', 'carwash') + dcFld('Autre', 'autre') + '</div>';
+    h += '<p class="sv-sep">Courses de la journée</p>';
+    if (!d.courses.length) h += '<p class="fine">Aucune course enregistrée ce jour-là dans l\'onglet Calcul.</p>';
+    else h += '<p class="fine">Décochez une course qui n\'appartient pas à cette journée. Lieux, heures et prix viennent de votre enregistrement. Les index km ne sont pas enregistrés par l\'application : saisissez-les, ou touchez « Estimer les index ».</p>';
+    d.courses.forEach(function (k, i) {
+      h += '<div class="dc-ride"><label class="chk"><input type="checkbox" data-r="' + i + '" data-f="inclus"' + (k.inclus ? ' checked' : '') + '> <b>Course ' + (i + 1) + '</b> ' + esc(k.client || '') + '</label><div class="sv-two">' +
+        dcRf(i, 'Index départ', 'indexDep', 'number') + dcRf(i, 'Index embarquement', 'embIdx', 'number') + dcRf(i, 'Lieu embarquement', 'embLieu') + dcRf(i, 'Heure embarquement', 'embHeure', 'time') +
+        dcRf(i, 'Index débarquement', 'debIdx', 'number') + dcRf(i, 'Lieu débarquement', 'debLieu') + dcRf(i, 'Heure débarquement', 'debHeure', 'time') + dcRf(i, 'Prix taximètre (€)', 'prix', 'number') + dcRf(i, 'Somme perçue (€)', 'percu', 'number') + '</div></div>';
+    });
+    if (d.courses.length) h += '<div class="row"><button class="btn" type="button" id="dcEst">Estimer les index</button></div>';
+    h += '<label class="field"><span>Remarques</span><textarea data-k="remarques" rows="3">' + esc(d.remarques) + '</textarea></label>';
+    h += '<div id="dcTot" class="notice"></div><div id="dcFlags" class="notice warn" hidden></div>';
+    h += '<div class="row"><button class="btn primary big" type="button" id="dcValid">' + (dcWork.mode === 'fix' ? 'Enregistrer la correction' : 'Valider la journée') + '</button><button class="btn" type="button" id="dcCancel">Annuler</button></div>';
+    $('dcEdit').innerHTML = h; $('dcEdit').hidden = false; $('dcView').hidden = true; dcRefreshTot();
+  }
+  function dcRefreshTot() {
+    var d = dcWork.data, c = dcCalc(d), fl = dcFlags(d);
+    $('dcTot').innerHTML = 'Km parcourus (tableau de bord) : <b>' + (c.kmParc === null ? '—' : dN(c.kmParc)) + '</b> · Total taximètre : <b>' + (c.taxi === null ? '—' : dN(c.taxi)) + '</b><br>' + c.nb + ' course(s) retenue(s) · Sous-total : <b>' + dE(c.sous) + '</b> · Perçu : <b>' + dE(c.percu) + '</b> · Crédit : <b>' + dE(c.credit) + '</b><br>Dépenses : <b>' + dE(c.dep) + '</b> · Total général : <b>' + dE(c.total) + '</b>';
+    $('dcFlags').hidden = !fl.length; $('dcFlags').textContent = fl.length ? 'À vérifier, non renseigné : ' + fl.join(', ') + '.' : '';
+  }
+  function dcEstimate() {
+    var d = dcWork.data, cur = dIsNum(d.kmDebut) ? num(d.kmDebut) : null; if (cur === null) return;
+    d.courses.forEach(function (k) {
+      if (!k.inclus) return;
+      var r = findIn(rides, k.rideId), kc = r && r.resultat ? num(r.resultat.kmClient) : 0;
+      if (!dIsNum(k.indexDep)) k.indexDep = Math.round(cur);
+      if (!dIsNum(k.embIdx)) k.embIdx = Math.round(cur);
+      if (!dIsNum(k.debIdx)) k.debIdx = Math.round(num(k.embIdx) + kc);
+      cur = num(k.debIdx);
+    });
+    dcRenderEdit(); dcMsg('Index estimés à partir des kilomètres de chaque course : à vérifier avec votre compteur.', 'warn');
+  }
+  function dcValidate() {
+    var d = dcWork.data, fl = dcFlags(d);
+    if (!d.courses.some(function (k) { return k.inclus; }) && !fl.length) return;
+    if (fl.length && dcArmed !== 'val') { dcArmed = 'val'; dcMsg('Des informations ne sont pas renseignées (' + fl.length + '). Elles resteront vides sur les documents avec la mention « Vérification nécessaire ». Appuyez de nouveau pour valider quand même.', 'warn'); $('dcValid').scrollIntoView({ block: 'center' }); return; }
+    dcArmed = '';
+    var now = new Date().toISOString(), copy = JSON.parse(JSON.stringify(d)), id;
+    if (dcWork.mode === 'fix') {
+      var doc = dcById(dcWork.docId); if (!doc) return;
+      doc.historique = doc.historique || []; doc.historique.push({ version: doc.version, at: doc.corrigeLe || doc.validatedAt, data: doc.data });
+      doc.version++; doc.data = copy; doc.corrigeLe = now; id = doc.id;
+    } else {
+      var soc = dcSocNow(), lid = soc.logoId; if (lid) dcStore.logos[lid] = soc.logo;
+      var x = sv.services.filter(function (s) { return s.id === dcWork.serviceId; })[0];
+      id = svId('d');
+      dcStore.docs.push({ id: id, serviceId: dcWork.serviceId, chauffeurId: x ? x.chauffeurId : '', vehiculeId: x ? x.vehiculeId : '', validatedAt: now, version: 1, historique: [], data: copy,
+        societe: { nom: soc.nom, adresse: soc.adresse, ville: soc.ville, tel: soc.tel, email: soc.email, numero: soc.numero, emailPatron: soc.emailPatron, logoId: lid, logoW: soc.logoW, logoH: soc.logoH } });
+    }
+    if (!dcSave()) { toast('Enregistrement impossible : espace de stockage plein.'); return; }
+    dcCloseAll(); dcRenderTop(); svRender(); dcOpen(id); dcMsg('Journée validée. Les deux documents sont prêts.', '');
+  }
+  function dcOpen(id) {
+    var doc = dcById(id); if (!doc) return; dcCloseAll(); dcOpenId = id;
+    var soc = dcSocOf(doc), h = '<header><h2>Journée du ' + frDate(doc.data.date) + '</h2></header><p class="fine">' + esc(doc.data.chauffeurNom) + ' · ' + esc(doc.data.immat) + ' · version ' + doc.version + ' · validée le ' + svFD(doc.validatedAt) + ' · société : ' + esc(soc.nom) + '</p>';
+    h += '<div class="sv-actions">' +
+      '<button class="btn" type="button" data-act="pdf-route">PDF feuille de route</button><button class="btn" type="button" data-act="pdf-courses">PDF courses clients</button>' +
+      '<button class="btn" type="button" data-act="docx-route">Word feuille de route</button><button class="btn" type="button" data-act="docx-courses">Word courses clients</button>' +
+      '<button class="btn" type="button" data-act="print-route">Imprimer la feuille de route</button><button class="btn" type="button" data-act="print-courses">Imprimer les courses</button>' +
+      '<button class="btn primary big" type="button" data-act="mail">Envoyer au patron (4 fichiers)</button>' +
+      '<button class="btn" type="button" data-act="fix">Corriger cette journée</button><button class="btn" type="button" data-act="close">Fermer</button></div>';
+    if (doc.historique && doc.historique.length) h += '<p class="fine">Versions précédentes conservées : ' + doc.historique.map(function (x) { return 'v' + x.version + ' (' + svFD(x.at) + ')'; }).join(', ') + '.</p>';
+    h += '<p class="sv-sep">Aperçu : feuille de route</p><div class="dc-prev">' + dcModelHtml(dcModelRoute(doc.data)) + '</div><p class="sv-sep">Aperçu : courses clients</p><div class="dc-prev">' + dcModelHtml(dcModelCourses(doc.data)) + '</div>';
+    $('dcView').innerHTML = h; $('dcView').hidden = false; $('dcView').scrollIntoView({ block: 'start' });
+  }
+  function dcFix(id) {
+    var doc = dcById(id); if (!doc) return; dcCloseAll();
+    dcWork = { mode: 'fix', docId: id, data: JSON.parse(JSON.stringify(doc.data)) }; dcRenderEdit(); $('dcEdit').scrollIntoView({ block: 'start' });
+  }
+
+  $('dcEdit').addEventListener('input', dcOnInput); $('dcEdit').addEventListener('change', dcOnInput);
+  function dcOnInput(e) {
+    var t = e.target; if (!dcWork) return; dcArmed = '';
+    if (t.dataset.k) { dcWork.data[t.dataset.k] = (t.type === 'number') ? (t.value === '' ? '' : num(t.value)) : t.value; }
+    else if (t.dataset.r !== undefined) {
+      var k = dcWork.data.courses[parseInt(t.dataset.r, 10)], f = t.dataset.f;
+      if (f === 'inclus') k.inclus = t.checked; else k[f] = (t.type === 'number') ? (t.value === '' ? '' : num(t.value)) : t.value;
+    } else return;
+    dcRefreshTot();
+  }
+  $('dcEdit').addEventListener('click', function (e) {
+    var b = e.target.closest('button'); if (!b) return;
+    if (b.id === 'dcValid') dcValidate(); else if (b.id === 'dcCancel') { dcCloseAll(); } else if (b.id === 'dcEst') dcEstimate();
+  });
+  $('dcView').addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-act]'); if (!b) return; var doc = dcById(dcOpenId); if (!doc) return;
+    var a = b.dataset.act.split('-');
+    if (a[0] === 'pdf' || a[0] === 'docx') dcDownload(doc, a[1], a[0]);
+    else if (a[0] === 'print') dcPrint(doc, a[1]);
+    else if (a[0] === 'mail') dcSend(doc);
+    else if (a[0] === 'fix') dcFix(doc.id);
+    else if (a[0] === 'close') dcCloseAll();
+  });
+  $('tab-docs').addEventListener('click', function (e) {
+    var p = e.target.closest('button[data-prep]'); if (p) { dcPrepare(p.dataset.prep); return; }
+    var o = e.target.closest('button[data-open]'); if (o) dcOpen(o.dataset.open);
+  });
+  ['dc_fch', 'dc_fve', 'dc_du', 'dc_au'].forEach(function (id) { $(id).addEventListener('change', dcRenderList); });
+
+  /* logo de la société (réglages) */
+  function proLogoLoad(file) {
+    if (!file) return;
+    var fr = new FileReader();
+    fr.onload = function () {
+      var img = new Image();
+      img.onload = function () {
+        var s = Math.min(1, 360 / img.width), w = Math.max(1, Math.round(img.width * s)), h = Math.max(1, Math.round(img.height * s)), cv = document.createElement('canvas');
+        cv.width = w; cv.height = h; var cx = cv.getContext('2d'), png = /png|svg|gif|webp/.test(file.type);
+        if (!png) { cx.fillStyle = '#fff'; cx.fillRect(0, 0, w, h); }
+        cx.drawImage(img, 0, 0, w, h);
+        pro.logo = png ? cv.toDataURL('image/png') : cv.toDataURL('image/jpeg', 0.85); pro.logoW = w; pro.logoH = h;
+        saveJSON(STORE_P, pro); buildProForm(); toast('Logo enregistré.');
+      };
+      img.onerror = function () { toast('Image illisible.'); };
+      img.src = fr.result;
+    };
+    fr.readAsDataURL(file);
+  }
 
   /* ----- démarrage ----- */
   $('storageWarn').hidden = storageOK();
