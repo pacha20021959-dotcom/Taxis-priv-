@@ -909,6 +909,15 @@ body{background:linear-gradient(180deg,var(--bg) 0,color-mix(in srgb,var(--bg) 8
 .tab[data-tab="home"]::before,.ic[data-ic="home"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%203L2%2012h3v8h5v-5h4v5h5v-8h3L12%203z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%203L2%2012h3v8h5v-5h4v5h5v-8h3L12%203z'/%3E%3C/svg%3E")}
 .tab[data-tab="menu"]::before,.ic[data-ic="menu"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%204h7v7H4V4zm9%200h7v7h-7V4zM4%2013h7v7H4v-7zm9%200h7v7h-7v-7z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%204h7v7H4V4zm9%200h7v7h-7V4zM4%2013h7v7H4v-7zm9%200h7v7h-7v-7z'/%3E%3C/svg%3E")}
 
+
+/* Course en direct : deux grands boutons sur la feuille de course */
+.lc-state{padding:14px 10px;border-radius:14px;text-align:center;font-weight:800;font-size:1.05rem;letter-spacing:.02em;background:#e3e8ef;color:#3b4a5e;box-shadow:inset 0 2px 4px rgba(0,0,0,.08)}
+.lc-state.on{background:linear-gradient(180deg,#e0483a,#a82013);color:#fff}
+.lc-state.done{background:#f2b84b;color:#3a2a00}
+.lc-btns{display:grid;gap:10px;margin:10px 0}
+.lc-btns .btn{min-height:68px;font-size:1.1rem;font-weight:800;letter-spacing:.02em}
+.lc-btns .btn:disabled{opacity:.45}
+
 /* Navigation fixe en bas, accueil, menu */
 main{padding-bottom:110px}
 .tabs{position:fixed;left:0;right:0;bottom:0;z-index:999;margin:0 auto;max-width:760px;padding:6px 8px max(8px,env(safe-area-inset-bottom,0px));gap:6px;overflow:visible;background:var(--bg);border-radius:20px 20px 0 0;box-shadow:0 -10px 18px -12px rgba(var(--shadow),.5);border-top:1px solid var(--line)}
@@ -1139,7 +1148,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.0</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.1</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1276,6 +1285,17 @@ h3{color:var(--accent)}
 <!-- ============ CALCULATEUR ============ -->
 <section id="tab-calc" class="layout" hidden aria-label="Calculateur de course">
   <div class="col">
+    <div class="card" id="lcCard">
+      <header><h2>Course en direct</h2></header>
+      <div id="lcState" class="lc-state">AUCUNE COURSE EN COURS</div>
+      <div class="lc-btns">
+        <button class="btn big primary" type="button" id="lcStart">DÉBUT DE COURSE</button>
+        <button class="btn big danger" type="button" id="lcEnd" disabled>ARRIVÉE À DESTINATION</button>
+      </div>
+      <div id="lcMsg" class="notice" hidden></div>
+      <div id="lcLive" hidden></div>
+      <div id="lcRecap" hidden></div>
+    </div>
     <div id="setupWarn" class="notice warn" hidden>
       Vos tarifs et vos coûts ne sont pas encore renseignés, donc les prix et les résultats restent à zéro.
       <div class="row"><button class="btn" type="button" id="goSettings">Ouvrir les réglages</button></div>
@@ -3436,7 +3456,7 @@ function buildInvoicePdf(JsPDF, inv) {
     }
     tPrev = pt;
     if (!tGot) { tGot = true; showNotice($('trMsg'), 'Signal GPS reçu, le suivi est en cours.', ''); }
-    if (!tLast) { tLast = pt; s.last = [pt.lat, pt.lon, pt.t]; storePt(s, pt); }
+    if (!tLast) { tLast = pt; s.last = [pt.lat, pt.lon, pt.t]; storePt(s, pt); if (!s.addrDebut) { s.addrDebut = 'Position GPS ' + pt.lat.toFixed(5) + ', ' + pt.lon.toFixed(5); lcAddr(s, 'addrDebut', pt.lat, pt.lon); } }
     else {
       var d = haversine(tLast, pt), dt = (pt.t - tLast.t) / 1000, dtH = dt / 3600;
       if (d >= 0.015 && dtH > 0 && d / dtH < 220) {
@@ -3509,7 +3529,7 @@ function buildInvoicePdf(JsPDF, inv) {
     e.priseEnCharge = g.pec; e.tarifKm = g.km; e.tarifAttente = g.att;
     return computeRide({ kmAller: s.km, dureeAllerMin: 0, retourMode: 'none', kmRetour: 0, kmExtra: 0, attenteMin: 0, supplements: 0, peages: 0, stationnement: 0, autres: 0, refacture: false, prixConvenu: 0 }, e).coutTotal;
   }
-  function renderTrace() { renderTraceMain(); renderDrive(); }
+  function renderTrace() { renderTraceMain(); renderDrive(); lcRender(); }
   var driveDone = null;
   function fillDrive(s, pre) {
     var end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s), g = traceGrille(s);
@@ -3587,7 +3607,7 @@ function buildInvoicePdf(JsPDF, inv) {
     es.priseEnCharge = g.pec; es.tarifKm = g.km; es.tarifAttente = g.att;
     var r = computeRide(i, es), d0 = new Date(s.debut), end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s);
     var ride = {
-      id: Date.now().toString(36), creeLe: new Date().toISOString(), client: '', date: dateOf(d0), heure: hhmm(d0), depart: '', arrivee: '',
+      id: Date.now().toString(36), creeLe: new Date().toISOString(), client: '', date: dateOf(d0), heure: hhmm(d0), depart: s.addrDebut || '', arrivee: s.addrFin || '',
       grille: g.nom, entrees: i, resultat: r,
       gps: { km: Math.round(s.km * 100) / 100, turnKm: typeof s.turnKm === 'number' ? Math.round(s.turnKm * 100) / 100 : null, debut: hhmm(d0), fin: hhmm(end),
         dureeMin: Math.round((end - d0) / 60000), waitMin: Math.round(twait(s) / 60), prixDirect: tp === null ? null : Math.round(tp * 100) / 100 }
@@ -3698,6 +3718,7 @@ function buildInvoicePdf(JsPDF, inv) {
     $('segNew').classList.toggle('is-on', name === 'calc'); $('segHist').classList.toggle('is-on', name === 'rides');
     $('backBar').hidden = !BACK_TITLE[name]; $('backTitle').textContent = BACK_TITLE[name] || '';
     if (name === 'home') hmRender();
+    if (name === 'calc') lcRender();
     if (name === 'service') svRender();
     if (name === 'docs') dcRenderTop();
     if (name === 'clients') renderClients();
@@ -4796,6 +4817,72 @@ function buildInvoicePdf(JsPDF, inv) {
   });
   $('hmSvc').addEventListener('click', function () { svOpen(svActive() ? 'end' : 'start'); });
   $('hmFuel').addEventListener('click', function () { svOpen('fuel'); });
+
+
+  /* ===== Course en direct : DÉBUT DE COURSE et ARRIVÉE À DESTINATION ===== */
+  var lc = { phase: 'idle', sid: '', rideId: '' };
+  function lcAddr(sess, key, lat, lon) {
+    var fb = 'Position GPS ' + Number(lat).toFixed(5) + ', ' + Number(lon).toFixed(5);
+    if (!navigator.onLine) { sess[key] = fb; return Promise.resolve(); }
+    return nominatim(CONFIG.reverseUrl(lat, lon)).then(function (d) { sess[key] = cleanLabel(d && d.display_name) || fb; }, function () { sess[key] = fb; });
+  }
+  function lcHms(ms) { var t = Math.max(0, Math.floor(ms / 1000)); return pad(Math.floor(t / 3600)) + ':' + pad(Math.floor(t % 3600 / 60)) + ':' + pad(t % 60); }
+  function lcRow(k, v) { return '<div class="sv-row"><span>' + k + '</span><b>' + v + '</b></div>'; }
+  function lcRender() {
+    var act = !!tcur;
+    if (act) lc.phase = 'live'; else if (lc.phase === 'live') lc.phase = 'idle';
+    var ph = lc.phase;
+    $('lcStart').disabled = ph !== 'idle'; $('lcEnd').disabled = ph !== 'live';
+    $('lcState').className = 'lc-state' + (ph === 'live' ? ' on' : (ph === 'recap' ? ' done' : ''));
+    $('lcState').textContent = ph === 'live' ? 'COURSE EN COURS depuis ' + hhmm(new Date(tcur.debut)) : (ph === 'recap' ? 'COURSE TERMINÉE : À VALIDER' : 'AUCUNE COURSE EN COURS');
+    $('lcLive').hidden = ph !== 'live';
+    if (ph === 'live') {
+      var g = traceGrille(tcur), tp = tracePrice(tcur);
+      $('lcLive').innerHTML = lcRow('Chronomètre', lcHms(Date.now() - new Date(tcur.debut).getTime())) + lcRow('Kilomètres parcourus', km(tcur.km)) +
+        lcRow('Prix provisoire', tp === null ? 'Aucun tarif' : eur(tp)) + lcRow('Tarif appliqué', esc(g.nom || '')) + lcRow('Adresse de départ', esc(tcur.addrDebut || 'Recherche en cours, signal GPS en attente'));
+    }
+    $('lcRecap').hidden = ph !== 'recap';
+  }
+  function lcStart() {
+    showNotice($('lcMsg'), '', '');
+    if (tcur || lc.phase !== 'idle') return;
+    traceStart(false);
+    if (!tcur) { showNotice($('lcMsg'), $('trMsg').textContent || 'Le suivi GPS n\'a pas pu démarrer.', 'warn'); return; }
+    tcur.addrDebut = ''; lc.phase = 'live'; lc.sid = tcur.id; lcRender();
+  }
+  function lcEnd() {
+    var s = tcur; if (!s) return;
+    traceStop(); lc.phase = 'recap'; lc.sid = s.id; lc.rideId = '';
+    $('lcRecap').innerHTML = '<p class="fine">Calcul de la course et recherche de l\'adresse d\'arrivée…</p>'; lcRender();
+    var jobs = [];
+    if (s.last) jobs.push(lcAddr(s, 'addrFin', s.last[0], s.last[1]));
+    if (!s.addrDebut && s.pts && s.pts[0]) jobs.push(lcAddr(s, 'addrDebut', s.pts[0][1], s.pts[0][2]));
+    var finished = false;
+    function finish() {
+      if (finished) return; finished = true;
+      if (!(s.km > 0.05)) { lc.phase = 'idle'; saveTrace(true); lcRender(); showNotice($('lcMsg'), 'Course trop courte (moins de 50 m mesurés) : elle n\'a pas été enregistrée.', 'warn'); return; }
+      saveTrace(true); traceSave(s.id); lc.rideId = s.rideId || ''; lcRecap(s);
+    }
+    Promise.all(jobs).then(finish, finish); setTimeout(finish, 9000);
+  }
+  function lcRecap(s) {
+    var d0 = new Date(s.debut), d1 = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s), saved = !!(s.rideId && findIn(rides, s.rideId));
+    $('lcRecap').innerHTML = '<p class="sv-sep">Récapitulatif de la course</p>' +
+      lcRow('Départ', hhmm(d0) + '<br><small>' + esc(s.addrDebut || 'Adresse non disponible') + '</small>') + lcRow('Arrivée', hhmm(d1) + '<br><small>' + esc(s.addrFin || 'Adresse non disponible') + '</small>') +
+      lcRow('Distance parcourue', km(s.km)) + lcRow('Durée', dur((d1 - d0) / 60000)) + lcRow('Attente comptée', dur(twait(s) / 60)) +
+      lcRow('Prix final', tp === null ? 'Aucun tarif' : eur(tp)) +
+      '<div class="notice">' + (saved ? 'La course est enregistrée dans l\'onglet Courses.' : 'Enregistrement impossible : réessayez depuis le GPS.') + '</div>' +
+      '<label class="field"><span>Nom du client (facultatif)</span><input type="text" id="lcClient" autocomplete="off"></label>' +
+      '<div class="row"><button class="btn primary big" type="button" id="lcOk">Valider la course</button></div>';
+    $('lcOk').addEventListener('click', lcValidate); lcRender();
+  }
+  function lcValidate() {
+    var r = lc.rideId ? findIn(rides, lc.rideId) : null, c = $('lcClient') ? $('lcClient').value.trim() : '';
+    if (r && c) { r.client = c; saveJSON(STORE_R, rides); renderRides(); }
+    lc.phase = 'idle'; lc.sid = ''; lc.rideId = ''; $('lcRecap').innerHTML = ''; lcRender(); toast('Course validée.');
+  }
+  $('lcStart').addEventListener('click', lcStart);
+  $('lcEnd').addEventListener('click', lcEnd);
 
   /* ----- démarrage ----- */
   $('storageWarn').hidden = storageOK();
