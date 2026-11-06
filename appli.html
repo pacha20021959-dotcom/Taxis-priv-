@@ -1065,6 +1065,20 @@ h3{color:var(--accent)}
 .drive .speedo .dial{width:min(80vw,320px);height:min(80vw,320px)}
 .drive .speedo .inner b{font-size:min(10vw,2.6rem)}
 @media (prefers-reduced-motion: reduce){.speedo .ndl{transition:none}}
+/* Aide v4.3 */
+.ic[data-ic="aide"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%2016h-2v-2h2v2zm1.8-6.1l-.9.9c-.6.6-.9%201.1-.9%202.1h-2v-.5c0-1%20.3-1.8.9-2.4l1.2-1.3c.4-.3.6-.8.6-1.3%200-1.1-.9-2-2-2s-2%20.9-2%202H8c0-2.2%201.8-4%204-4s4%201.8%204%204c0%20.9-.4%201.7-1.2%202.5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%2016h-2v-2h2v2zm1.8-6.1l-.9.9c-.6.6-.9%201.1-.9%202.1h-2v-.5c0-1%20.3-1.8.9-2.4l1.2-1.3c.4-.3.6-.8.6-1.3%200-1.1-.9-2-2-2s-2%20.9-2%202H8c0-2.2%201.8-4%204-4s4%201.8%204%204c0%20.9-.4%201.7-1.2%202.5z'/%3E%3C/svg%3E")}
+.aide .ah{border:1px solid var(--line);border-radius:16px;background:linear-gradient(180deg,var(--card-top),var(--card-bot));box-shadow:0 8px 18px -12px rgba(var(--shadow),.35);overflow:hidden}
+.aide .ah summary{list-style:none;cursor:pointer;padding:14px 44px 14px 16px;position:relative;display:grid;gap:2px;min-height:48px}
+.aide .ah summary::-webkit-details-marker{display:none}
+.aide .ah summary::after{content:"+";position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:1.6rem;font-weight:800;color:var(--accent)}
+.aide .ah[open] summary::after{content:"\2212"}
+.aide .ah summary b{font-size:1.05rem;color:var(--ink)}
+.aide .ah summary small{color:var(--muted);font-size:.85rem}
+.aide .ab{padding:2px 16px 16px;line-height:1.5;font-size:.95rem;overflow-wrap:anywhere}
+.aide .ab h4{margin:16px 0 6px;font-size:1rem;color:var(--accent)}
+.aide .ab p{margin:6px 0}
+.aide .ab ul,.aide .ab ol{margin:6px 0;padding-left:22px}
+.aide .ab li{margin:4px 0}
 .drive-price{display:grid;gap:2px;padding:14px;border-radius:18px;background:linear-gradient(180deg,var(--card-top),var(--card-bot));border:1px solid var(--line);
   box-shadow:0 10px 22px -12px rgba(var(--shadow),.35),inset 0 1px 0 rgba(255,255,255,.7)}
 .drive-price span{font-size:.85rem;color:var(--muted);font-weight:700}
@@ -1160,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.2</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.3</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1198,6 +1212,7 @@ h3{color:var(--accent)}
   <div class="card"><header><h2>Ma journée</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="service"><span class="ic" data-ic="service"></span><b>Mon service</b><small>Début, fin, pleins, pauses, historique</small></button><button class="btn mcard" type="button" data-go="docs"><span class="ic" data-ic="docs"></span><b>Mes documents</b><small>Feuilles de route, PDF et Word, envoi au patron</small></button></div></div>
   <div class="card"><header><h2>Gestion</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="invoices"><span class="ic" data-ic="invoices"></span><b>Factures</b><small>Créer, imprimer, envoyer</small></button><button class="btn mcard" type="button" data-go="expenses"><span class="ic" data-ic="expenses"></span><b>Dépenses</b><small>Carburant, entretien, frais</small></button><button class="btn mcard" type="button" data-go="rides"><span class="ic" data-ic="rides"></span><b>Historique et chiffre d'affaires</b><small>Toutes les courses, totaux, statistiques</small></button><button class="btn mcard" type="button" data-go="rides" data-scroll="exportBtn"><span class="ic" data-ic="docs"></span><b>Sauvegarde et exportation</b><small>Exporter ou restaurer vos données</small></button></div></div>
   <div class="card"><header><h2>Société et réglages</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="settings" data-scroll="proForm"><span class="ic" data-ic="settings"></span><b>Informations de la société</b><small>Nom, logo, coordonnées, courriel du patron</small></button><button class="btn mcard" type="button" data-go="settings"><span class="ic" data-ic="settings"></span><b>Paramètres</b><small>Tarifs, mot de passe, application</small></button></div></div>
+  <div class="card"><header><h2>Aide</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="aide"><span class="ic" data-ic="aide"></span><b>AIDE</b><small>Guide pour utiliser Taxi Pro pas à pas</small></button></div></div>
 </div>
 </section>
 
@@ -1620,6 +1635,175 @@ h3{color:var(--accent)}
       <p class="fine">4. Ne fermez pas l'application en la balayant dans la liste des applications récentes.</p>
     </div>
     <div class="list" id="trList"></div>
+  </div>
+</section>
+
+<!-- ============ AIDE ============ -->
+<section id="tab-aide" hidden aria-label="Aide">
+  <div class="col aide">
+    <div class="card"><header><h2>Guide d'utilisation</h2></header>
+      <p class="fine">Touchez une rubrique pour l'ouvrir ou la refermer.</p>
+      <div class="row"><button class="btn" type="button" id="aideAll">Tout ouvrir</button><button class="btn" type="button" id="aideNone">Tout fermer</button></div>
+    </div>
+    <details class="ah" open><summary><b>1. Présentation de Taxi Pro</b><small>À quoi sert l'application</small></summary><div class="ab"><p>Taxi Pro aide un chauffeur de taxi à suivre son activité du début à la fin de la journée.</p>
+<p>Ce que vous pouvez faire :</p>
+<ul>
+<li>Calculer le prix et le coût d'une course, avec adresses, itinéraire, retour, attente et suppléments.</li>
+<li>Suivre une course en direct avec le GPS : kilomètres, attente, prix qui monte et compteur de vitesse.</li>
+<li>Enregistrer vos courses et consulter l'historique et le chiffre d'affaires.</li>
+<li>Gérer vos clients et émettre des factures en PDF.</li>
+<li>Noter vos dépenses (carburant, entretien, frais) et voir le bilan du mois.</li>
+<li>Suivre votre service : début, fin, pleins, pauses.</li>
+<li>Préparer les feuilles de route et les feuilles de courses clients en PDF ou Word, et les envoyer au patron.</li>
+</ul>
+<p>Vos données sont enregistrées sur votre téléphone, dans l'application. Sans internet, les calculs, courses, factures et dépenses fonctionnent. La recherche d'adresses, le calcul d'itinéraire et la carte demandent internet.</p>
+<p>Important : le prix affiché est une estimation calculée par le téléphone. Ce n'est pas un taximètre homologué.</p></div></details>
+    <details class="ah"><summary><b>2. Prise en main</b><small>Démarrer et se repérer</small></summary><div class="ab"><h4>Au premier lancement</h4>
+<ol>
+<li>La page « Bienvenue sur Taxi Pro » s'affiche. Écrivez votre nom.</li>
+<li>Si vous le souhaitez, choisissez un mot de passe (4 caractères minimum) et répétez-le. Ce n'est pas obligatoire.</li>
+<li>Touchez « Commencer ».</li>
+</ol>
+<p>Les fois suivantes, la page affiche « Vous êtes sur l'application Taxi Pro » : touchez « Entrer ».</p>
+<h4>La barre du bas</h4>
+<p>Elle est toujours visible et contient cinq boutons :</p>
+<ul>
+<li>Accueil : le résumé de votre journée, le bouton « Nouvelle course » et des raccourcis.</li>
+<li>Courses : le calcul d'une nouvelle course et l'historique.</li>
+<li>Clients : votre liste de clients.</li>
+<li>GPS : le suivi GPS autonome et le compteur de vitesse.</li>
+<li>Menu : tout le reste, rangé en cartes.</li>
+</ul>
+<h4>Le Menu</h4>
+<ul>
+<li>Ma journée : Mon service, Mes documents.</li>
+<li>Gestion : Factures, Dépenses, Historique et chiffre d'affaires, Sauvegarde et exportation.</li>
+<li>Société et réglages : Informations de la société, Paramètres.</li>
+<li>Aide : ce guide.</li>
+</ul>
+<p>Pour revenir en arrière, touchez « ‹ Menu » en haut de la page, ou un bouton de la barre du bas.</p></div></details>
+    <details class="ah"><summary><b>3. Gestion des courses</b><small>Préparer, suivre, terminer et enregistrer</small></summary><div class="ab"><h4>Méthode rapide : la course en direct</h4>
+<p>Allez dans Courses, tout en haut de « Nouvelle course », carte « Course en direct ».</p>
+<ol>
+<li>Touchez « DÉBUT DE COURSE » quand le client monte. Le GPS démarre, avec le tarif choisi dans l'onglet GPS. Autorisez la localisation si le téléphone le demande.</li>
+<li>Roulez. L'écran affiche la distance, la durée, l'attente et le prix provisoire qui monte.</li>
+<li>Touchez « ARRIVÉE À DESTINATION » à l'arrivée. Le bouton reste grisé tant qu'aucune course n'est en cours.</li>
+<li>Un récapitulatif s'affiche : départ, arrivée, distance, durée, attente et prix final. La course est enregistrée automatiquement.</li>
+<li>Touchez « Valider la course » pour fermer le récapitulatif.</li>
+</ol>
+<p>Si la course mesure moins de 50 mètres, elle n'est pas enregistrée.</p>
+<h4>Méthode complète : préparer une course à l'avance</h4>
+<p>Plus bas sur la même page :</p>
+<ol>
+<li>Carte « Trajet » : indiquez le nom du client, la date, l'heure de départ, le type de course et le tarif appliqué.</li>
+<li>Adresse de départ : écrivez l'adresse puis touchez « Rechercher », ou touchez « Ma position » pour utiliser votre position GPS.</li>
+<li>Adresse d'arrivée : même chose.</li>
+<li>Touchez « Calculer l'itinéraire » (internet nécessaire). Les kilomètres et la durée se remplissent, et la carte montre le trajet.</li>
+<li>Carte « Distances et durées » : vérifiez les kilomètres aller. Choisissez le retour : « Pas de retour », « Retour à vide » (le taxi rentre, non facturé au client) ou « Retour avec le client » (facturé). Ajoutez au besoin des kilomètres supplémentaires et un temps d'attente.</li>
+<li>Carte « Suppléments et frais » : suppléments, péages, stationnement, autres frais. Vous pouvez les refacturer au client. Si le prix est convenu à l'avance, remplissez « Prix convenu avec le client ».</li>
+<li>Carte « Résultat de la course » : vous voyez le prix, le coût et le résultat estimé.</li>
+<li>Touchez « Enregistrer la course » pour la garder dans l'historique, puis « Nouvelle course » pour recommencer.</li>
+</ol>
+<h4>Suivre une course avec le GPS depuis cette page</h4>
+<p>La carte « Suivi GPS de la course » propose « Démarrer le suivi » et « Arrêter le suivi ». Elle affiche le prix en direct, les km réels, la durée et les arrêts. Pour un aller-retour, « Début du retour » marque le moment du retour. Le bouton « Utiliser ces kilomètres dans le calcul de la course » reprend les kilomètres mesurés.</p></div></details>
+    <details class="ah"><summary><b>4. GPS et compteur de vitesse</b><small>Activer le GPS et lire l'écran</small></summary><div class="ab"><h4>Activer le suivi</h4>
+<ol>
+<li>Touchez GPS dans la barre du bas.</li>
+<li>Choisissez « Tarif appliqué au suivi » et « Type de course » : aller simple, aller-retour avec retour facturé, ou aller plus retour à vide non facturé.</li>
+<li>Touchez « Démarrer le suivi GPS ». Autorisez la localisation si besoin.</li>
+<li>Pour finir, touchez « Arrêter le suivi GPS ». La course est alors enregistrée.</li>
+</ol>
+<p>La case « Compter les arrêts comme temps d'attente » compte l'immobilité du véhicule dans l'attente facturée.</p>
+<h4>Ce que vous voyez</h4>
+<ul>
+<li>Le compteur de vitesse : un cadran avec une aiguille rouge, de 0 à 200 km/h, et la vitesse exacte en chiffres.</li>
+<li>Prix au tarif choisi, Kilomètres, Attente, Durée.</li>
+<li>Coût estimé et Résultat estimé.</li>
+<li>Relevés et dernière position : ils montrent que le GPS reçoit bien le signal.</li>
+</ul>
+<p>« Ouvrir le compteur » (ou « Compteur » dans la bande rouge « SUIVI GPS ACTIF ») ouvre l'écran de conduite : grand cadran et prix en grand. « Réduire » le referme sans arrêter le suivi.</p>
+<h4>À savoir</h4>
+<ul>
+<li>La vitesse vient du GPS du téléphone. Elle peut être moins précise à très basse vitesse ou quand le signal est faible.</li>
+<li>Si le signal est perdu, la mention « Vitesse indisponible » s'affiche et l'aiguille revient à zéro.</li>
+<li>Dans l'application Android, le suivi continue en arrière-plan. Dans la version web, gardez l'application ouverte et l'écran allumé.</li>
+</ul></div></details>
+    <details class="ah"><summary><b>5. Tarifs et calcul des prix</b><small>Comment ça marche et où les modifier</small></summary><div class="ab"><h4>Le principe</h4>
+<p>Vous pouvez enregistrer jusqu'à trois tarifs, par exemple un tarif de jour et un tarif de nuit. Chaque tarif contient :</p>
+<ul>
+<li>La prise en charge (en euros), le montant de départ de la course.</li>
+<li>Le tarif au kilomètre (en euros par km).</li>
+<li>Le tarif d'attente (en euros par heure).</li>
+</ul>
+<p>Prix de la course = prise en charge + kilomètres facturés × tarif au kilomètre + temps d'attente × tarif d'attente + suppléments et frais refacturés. Si vous avez rempli « Prix convenu avec le client », ce prix est utilisé, et le prix calculé reste indiqué en information.</p>
+<h4>Modifier les tarifs</h4>
+<ol>
+<li>Menu, puis la carte « Paramètres ».</li>
+<li>Descendez jusqu'aux cartes « Tarif 1 », « Tarif 2 » et « Tarif 3 ».</li>
+<li>Changez le nom, la prise en charge, le tarif au kilomètre ou le tarif d'attente.</li>
+</ol>
+<p>Tout est enregistré automatiquement dès que vous tapez. Les nouveaux montants servent aux courses suivantes. Les courses déjà enregistrées ne changent pas.</p>
+<p>Un tarif sans prise en charge ni prix au kilomètre n'apparaît pas dans la liste de choix.</p>
+<h4>Choisir le tarif d'une course</h4>
+<p>Dans le calcul de course : champ « Tarif appliqué ». Dans le GPS : champ « Tarif appliqué au suivi ». Les montants s'affichent dans la liste.</p></div></details>
+    <details class="ah"><summary><b>6. Historique et suivi</b><small>Retrouver vos courses, clients, factures et dépenses</small></summary><div class="ab"><h4>Les courses</h4>
+<p>Courses, puis « Historique » (ou Menu, « Historique et chiffre d'affaires »). En haut : le nombre de courses, le chiffre d'affaires, le résultat estimé, les kilomètres et la part à vide. Dessous : chaque course avec le client, la date, le trajet, le prix, le coût et le résultat.</p>
+<p>Sur chaque course :</p>
+<ul>
+<li>« Facturer » crée la facture du client. S'il existe déjà une facture, le bouton devient « Voir la facture » avec son numéro.</li>
+<li>« Supprimer » efface la course. Il faut toucher une deuxième fois sur « Confirmer la suppression ».</li>
+</ul>
+<h4>Les clients</h4>
+<p>Clients, puis « Nouveau client » : nom, téléphone, courriel, adresse, notes. Touchez « Enregistrer ». Un champ « Rechercher » permet de les retrouver.</p>
+<h4>Les factures</h4>
+<p>Menu, « Factures ». Filtres : Toutes, À payer, Payées. Une facture émise reçoit un numéro et ne se modifie plus. Vous pouvez la télécharger en PDF, l'envoyer ou la partager, l'imprimer, la marquer comme payée ou l'annuler par un avoir. Pensez à remplir « Informations de la société » avant de facturer.</p>
+<h4>Les dépenses</h4>
+<p>Menu, « Dépenses » : date, catégorie, montant TTC payé, kilométrage (facultatif), description. Touchez « Enregistrer la dépense ». Le « Bilan du mois » montre vos dépenses et compare le réel avec l'estimation.</p>
+<h4>Mon service</h4>
+<ol>
+<li>Menu, « Mon service », puis « Commencer mon service » : nom du chauffeur, numéro d'identification si disponible, immatriculation, kilométrage au compteur, heure de début, puis « Valider le début ».</li>
+<li>Pendant le service : « Enregistrer un plein » (date, heure, kilométrage, litres, montant, type de carburant).</li>
+<li>À la fin : « Terminer mon service » (kilométrage final, heure de fin, pauses non enregistrées), puis « Terminer le service ».</li>
+<li>« Consulter mon historique » liste les services et les pleins, avec des filtres par chauffeur, véhicule et dates.</li>
+</ol>
+<h4>Mes documents</h4>
+<p>Après un service terminé, Menu, « Mes documents » : la journée apparaît dans « Journées à valider ». Touchez « Préparer », contrôlez les informations et validez la journée. Vous obtenez la feuille de route et les courses clients en PDF et en Word. Vous pouvez les imprimer ou toucher « Envoyer au patron (4 fichiers) ». Les journées validées ne sont jamais supprimées. Si une erreur apparaît, « Corriger cette journée » garde la trace des versions.</p>
+<p>Les courses d'une feuille viennent des courses faites pendant le service. Les index kilométriques de chaque course sont à saisir ou à estimer. Les champs vides sont signalés.</p>
+<h4>Sauvegarde</h4>
+<p>Courses, « Historique » : « Exporter une sauvegarde » crée un fichier à garder ailleurs (courriel, ordinateur, clé USB). « Restaurer une sauvegarde » le remet dans l'application.</p></div></details>
+    <details class="ah"><summary><b>7. Paramètres</b><small>Les réglages et leur utilité</small></summary><div class="ab"><p>Menu, carte « Paramètres » (le bouton « Ouvrir les réglages » du calcul de course y mène aussi). Les réglages s'enregistrent automatiquement.</p>
+<ul>
+<li>Application : installer Taxi Pro sur le téléphone quand le bouton apparaît.</li>
+<li>Accès à l'application : votre nom, et le mot de passe (activer, changer, retirer, « Verrouiller maintenant »). Le mot de passe empêche d'ouvrir l'application sans le connaître. Si vous l'oubliez, la seule solution est d'effacer les données : exportez donc des sauvegardes régulières.</li>
+<li>Tarif 1, 2 et 3 : prise en charge, prix au kilomètre, tarif d'attente.</li>
+<li>Coûts du véhicule : consommation, prix du carburant, pneus, provision entretien et mécanique, réserve pour remplacer le véhicule. Ils servent à estimer le coût de chaque course.</li>
+<li>Charges fixes et objectif : charges mensuelles, kilomètres professionnels par mois, marge souhaitée. Ils servent à répartir les charges et calculer le prix minimum rentable.</li>
+<li>Coût estimé par kilomètre : il se calcule tout seul avec les réglages ci-dessus.</li>
+<li>Informations de la société (Menu, « Informations de la société ») : nom, logo, coordonnées et courriel du patron. Elles apparaissent sur les factures et les feuilles de route.</li>
+</ul>
+<p>Tant que les tarifs et coûts ne sont pas remplis, les prix et résultats restent à zéro.</p></div></details>
+    <details class="ah"><summary><b>8. Questions fréquentes</b><small>Réponses simples aux problèmes courants</small></summary><div class="ab"><h4>Le prix reste à zéro ou affiche « Aucun tarif ».</h4>
+<p>Aucun tarif n'est rempli. Allez dans Menu, Paramètres, et remplissez au moins la prise en charge ou le tarif au kilomètre d'un tarif.</p>
+<h4>Le GPS ne démarre pas.</h4>
+<p>Autorisez la localisation pour l'application dans les réglages du téléphone, puis activez le GPS. Sortez à l'air libre quelques instants pour capter les satellites.</p>
+<h4>La vitesse affiche « Vitesse indisponible ».</h4>
+<p>Le signal GPS est faible ou perdu. Elle revient dès que le signal revient.</p>
+<h4>Le bouton « ARRIVÉE À DESTINATION » est grisé.</h4>
+<p>Il s'active seulement après « DÉBUT DE COURSE ».</p>
+<h4>Ma course n'a pas été enregistrée.</h4>
+<p>Une course de moins de 50 mètres n'est pas enregistrée. Sinon, vérifiez dans Courses, « Historique ».</p>
+<h4>La recherche d'adresse ou l'itinéraire ne marche pas.</h4>
+<p>Il faut internet. Vous pouvez saisir les kilomètres à la main.</p>
+<h4>J'ai changé un tarif : les anciennes courses changent-elles ?</h4>
+<p>Non. Seules les courses suivantes utilisent les nouveaux montants.</p>
+<h4>Mon suivi s'arrête quand je ferme l'application.</h4>
+<p>Dans la version web, le suivi demande l'application ouverte et l'écran allumé. L'application Android continue en arrière-plan.</p>
+<h4>J'ai oublié mon mot de passe.</h4>
+<p>Sur la page d'accueil, utilisez « Effacer les données et repartir de zéro ». Toutes les données sont effacées : restaurez ensuite une sauvegarde si vous en avez une.</p>
+<h4>Comment ne pas perdre mes données ?</h4>
+<p>Exportez une sauvegarde régulièrement et gardez le fichier ailleurs que sur le téléphone.</p>
+<h4>Comment mettre à jour l'application ?</h4>
+<p>Installez la nouvelle version par-dessus l'ancienne : vos données sont conservées. Le numéro de version est affiché en haut à droite.</p></div></details>
   </div>
 </section>
 
@@ -3727,7 +3911,7 @@ function buildInvoicePdf(JsPDF, inv) {
 
   /* ----- onglets et formulaire ----- */
   function showTab(name) {
-    ['home', 'menu', 'service', 'docs', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+    ['home', 'menu', 'service', 'docs', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings', 'aide'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
     $('segCourses').hidden = !(name === 'calc' || name === 'rides');
     $('segNew').classList.toggle('is-on', name === 'calc'); $('segHist').classList.toggle('is-on', name === 'rides');
     $('backBar').hidden = !BACK_TITLE[name]; $('backTitle').textContent = BACK_TITLE[name] || '';
@@ -4789,9 +4973,11 @@ function buildInvoicePdf(JsPDF, inv) {
 
 
   /* ===== Accueil et navigation ===== */
-  var NAV_GROUP = { home: 'home', calc: 'rides', rides: 'rides', clients: 'clients', trace: 'trace', menu: 'menu', service: 'menu', docs: 'menu', invoices: 'menu', expenses: 'menu', settings: 'menu' };
+  var NAV_GROUP = { home: 'home', calc: 'rides', rides: 'rides', clients: 'clients', trace: 'trace', menu: 'menu', service: 'menu', docs: 'menu', invoices: 'menu', expenses: 'menu', settings: 'menu', aide: 'menu' };
   var NAV_LAND = { rides: 'calc' };
-  var BACK_TITLE = { service: 'Mon service', docs: 'Mes documents', invoices: 'Factures', expenses: 'Dépenses', settings: 'Paramètres' };
+  var BACK_TITLE = { service: 'Mon service', docs: 'Mes documents', invoices: 'Factures', expenses: 'Dépenses', settings: 'Paramètres', aide: 'Aide' };
+  $('aideAll').addEventListener('click', function () { document.querySelectorAll('#tab-aide details').forEach(function (d) { d.open = true; }); });
+  $('aideNone').addEventListener('click', function () { document.querySelectorAll('#tab-aide details').forEach(function (d) { d.open = false; }); });
   function hmRender() {
     var a = svActive(), last = a || svLastDone(), c = last ? svDriverById(last.chauffeurId) : svDriverById(sv.dernierChauffeur);
     var nom = c ? c.nom : (profil && profil.nom ? profil.nom : 'Non renseigné');
