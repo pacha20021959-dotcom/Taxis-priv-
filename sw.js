@@ -1,6 +1,6 @@
 /* Taxi Gestion Pro : fonctionnement hors connexion.
    Les pages sont lues sur internet quand il y en a (donc toujours à jour), sinon depuis la copie enregistrée. */
-var VERSION = 'tgp-v3-5';
+var VERSION = 'tgp-v4-0';
 var TILES = 'tgp-tuiles';
 var SHELL = ['./appli.html', './manifest.json', './taxi-192.png', './taxi-512.png', './taxi-maskable-512.png'];
 
