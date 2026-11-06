@@ -895,15 +895,40 @@ body{background:linear-gradient(180deg,var(--bg) 0,color-mix(in srgb,var(--bg) 8
 .tabs{gap:3px;margin:0 -12px;padding:2px 8px 8px}
 .tab{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:3px;flex:1 0 auto;min-width:0;min-height:58px;padding:7px 3px;font-size:.54rem;font-weight:700;border-radius:14px;letter-spacing:-.02em;white-space:nowrap}
 .tab::before{content:"";width:22px;height:22px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
-.tab[data-tab="calc"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E")}
-.tab[data-tab="rides"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E")}
-.tab[data-tab="clients"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%2012a4.5%204.5%200%201%200%200-9%204.5%204.5%200%200%200%200%209zm0%202c-4.4%200-8%202.2-8%205v2h16v-2c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%2012a4.5%204.5%200%201%200%200-9%204.5%204.5%200%200%200%200%209zm0%202c-4.4%200-8%202.2-8%205v2h16v-2c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E")}
-.tab[data-tab="invoices"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M6%202h8l6%206v12a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm7%201.5V9h5.5L13%203.5zM8%2013h8v1.6H8V13zm0%203.5h8v1.6H8v-1.6z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M6%202h8l6%206v12a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm7%201.5V9h5.5L13%203.5zM8%2013h8v1.6H8V13zm0%203.5h8v1.6H8v-1.6z'/%3E%3C/svg%3E")}
-.tab[data-tab="expenses"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1.2%2014.8V18h-1.6v-1.2c-1.2-.2-2.1-.8-2.5-1.8l1.5-.7c.3.7.9%201.1%201.8%201.1.9%200%201.4-.4%201.4-1%200-.6-.4-.9-1.6-1.2-1.6-.4-2.9-1-2.9-2.6%200-1.2.9-2.1%202.3-2.4V6.2h1.6v1.2c1%20.2%201.8.8%202.2%201.6l-1.4.8c-.3-.6-.8-.9-1.5-.9-.8%200-1.2.4-1.2.9%200%20.5.4.8%201.5%201.1%201.8.5%203%201%203%202.7%200%201.3-1%202.2-2.5%202.5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1.2%2014.8V18h-1.6v-1.2c-1.2-.2-2.1-.8-2.5-1.8l1.5-.7c.3.7.9%201.1%201.8%201.1.9%200%201.4-.4%201.4-1%200-.6-.4-.9-1.6-1.2-1.6-.4-2.9-1-2.9-2.6%200-1.2.9-2.1%202.3-2.4V6.2h1.6v1.2c1%20.2%201.8.8%202.2%201.6l-1.4.8c-.3-.6-.8-.9-1.5-.9-.8%200-1.2.4-1.2.9%200%20.5.4.8%201.5%201.1%201.8.5%203%201%203%202.7%200%201.3-1%202.2-2.5%202.5z'/%3E%3C/svg%3E")}
-.tab[data-tab="trace"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E")}
-.tab[data-tab="settings"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E")}
-.tab[data-tab="service"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E")}
-.tab[data-tab="docs"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E")}
+.ic{display:inline-flex;width:30px;height:30px;flex:none}
+.ic::before{content:"";width:30px;height:30px;background:currentColor;-webkit-mask:center/contain no-repeat;mask:center/contain no-repeat}
+.tab[data-tab="calc"]::before,.ic[data-ic="calc"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M7%202h10a2%202%200%200%201%202%202v16a2%202%200%200%201-2%202H7a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm1%203v4h8V5H8zm0%207v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2zm-6%204v2h2v-2H8zm3%200v2h2v-2h-2zm3%200v2h2v-2h-2z'/%3E%3C/svg%3E")}
+.tab[data-tab="rides"]::before,.ic[data-ic="rides"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M5%2011l1.5-4.5A2%202%200%200%201%208.4%205h7.2a2%202%200%200%201%201.9%201.5L19%2011h1a1%201%200%200%201%201%201v5h-2v1.5a1.5%201.5%200%200%201-3%200V17H8v1.5a1.5%201.5%200%200%201-3%200V17H3v-5a1%201%200%200%201%201-1h1zm2.2%200h9.6l-1-3H8.2l-1%203zM6.5%2013.5a1%201%200%201%200%200%202%201%201%200%200%200%200-2zm11%200a1%201%200%201%200%200%202%201%201%200%200%200%200-2z'/%3E%3C/svg%3E")}
+.tab[data-tab="clients"]::before,.ic[data-ic="clients"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%2012a4.5%204.5%200%201%200%200-9%204.5%204.5%200%200%200%200%209zm0%202c-4.4%200-8%202.2-8%205v2h16v-2c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%2012a4.5%204.5%200%201%200%200-9%204.5%204.5%200%200%200%200%209zm0%202c-4.4%200-8%202.2-8%205v2h16v-2c0-2.8-3.6-5-8-5z'/%3E%3C/svg%3E")}
+.tab[data-tab="invoices"]::before,.ic[data-ic="invoices"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M6%202h8l6%206v12a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm7%201.5V9h5.5L13%203.5zM8%2013h8v1.6H8V13zm0%203.5h8v1.6H8v-1.6z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M6%202h8l6%206v12a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V4a2%202%200%200%201%202-2zm7%201.5V9h5.5L13%203.5zM8%2013h8v1.6H8V13zm0%203.5h8v1.6H8v-1.6z'/%3E%3C/svg%3E")}
+.tab[data-tab="expenses"]::before,.ic[data-ic="expenses"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1.2%2014.8V18h-1.6v-1.2c-1.2-.2-2.1-.8-2.5-1.8l1.5-.7c.3.7.9%201.1%201.8%201.1.9%200%201.4-.4%201.4-1%200-.6-.4-.9-1.6-1.2-1.6-.4-2.9-1-2.9-2.6%200-1.2.9-2.1%202.3-2.4V6.2h1.6v1.2c1%20.2%201.8.8%202.2%201.6l-1.4.8c-.3-.6-.8-.9-1.5-.9-.8%200-1.2.4-1.2.9%200%20.5.4.8%201.5%201.1%201.8.5%203%201%203%202.7%200%201.3-1%202.2-2.5%202.5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1.2%2014.8V18h-1.6v-1.2c-1.2-.2-2.1-.8-2.5-1.8l1.5-.7c.3.7.9%201.1%201.8%201.1.9%200%201.4-.4%201.4-1%200-.6-.4-.9-1.6-1.2-1.6-.4-2.9-1-2.9-2.6%200-1.2.9-2.1%202.3-2.4V6.2h1.6v1.2c1%20.2%201.8.8%202.2%201.6l-1.4.8c-.3-.6-.8-.9-1.5-.9-.8%200-1.2.4-1.2.9%200%20.5.4.8%201.5%201.1%201.8.5%203%201%203%202.7%200%201.3-1%202.2-2.5%202.5z'/%3E%3C/svg%3E")}
+.tab[data-tab="trace"]::before,.ic[data-ic="trace"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202C8.1%202%205%205.1%205%209c0%205.3%207%2013%207%2013s7-7.7%207-13c0-3.9-3.1-7-7-7zm0%209.5A2.5%202.5%200%201%201%2012%206.5a2.5%202.5%200%200%201%200%205z'/%3E%3C/svg%3E")}
+.tab[data-tab="settings"]::before,.ic[data-ic="settings"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%206h8.5v2H4zM15.5%206H20v2h-4.5zM14%204.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5zM4%2016h3.5v2H4zM10.5%2016H20v2h-9.5zM9%2014.5a2.5%202.5%200%201%201%200%205%202.5%202.5%200%200%201%200-5z'/%3E%3C/svg%3E")}
+.tab[data-tab="service"]::before,.ic[data-ic="service"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%202a10%2010%200%201%200%200%2020%2010%2010%200%200%200%200-20zm1%205v5.4l3.9%202.3-.8%201.3L11%2013V7h2z'/%3E%3C/svg%3E")}
+.tab[data-tab="docs"]::before,.ic[data-ic="docs"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M9%202h6a1%201%200%200%201%201%201v1h2a2%202%200%200%201%202%202v14a2%202%200%200%201-2%202H6a2%202%200%200%201-2-2V6a2%202%200%200%201%202-2h2V3a1%201%200%200%201%201-1zm1%202v1h4V4h-4zM8%2011h8v1.6H8V11zm0%203.5h8v1.6H8v-1.6zM8%2018h5v1.6H8V18z'/%3E%3C/svg%3E")}
+.tab[data-tab="home"]::before,.ic[data-ic="home"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%203L2%2012h3v8h5v-5h4v5h5v-8h3L12%203z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M12%203L2%2012h3v8h5v-5h4v5h5v-8h3L12%203z'/%3E%3C/svg%3E")}
+.tab[data-tab="menu"]::before,.ic[data-ic="menu"]::before{-webkit-mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%204h7v7H4V4zm9%200h7v7h-7V4zM4%2013h7v7H4v-7zm9%200h7v7h-7v-7z'/%3E%3C/svg%3E");mask-image:url("data:image/svg+xml,%3Csvg%20xmlns='http://www.w3.org/2000/svg'%20viewBox='0%200%2024%2024'%3E%3Cpath%20d='M4%204h7v7H4V4zm9%200h7v7h-7V4zM4%2013h7v7H4v-7zm9%200h7v7h-7v-7z'/%3E%3C/svg%3E")}
+
+/* Navigation fixe en bas, accueil, menu */
+main{padding-bottom:110px}
+.tabs{position:fixed;left:0;right:0;bottom:0;z-index:999;margin:0 auto;max-width:760px;padding:6px 8px max(8px,env(safe-area-inset-bottom,0px));gap:6px;overflow:visible;background:var(--bg);border-radius:20px 20px 0 0;box-shadow:0 -10px 18px -12px rgba(var(--shadow),.5);border-top:1px solid var(--line)}
+.tabs .tab{flex:1 1 0;width:0;margin:0;min-height:62px;font-size:.72rem;letter-spacing:0;padding:6px 2px}
+.tab::before{width:26px;height:26px}
+.tab .recdot{position:absolute;top:6px;right:22%}
+#toast{bottom:calc(88px + env(safe-area-inset-bottom, 0px))}
+.seg{display:flex;gap:8px;margin:0 0 12px}
+.seg .btn{flex:1;min-height:48px;font-weight:700}
+.seg .btn.is-on,.back .btn.is-on{background:linear-gradient(180deg,var(--pri-top),var(--pri-bot));color:#fff}
+.back{display:flex;align-items:center;gap:10px;margin:0 0 12px}
+.back .btn{min-height:46px;padding:6px 14px}
+.back b{font-size:1.05rem}
+.hm-grid,.mgrid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.hm-grid .btn,.mcard{display:flex;flex-direction:column;align-items:flex-start;justify-content:flex-start;gap:6px;text-align:left;min-height:96px;padding:12px;height:auto}
+.mcard b,.hm-grid b{font-size:.98rem;line-height:1.15}
+.mcard small{font-weight:500;font-size:.78rem;opacity:.75;line-height:1.2}
+.hm-soc{font-size:1.15rem;font-weight:800;margin:0 0 4px}
+.hm-chip{display:inline-block;padding:2px 10px;border-radius:999px;font-size:.78rem;font-weight:700;background:color-mix(in srgb,var(--pri-top) 22%,transparent)}
+.hm-chip.ok{background:color-mix(in srgb,#2e9b5a 28%,transparent)}
 .dc-ride{border:1px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:8px;min-width:0}
 .dc-prev{overflow-x:auto;border:1px solid var(--line);border-radius:10px;padding:8px;background:#fff;color:#111}
 .dc-t{width:100%;border-collapse:collapse;font-size:.62rem;table-layout:fixed}
@@ -1114,18 +1139,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v3.9</span></div>
-  <nav class="tabs" aria-label="Rubriques">
-    <button class="tab is-active" data-tab="service" type="button">Service</button>
-    <button class="tab" data-tab="docs" type="button">Documents</button>
-    <button class="tab" data-tab="calc" type="button">Calcul</button>
-    <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
-    <button class="tab" data-tab="clients" type="button">Clients</button>
-    <button class="tab" data-tab="invoices" type="button">Factures</button>
-    <button class="tab" data-tab="expenses" type="button">Dépenses</button>
-    <button class="tab" data-tab="trace" type="button">Suivi<span id="recDot" class="recdot" hidden></span></button>
-    <button class="tab" data-tab="settings" type="button">Réglages</button>
-  </nav>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.0</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1136,8 +1150,38 @@ h3{color:var(--accent)}
 </div>
 
 <main>
+<div class="seg" id="segCourses" hidden><button class="btn" type="button" id="segNew" data-go="calc">Nouvelle course</button><button class="btn" type="button" id="segHist" data-go="rides">Historique</button></div>
+<div class="back" id="backBar" hidden><button class="btn" type="button" data-go="menu">‹ Menu</button><b id="backTitle"></b></div>
+<!-- ============ ACCUEIL ============ -->
+<section id="tab-home" aria-label="Accueil">
+<div class="col">
+  <div class="card" id="hmHead"></div>
+  <button class="btn primary big" type="button" id="hmNew" data-go="calc">Nouvelle course</button>
+  <div class="card" id="hmDay"></div>
+  <div class="card"><header><h2>Raccourcis</h2></header>
+    <div class="hm-grid">
+      <button class="btn" type="button" id="hmSvc"><span class="ic" data-ic="service"></span><b id="hmSvcT">Mon service</b></button>
+      <button class="btn" type="button" id="hmFuel"><span class="ic" data-ic="expenses"></span><b>Enregistrer un plein</b></button>
+      <button class="btn" type="button" data-go="trace"><span class="ic" data-ic="trace"></span><b>Suivi GPS</b></button>
+      <button class="btn" type="button" data-go="docs"><span class="ic" data-ic="docs"></span><b>Mes documents</b></button>
+      <button class="btn" type="button" data-go="invoices"><span class="ic" data-ic="invoices"></span><b>Factures</b></button>
+      <button class="btn" type="button" data-go="expenses"><span class="ic" data-ic="expenses"></span><b>Dépenses</b></button>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- ============ MENU ============ -->
+<section id="tab-menu" hidden aria-label="Menu">
+<div class="col">
+  <div class="card"><header><h2>Ma journée</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="service"><span class="ic" data-ic="service"></span><b>Mon service</b><small>Début, fin, pleins, pauses, historique</small></button><button class="btn mcard" type="button" data-go="docs"><span class="ic" data-ic="docs"></span><b>Mes documents</b><small>Feuilles de route, PDF et Word, envoi au patron</small></button></div></div>
+  <div class="card"><header><h2>Gestion</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="invoices"><span class="ic" data-ic="invoices"></span><b>Factures</b><small>Créer, imprimer, envoyer</small></button><button class="btn mcard" type="button" data-go="expenses"><span class="ic" data-ic="expenses"></span><b>Dépenses</b><small>Carburant, entretien, frais</small></button><button class="btn mcard" type="button" data-go="rides"><span class="ic" data-ic="rides"></span><b>Historique et chiffre d'affaires</b><small>Toutes les courses, totaux, statistiques</small></button><button class="btn mcard" type="button" data-go="rides" data-scroll="exportBtn"><span class="ic" data-ic="docs"></span><b>Sauvegarde et exportation</b><small>Exporter ou restaurer vos données</small></button></div></div>
+  <div class="card"><header><h2>Société et réglages</h2></header><div class="mgrid"><button class="btn mcard" type="button" data-go="settings" data-scroll="proForm"><span class="ic" data-ic="settings"></span><b>Informations de la société</b><small>Nom, logo, coordonnées, courriel du patron</small></button><button class="btn mcard" type="button" data-go="settings"><span class="ic" data-ic="settings"></span><b>Paramètres</b><small>Tarifs, mot de passe, application</small></button></div></div>
+</div>
+</section>
+
 <!-- ============ SERVICE ============ -->
-<section id="tab-service" aria-label="Service du chauffeur">
+<section id="tab-service" hidden aria-label="Service du chauffeur">
 <div class="col">
   <div class="sv-actions">
     <button class="btn big primary" type="button" id="svBtnStart">Commencer mon service</button>
@@ -1570,6 +1614,14 @@ h3{color:var(--accent)}
   </div>
 </section>
 </main>
+<nav class="tabs" aria-label="Rubriques">
+  <button class="tab is-active" data-tab="home" type="button">Accueil</button>
+  <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
+  <button class="tab" data-tab="clients" type="button">Clients</button>
+  <button class="tab" data-tab="trace" type="button">GPS<span id="recDot" class="recdot" hidden></span></button>
+  <button class="tab" data-tab="menu" type="button">Menu</button>
+</nav>
+
 </div>
 <div id="toast" role="status" aria-live="polite" hidden></div>
 
@@ -2710,6 +2762,7 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function renderRides() {
     $('rideCount').textContent = rides.length ? '(' + rides.length + ')' : '';
+    if (!$('tab-home').hidden) hmRender();
     var ca = 0, res = 0, kms = 0, vide = 0;
     rides.forEach(function (x) { ca += x.resultat.prix; res += x.resultat.resultat; kms += x.resultat.kmTotal; vide += x.resultat.kmVide; });
     $('rideStats').innerHTML = '<div><span>Courses</span><b>' + rides.length + '</b></div><div><span>Chiffre d\'affaires</span><b>' + eur(ca) + '</b></div>' +
@@ -3640,18 +3693,22 @@ function buildInvoicePdf(JsPDF, inv) {
 
   /* ----- onglets et formulaire ----- */
   function showTab(name) {
-    ['service', 'docs', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+    ['home', 'menu', 'service', 'docs', 'calc', 'rides', 'clients', 'invoices', 'expenses', 'trace', 'settings'].forEach(function (t) { $('tab-' + t).hidden = t !== name; });
+    $('segCourses').hidden = !(name === 'calc' || name === 'rides');
+    $('segNew').classList.toggle('is-on', name === 'calc'); $('segHist').classList.toggle('is-on', name === 'rides');
+    $('backBar').hidden = !BACK_TITLE[name]; $('backTitle').textContent = BACK_TITLE[name] || '';
+    if (name === 'home') hmRender();
     if (name === 'service') svRender();
     if (name === 'docs') dcRenderTop();
     if (name === 'clients') renderClients();
     if (name === 'expenses') renderExpenses();
     if (name === 'trace') { renderTrace(); renderTraceList(); }
     if (name === 'invoices') { renderInvoices(); renderProWarn(); }
-    document.querySelectorAll('.tab').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === name); });
+    document.querySelectorAll('.tab').forEach(function (b) { b.classList.toggle('is-active', b.dataset.tab === NAV_GROUP[name]); });
     if (name === 'calc' && map) setTimeout(function () { map.invalidateSize(); }, 50);
     window.scrollTo(0, 0);
   }
-  document.querySelectorAll('.tab').forEach(function (b) { b.addEventListener('click', function () { showTab(b.dataset.tab); }); });
+  document.querySelectorAll('.tab').forEach(function (b) { b.addEventListener('click', function () { showTab(NAV_LAND[b.dataset.tab] || b.dataset.tab); }); });
   $('goSettings').addEventListener('click', function () { showTab('settings'); });
 
   function newRide() {
@@ -4695,11 +4752,56 @@ function buildInvoicePdf(JsPDF, inv) {
     fr.readAsDataURL(file);
   }
 
+
+  /* ===== Accueil et navigation ===== */
+  var NAV_GROUP = { home: 'home', calc: 'rides', rides: 'rides', clients: 'clients', trace: 'trace', menu: 'menu', service: 'menu', docs: 'menu', invoices: 'menu', expenses: 'menu', settings: 'menu' };
+  var NAV_LAND = { rides: 'calc' };
+  var BACK_TITLE = { service: 'Mon service', docs: 'Mes documents', invoices: 'Factures', expenses: 'Dépenses', settings: 'Paramètres' };
+  function hmRender() {
+    var a = svActive(), last = a || svLastDone(), c = last ? svDriverById(last.chauffeurId) : svDriverById(sv.dernierChauffeur);
+    var nom = c ? c.nom : (profil && profil.nom ? profil.nom : 'Non renseigné');
+    var h = '<div class="hm-soc">' + esc((pro.nom || '').trim() || 'TAXI PRO') + '</div>';
+    h += '<p style="margin:0 0 8px"><span class="hm-chip' + (a ? ' ok' : '') + '">' + (a ? 'Service en cours' : 'Aucun service en cours') + '</span></p>';
+    function row(k, v) { return '<div class="sv-row"><span>' + k + '</span><b>' + v + '</b></div>'; }
+    h += row('Chauffeur', esc(nom));
+    if (a) {
+      var w = svWork(a);
+      h += row('Véhicule', esc(svVName(a.vehiculeId)));
+      h += row('Kilométrage de départ', svN(a.kmDebut) + ' km');
+      h += row('Début', svFD(a.debut) + ' ' + svFT(a.debut));
+      h += row('Heures travaillées', svDur(w.net));
+    } else {
+      var lv = last ? svVName(last.vehiculeId) : (sv.dernierVehicule ? svVName(sv.dernierVehicule) : '');
+      if (lv && lv !== '—') h += row('Dernier véhicule', esc(lv));
+      h += '<div class="row"><button class="btn primary" type="button" id="hmStart">Commencer mon service</button></div>';
+    }
+    $('hmHead').innerHTML = h;
+    var hs = $('hmStart'); if (hs) hs.addEventListener('click', function () { svOpen('start'); });
+    $('hmSvcT').textContent = a ? 'Terminer mon service' : 'Commencer mon service';
+    var today = todayStr(), tr = rides.filter(function (r) { return r.date === today; }).sort(function (x, y) { return (x.heure || '') < (y.heure || '') ? 1 : -1; }), ca = 0;
+    tr.forEach(function (r) { ca += num(r.resultat && r.resultat.prix); });
+    var d = '<header><h2>Aujourd\'hui</h2></header>';
+    if (tcur) d += '<div class="notice"><b>Course en cours</b> : suivi GPS actif, ' + km(tcur.km) + '. <button class="btn" type="button" data-go="trace">Ouvrir le suivi</button></div>';
+    d += '<div class="sv-row"><span>Courses terminées</span><b>' + tr.length + '</b></div><div class="sv-row"><span>Chiffre d\'affaires du jour</span><b>' + eur(ca) + '</b></div>';
+    tr.slice(0, 3).forEach(function (r) { d += '<div class="sv-row"><span>' + esc(r.heure || '') + ' ' + esc(r.client || r.arrivee || 'Course') + '</span><b>' + eur(num(r.resultat && r.resultat.prix)) + '</b></div>'; });
+    if (!tr.length) d += '<p class="fine">Aucune course enregistrée aujourd\'hui.</p>';
+    else d += '<div class="row"><button class="btn" type="button" data-go="rides">Voir l\'historique</button></div>';
+    $('hmDay').innerHTML = d;
+  }
+  function svOpen(v) { showTab('service'); if (svView !== v) svShow(v); }
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest('[data-go]'); if (!el || el.classList.contains('tab')) return;
+    showTab(el.dataset.go);
+    if (el.dataset.scroll) setTimeout(function () { var t = $(el.dataset.scroll); if (t && t.scrollIntoView) t.scrollIntoView({ block: 'start' }); }, 80);
+  });
+  $('hmSvc').addEventListener('click', function () { svOpen(svActive() ? 'end' : 'start'); });
+  $('hmFuel').addEventListener('click', function () { svOpen('fuel'); });
+
   /* ----- démarrage ----- */
   $('storageWarn').hidden = storageOK();
   buildSettingsForm(); buildProForm(); fillClientList(); renderClients(); renderInvoices(); renderProWarn(); buildExpForm(); renderExpenses(); renderRides(); updateClientAddr();
   $('f_date').value = todayStr(); $('f_heure').value = hhmm(new Date());
-  ensureMap(); trackShow(); render(); initTrace(); svRender();
+  ensureMap(); trackShow(); render(); initTrace(); svRender(); hmRender();
 })();
 </script>
 </body>
