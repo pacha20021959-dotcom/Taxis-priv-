@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.4</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.5</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -2422,7 +2422,9 @@ function buildInvoicePdf(JsPDF, inv) {
   var NATIVE = !!(CAP && typeof CAP.isNativePlatform === 'function' && CAP.isNativePlatform());
   function plug(name) { try { return CAP.registerPlugin(name); } catch (e) { return null; } }
   var BG = NATIVE ? plug('BackgroundGeolocation') : null;
-  var FSP = NATIVE ? plug('Filesystem') : null, SHP = NATIVE ? plug('Share') : null, LNP = NATIVE ? plug('LocalNotifications') : null;
+  /* Partage de fichiers : si registerPlugin est absent de l'enveloppe Android, on prend le plugin déjà exposé par Capacitor.Plugins */
+  function plugFS(name) { var p = plug(name); if (p) return p; try { return (CAP && CAP.Plugins && CAP.Plugins[name]) || null; } catch (e) { return null; } }
+  var FSP = NATIVE ? plugFS('Filesystem') : null, SHP = NATIVE ? plugFS('Share') : null, LNP = NATIVE ? plug('LocalNotifications') : null;
   function geoAvailable() { return !!(BG || navigator.geolocation); }
   var notifAsked = false;
   function askNotif() {
