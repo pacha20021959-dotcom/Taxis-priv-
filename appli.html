@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.9</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.10</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1596,7 +1596,7 @@ h3{color:var(--accent)}
       </select></label>
       <div id="trState" class="trstate off" role="status">Suivi arrêté</div>
       <div class="row">
-        <button class="btn primary" type="button" id="trStart">Démarrer la course (Prise en charge)</button>
+        <button class="btn primary" type="button" id="trStart">Activer course</button>
         <label class="chk" id="trLieuBox"><input type="checkbox" id="trLieu" checked><span>Lieu et heure</span></label>
         <button class="btn danger" type="button" id="trStop" disabled>Arrêter la course (Arrivée)</button>
         <button class="btn" type="button" id="trOpenDrive" hidden>Ouvrir le compteur</button>
@@ -1716,7 +1716,7 @@ h3{color:var(--accent)}
 <ol>
 <li>Touchez GPS dans la barre du bas.</li>
 <li>Choisissez « Tarif appliqué au suivi » et « Type de course » : aller simple, aller-retour avec retour facturé, ou aller plus retour à vide non facturé.</li>
-<li>Touchez « Démarrer la course (Prise en charge) ». Autorisez la localisation si besoin. La case « Lieu et heure » enregistre l\'adresse de départ ; vous pouvez aussi noter le compteur du véhicule (Kilomètres départ, Kilomètres arrivée).</li>
+<li>Touchez « Activer course ». Autorisez la localisation si besoin. La case « Lieu et heure » enregistre l'adresse de départ ; vous pouvez aussi noter le compteur du véhicule (Kilomètres départ, Kilomètres arrivée).</li>
 <li>À l'arrivée, touchez « Arrêter la course (Arrivée) » : le compteur se fige pendant que vous encaissez le client. Notez ensuite les kilomètres d'arrivée, puis touchez « Fin de course (valider) ». La course est alors enregistrée.</li>
 </ol>
 <p>La case « Compter les arrêts comme temps d'attente » compte l'immobilité du véhicule dans l'attente facturée.</p>
@@ -3797,7 +3797,7 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function renderTraceList() {
     var box = $('trList'), list = trace.sessions;
-    if (!list.length) { box.innerHTML = '<div class="notice">Aucune trace enregistrée. Touchez « Démarrer la course (Prise en charge) ».</div>'; return; }
+    if (!list.length) { box.innerHTML = '<div class="notice">Aucune trace enregistrée. Touchez « Activer course ».</div>'; return; }
     box.innerHTML = list.map(function (s) {
       var d0 = new Date(s.debut), end = tend(s), act = s === tcur;
       return '<article class="ride"><div class="head"><b>' + esc(frDate(dateOf(d0))) + ' ' + hhmm(d0) + (s.fin ? ' à ' + hhmm(end) : ' (en cours)') + '</b><span class="num">' + km(s.km) + '</span></div>' +
