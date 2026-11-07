@@ -42,7 +42,19 @@ jobs:
                  "                for (int k = 1; k < fileUris.size(); k++) { multiClip.addItem(new ClipData.Item(fileUris.get(k))); }\n"
                  "                intent.setClipData(multiClip);\n")
           assert t.count(old) == 1, 'SharePlugin: motif introuvable, correction non appliquee'
-          open(f, 'w', encoding='utf-8').write(t.replace(old, new))
+          t = t.replace(old, new)
+          old2 = "                    if (type == null || filesList.size() > 1) {\n                        type = \"*/*\";\n                    }\n"
+          new2 = ("                    if (type == null) {\n"
+                  "                        type = \"*/*\";\n"
+                  "                    } else if (filesList.size() > 1) {\n"
+                  "                        for (int j = 0; j < filesList.size(); j++) {\n"
+                  "                            String t2 = getMimeType((String) filesList.get(j));\n"
+                  "                            if (t2 == null || !t2.equals(type)) { type = \"*/*\"; break; }\n"
+                  "                        }\n"
+                  "                    }\n")
+          assert t.count(old2) == 1, 'SharePlugin: type MIME introuvable, correction non appliquee'
+          t = t.replace(old2, new2)
+          open(f, 'w', encoding='utf-8').write(t)
           print('Partage de plusieurs fichiers : correction appliquee')
           PYSHARE
           mkdir www
