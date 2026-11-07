@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.5</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.7</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -2964,8 +2964,8 @@ function buildInvoicePdf(JsPDF, inv) {
   if (!Array.isArray(rides)) rides = [];
   function saveRide() {
     var i = readInputs(), r = computeRide(i, effSettings());
-    var mesure = trk.km > 0 || (state.tracking && state.tracking.km > 0);
-    if (r.kmTotal <= 0 && r.prix <= 0 && !mesure) { toast('Renseignez un trajet avant d\'enregistrer.'); return; }
+    var mesure = trk.km > 0.05 || (state.tracking && state.tracking.km > 0.05);
+    if (r.kmTotal <= 0 && !mesure && !(i.prixConvenu > 0)) { toast('Aucun trajet : une prise en charge seule n\'est pas une course. Renseignez un trajet avant d\'enregistrer.'); return; }
     if (trk.id !== null) trackStop(true);
     if (autoReal()) { i = readInputs(); r = computeRide(i, effSettings()); }
     var ride = {
@@ -3802,6 +3802,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function traceSave(id) {
     var s = findIn(trace.sessions, id); if (!s || s === tcur) return;
     if (rides.some(function (x) { return x.id === s.rideId; })) { toast('Cette course est déjà enregistrée.'); return; }
+    if (!(s.km > 0.05)) { toast('Aucun trajet mesuré (moins de 50 m) : ce n\'est pas une course, elle n\'est pas enregistrée.'); return; }
     var i = traceInputs(s), g = traceGrille(s), es = {};
     for (var k in settings) es[k] = settings[k];
     es.priseEnCharge = g.pec; es.tarifKm = g.km; es.tarifAttente = g.att;
@@ -4476,7 +4477,8 @@ function buildInvoicePdf(JsPDF, inv) {
     var d0 = todayStrOf(x.debut), d1 = todayStrOf(x.fin), used = {};
     dcStore.docs.forEach(function (d) { (d.data.courses || []).forEach(function (k) { used[k.rideId] = 1; }); });
     function ts(r) { return new Date(r.date + 'T' + (r.heure || '00:00') + ':00').getTime(); }
-    var cand = rides.filter(function (r) { return !used[r.id] && r.date >= d0 && r.date <= d1; }).sort(function (a, b) { return ts(a) - ts(b); });
+    function reel(r) { return !r.resultat || r.resultat.kmTotal > 0 || r.resultat.prixConvenuUtilise || (r.gps && r.gps.km > 0.05); }
+    var cand = rides.filter(function (r) { return !used[r.id] && r.date >= d0 && r.date <= d1 && reel(r); }).sort(function (a, b) { return ts(a) - ts(b); });
     var courses = cand.map(function (r) {
       var inside = ts(r) >= t0 && ts(r) <= t1 + 60000, du = r.entrees ? num(r.entrees.dureeAllerMin) : 0;
       return { rideId: r.id, inclus: inside, client: r.client || '', indexDep: '', embIdx: '', embLieu: r.depart || '', embHeure: r.heure || '', debIdx: '', debLieu: r.arrivee || '', debHeure: dAddMin(r.heure, du), prix: r2(r.resultat ? r.resultat.prix : 0), percu: r2(r.resultat ? r.resultat.prix : 0) };
