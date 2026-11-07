@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.7</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.9</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1596,10 +1596,16 @@ h3{color:var(--accent)}
       </select></label>
       <div id="trState" class="trstate off" role="status">Suivi arrêté</div>
       <div class="row">
-        <button class="btn primary" type="button" id="trStart">Démarrer le suivi GPS</button>
-        <button class="btn danger" type="button" id="trStop" disabled>Arrêter le suivi GPS</button>
+        <button class="btn primary" type="button" id="trStart">Démarrer la course (Prise en charge)</button>
+        <label class="chk" id="trLieuBox"><input type="checkbox" id="trLieu" checked><span>Lieu et heure</span></label>
+        <button class="btn danger" type="button" id="trStop" disabled>Arrêter la course (Arrivée)</button>
         <button class="btn" type="button" id="trOpenDrive" hidden>Ouvrir le compteur</button>
       </div>
+      <div class="grid">
+        <label class="field"><span>Kilomètres départ</span><div class="unit"><input type="number" id="trKmDep" inputmode="decimal" min="0" step="0.1" placeholder="Ex: 45012"><em>km</em></div></label>
+        <label class="field"><span>Kilomètres arrivée</span><div class="unit"><input type="number" id="trKmArr" inputmode="decimal" min="0" step="0.1" placeholder="Ex: 45040"><em>km</em></div></label>
+      </div>
+      <p class="fine" id="trCptInfo"></p>
       <div id="trTurnBox" class="notice" hidden>
         <div>Course aller-retour : au moment où vous prenez le client, ou arrivez à destination, touchez le bouton pour marquer le début du retour.</div>
         <div class="row"><button class="btn primary" type="button" id="trTurn" disabled>Début du retour</button></div>
@@ -1710,8 +1716,8 @@ h3{color:var(--accent)}
 <ol>
 <li>Touchez GPS dans la barre du bas.</li>
 <li>Choisissez « Tarif appliqué au suivi » et « Type de course » : aller simple, aller-retour avec retour facturé, ou aller plus retour à vide non facturé.</li>
-<li>Touchez « Démarrer le suivi GPS ». Autorisez la localisation si besoin.</li>
-<li>Pour finir, touchez « Arrêter le suivi GPS ». La course est alors enregistrée.</li>
+<li>Touchez « Démarrer la course (Prise en charge) ». Autorisez la localisation si besoin. La case « Lieu et heure » enregistre l\'adresse de départ ; vous pouvez aussi noter le compteur du véhicule (Kilomètres départ, Kilomètres arrivée).</li>
+<li>À l'arrivée, touchez « Arrêter la course (Arrivée) » : le compteur se fige pendant que vous encaissez le client. Notez ensuite les kilomètres d'arrivée, puis touchez « Fin de course (valider) ». La course est alors enregistrée.</li>
 </ol>
 <p>La case « Compter les arrêts comme temps d'attente » compte l'immobilité du véhicule dans l'attente facturée.</p>
 <h4>Ce que vous voyez</h4>
@@ -3647,6 +3653,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function onTraceFix(p) {
     var s = tcur; if (!s) return;
     speedUpdate(p);
+    if (s.halted) return;
     if (p.coords.accuracy > 50) return;
     var pt = { lat: p.coords.latitude, lon: p.coords.longitude, t: p.timestamp };
     s.acc = Math.round(p.coords.accuracy); s.nbFix = (s.nbFix || 0) + 1; s.lastFix = pt.t;
@@ -3656,7 +3663,7 @@ function buildInvoicePdf(JsPDF, inv) {
     }
     tPrev = pt;
     if (!tGot) { tGot = true; showNotice($('trMsg'), 'Signal GPS reçu, le suivi est en cours.', ''); }
-    if (!tLast) { tLast = pt; s.last = [pt.lat, pt.lon, pt.t]; storePt(s, pt); if (!s.addrDebut) { s.addrDebut = 'Position GPS ' + pt.lat.toFixed(5) + ', ' + pt.lon.toFixed(5); lcAddr(s, 'addrDebut', pt.lat, pt.lon); } }
+    if (!tLast) { tLast = pt; s.last = [pt.lat, pt.lon, pt.t]; storePt(s, pt); if (!s.addrDebut && s.lieuHeure !== false) { s.addrDebut = 'Position GPS ' + pt.lat.toFixed(5) + ', ' + pt.lon.toFixed(5); lcAddr(s, 'addrDebut', pt.lat, pt.lon); } }
     else {
       var d = haversine(tLast, pt), dt = (pt.t - tLast.t) / 1000, dtH = dt / 3600;
       if (d >= 0.015 && dtH > 0 && d / dtH < 220) {
@@ -3673,6 +3680,15 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function requestTraceWake() { try { if (tH && !tH.native && navigator.wakeLock) navigator.wakeLock.request('screen').then(function (w) { tWake = w; }, function () {}); } catch (e) {} }
   function releaseTraceWake() { try { if (tWake) { tWake.release(); tWake = null; } } catch (e) {} }
+  /* Relevé du compteur du véhicule : simple note, jamais utilisée dans les calculs de prix. */
+  function cptVal(id) { var t = String($(id).value || '').replace(',', '.').trim(); if (t === '') return null; var n = parseFloat(t); return isFinite(n) && n >= 0 ? n : null; }
+  function cptInfo() {
+    var a = cptVal('trKmDep'), b = cptVal('trKmArr'), e = $('trCptInfo');
+    e.textContent = (a !== null && b !== null) ? (b >= a ? 'Parcours au compteur : ' + km(b - a) + '.' : 'Le compteur d\'arrivée est inférieur à celui de départ : vérifiez la saisie.') : '';
+  }
+  function cptSave() { cptInfo(); if (tcur) { tcur.kmDep = cptVal('trKmDep'); tcur.kmArr = cptVal('trKmArr'); saveTrace(false); } }
+  $('trKmDep').addEventListener('input', cptSave); $('trKmArr').addEventListener('input', cptSave);
+  $('trLieu').addEventListener('change', function () { if (tcur) { tcur.lieuHeure = $('trLieu').checked; saveTrace(false); } });
   function traceStart(auto) {
     if (tH) return;
     if (!geoAvailable()) { showNotice($('trMsg'), 'Ce navigateur ne sait pas se géolocaliser.', 'warn'); return; }
@@ -3680,12 +3696,13 @@ function buildInvoicePdf(JsPDF, inv) {
     if (auto && open) s = open;
     else {
       if (open) open.fin = new Date().toISOString();
-      s = { id: uid(), debut: new Date().toISOString(), fin: null, km: 0, kmEstime: 0, coupures: 0, nbFix: 0, pts: [], last: null, lastFix: 0, acc: 0, grille: parseInt($('trGrille').value, 10) || 0, waitSec: 0, mode: $('trTrip').value || 'none', turnKm: null, compteAttente: $('trWait').checked };
+      s = { id: uid(), debut: new Date().toISOString(), fin: null, km: 0, kmEstime: 0, coupures: 0, nbFix: 0, pts: [], last: null, lastFix: 0, acc: 0, grille: parseInt($('trGrille').value, 10) || 0, waitSec: 0, mode: $('trTrip').value || 'none', turnKm: null, compteAttente: $('trWait').checked, lieuHeure: $('trLieu').checked, kmDep: cptVal('trKmDep'), kmArr: cptVal('trKmArr') };
       trace.sessions.unshift(s);
     }
     tcur = s; tGot = false; tStored = null; tPrev = null; speedReset();
     if (typeof s.grille !== 'number') s.grille = 0;
     if (typeof s.waitSec !== 'number') s.waitSec = 0;
+    $('trLieu').checked = s.lieuHeure !== false; $('trKmDep').value = s.kmDep == null ? '' : s.kmDep; $('trKmArr').value = s.kmArr == null ? '' : s.kmArr; cptInfo();
     $('trGrille').value = String(s.grille); $('trWait').checked = s.compteAttente !== false; $('trTrip').value = s.mode || 'none';
     tLast = s.last ? { lat: s.last[0], lon: s.last[1], t: s.last[2] } : null;
     trace.actif = true; saveTrace(true);
@@ -3696,15 +3713,17 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function traceStop() {
     locStop(tH); tH = null; clearInterval(tTimer); tTimer = null; releaseTraceWake();
-    if (tcur) { tcur.waitSec = twait(tcur); tcur.fin = new Date().toISOString(); }
+    if (tcur) { tcur.waitSec = twait(tcur); tcur.fin = tcur.haltAt || new Date().toISOString(); }
     tcur = null; tSp = null; trace.actif = false; saveTrace(true);
+    $('trKmDep').value = ''; $('trKmArr').value = ''; cptInfo();
     showNotice($('trMsg'), 'Suivi arrêté.', '');
     renderTrace(); renderTraceList();
   }
   /* Temps d'attente : cumul déjà acquis, plus l'arrêt en cours. Quand le mobile est immobile, le GPS n'envoie plus de position (filtre de 25 m) : un silence de plus de 25 s sans signal vaut attente. */
+  function tend(s) { return s.fin ? new Date(s.fin) : (s.haltAt ? new Date(s.haltAt) : new Date()); }
   function twait(s) {
     var w = s.waitSec || 0;
-    if (s === tcur && tPrev && s.compteAttente !== false) { var sil = (Date.now() - tPrev.t) / 1000; if (sil > 25 && sil <= 14400) w += sil; }
+    if (s === tcur && tPrev && !s.halted && s.compteAttente !== false) { var sil = (Date.now() - tPrev.t) / 1000; if (sil > 25 && sil <= 14400) w += sil; }
     return w;
   }
   function traceGrille(s) { var i = typeof s.grille === 'number' && s.grille >= 0 && s.grille < 3 ? s.grille : settings.grilleDefaut; return settings.grilles[i] || settings.grilles[0]; }
@@ -3717,7 +3736,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function round2(x) { return Math.round(x * 100) / 100; }
   /* Entrées du calcul d'une course à partir d'un trajet suivi (même logique que « Utiliser ces kilomètres »). */
   function traceInputs(s) {
-    var end = s.fin ? new Date(s.fin) : new Date(), mode = s.mode || 'none', ret = mode !== 'none', aller = s.km, retour = 0;
+    var end = tend(s), mode = s.mode || 'none', ret = mode !== 'none', aller = s.km, retour = 0;
     if (ret) { if (typeof s.turnKm === 'number') { aller = s.turnKm; retour = s.km - s.turnKm; } else { aller = s.km / 2; retour = s.km / 2; } }
     var wait = twait(s) / 60, total = (end - new Date(s.debut)) / 60000;
     return { kmAller: round2(aller), dureeAllerMin: Math.max(0, Math.round((total - wait) / (ret ? 2 : 1))), retourMode: mode, kmRetour: ret ? round2(retour) : 0, kmExtra: 0,
@@ -3732,7 +3751,7 @@ function buildInvoicePdf(JsPDF, inv) {
   function renderTrace() { renderTraceMain(); renderDrive(); lcRender(); }
   var driveDone = null;
   function fillDrive(s, pre) {
-    var end = s.fin ? new Date(s.fin) : new Date(), tp = tracePrice(s), g = traceGrille(s);
+    var end = tend(s), tp = tracePrice(s), g = traceGrille(s);
     $(pre + 'Price').textContent = tp === null ? 'Aucun tarif' : eur(tp);
     $(pre + 'Km').textContent = km(s.km); $(pre + 'Dur').textContent = dur((end - new Date(s.debut)) / 60000); $(pre + 'Wait').textContent = dur(twait(s) / 60);
     $(pre === 'd' ? 'dTarif' : 'dDoneTarif').textContent = 'Prix au ' + g.nom.toLowerCase();
@@ -3755,14 +3774,15 @@ function buildInvoicePdf(JsPDF, inv) {
   function renderTraceMain() {
     var act = !!tcur, s = tcur || trace.sessions[0];
     $('trState').className = 'trstate ' + (act ? 'on' : 'off');
-    $('trState').textContent = act ? 'SUIVI GPS ACTIF depuis ' + hhmm(new Date(s.debut)) : 'Suivi arrêté';
+    $('trState').textContent = act ? (s.halted ? 'COURSE ARRÊTÉE à ' + hhmm(new Date(s.haltAt)) + ' : compteur figé' : 'SUIVI GPS ACTIF depuis ' + hhmm(new Date(s.debut))) : 'Suivi arrêté';
+    $('trStop').textContent = act && s.halted ? 'Fin de course (valider)' : 'Arrêter la course (Arrivée)';
     $('trStart').disabled = act; $('trStop').disabled = !act; $('trOpenDrive').hidden = !act; renderSpeed();
     var showTurn = act && (tcur.mode || 'none') !== 'none';
     $('trTurnBox').hidden = !showTurn; $('trTurn').disabled = !(showTurn && typeof tcur.turnKm !== 'number');
     $('trTurn').textContent = showTurn && typeof tcur.turnKm === 'number' ? 'Retour en cours depuis ' + dec1.format(tcur.turnKm) + ' km' : 'Début du retour';
     $('gpsBar').hidden = !act; $('recDot').hidden = !act;
     if (s) {
-      var end = s.fin ? new Date(s.fin) : new Date();
+      var end = tend(s);
       var tp = tracePrice(s), tc = traceCost(s);
       $('trPrice').textContent = tp === null ? 'Aucun tarif' : eur(tp); $('trWaitT').textContent = dur(twait(s) / 60);
       $('trCost').textContent = eur(tc); $('trRes').textContent = tp === null ? 'Aucun tarif' : eur(tp - tc);
@@ -3777,12 +3797,13 @@ function buildInvoicePdf(JsPDF, inv) {
   }
   function renderTraceList() {
     var box = $('trList'), list = trace.sessions;
-    if (!list.length) { box.innerHTML = '<div class="notice">Aucune trace enregistrée. Touchez « Démarrer le suivi GPS ».</div>'; return; }
+    if (!list.length) { box.innerHTML = '<div class="notice">Aucune trace enregistrée. Touchez « Démarrer la course (Prise en charge) ».</div>'; return; }
     box.innerHTML = list.map(function (s) {
-      var d0 = new Date(s.debut), end = s.fin ? new Date(s.fin) : new Date(), act = s === tcur;
+      var d0 = new Date(s.debut), end = tend(s), act = s === tcur;
       return '<article class="ride"><div class="head"><b>' + esc(frDate(dateOf(d0))) + ' ' + hhmm(d0) + (s.fin ? ' à ' + hhmm(end) : ' (en cours)') + '</b><span class="num">' + km(s.km) + '</span></div>' +
         '<div class="nums">' + (tracePrice(s) === null ? '' : '<span>Prix ' + eur(tracePrice(s)) + ' (' + esc(traceGrille(s).nom) + ')</span>') + '<span>Durée ' + dur((end - d0) / 60000) + '</span><span>' + (s.pts ? s.pts.length : 0) + ' points</span>' +
         (s.coupures ? '<span>' + s.coupures + ' coupure' + (s.coupures > 1 ? 's' : '') + '</span>' : '') + '</div>' +
+        ((s.kmDep != null || s.kmArr != null) ? '<div class="nums"><span>Compteur : ' + (s.kmDep != null ? dec1.format(s.kmDep) : '?') + ' \u2192 ' + (s.kmArr != null ? dec1.format(s.kmArr) : '?') + ' km</span></div>' : '') +
         (s.mode && s.mode !== 'none' ? '<div class="nums"><span>' + (s.mode === 'vide' ? 'Retour à vide' : 'Aller-retour') + (typeof s.turnKm === 'number' ? ' : aller ' + km(s.turnKm) + ', retour ' + km(s.km - s.turnKm) : ' : début du retour non marqué, kilomètres partagés en deux') + '</span></div>' : '') +
         '<div class="row">' + (act ? '' : (rides.some(function (x) { return x.id === s.rideId; }) ? '<span class="badge ok">Enregistrée dans Courses</span>' : '<button class="btn primary" type="button" data-tsave="' + esc(s.id) + '">Enregistrer comme course</button>')) +
         (act ? '' : '<button class="btn danger" type="button" data-tdel="' + esc(s.id) + '">Supprimer</button>') +
@@ -3810,6 +3831,7 @@ function buildInvoicePdf(JsPDF, inv) {
     var ride = {
       id: Date.now().toString(36), creeLe: new Date().toISOString(), client: '', date: dateOf(d0), heure: hhmm(d0), depart: s.addrDebut || '', arrivee: s.addrFin || '',
       grille: g.nom, entrees: i, resultat: r,
+      compteur: (s.kmDep != null || s.kmArr != null) ? { dep: s.kmDep == null ? null : s.kmDep, arr: s.kmArr == null ? null : s.kmArr } : undefined,
       gps: { km: Math.round(s.km * 100) / 100, turnKm: typeof s.turnKm === 'number' ? Math.round(s.turnKm * 100) / 100 : null, debut: hhmm(d0), fin: hhmm(end),
         dureeMin: Math.round((end - d0) / 60000), waitMin: Math.round(twait(s) / 60), prixDirect: tp === null ? null : Math.round(tp * 100) / 100 }
     };
@@ -3825,7 +3847,23 @@ function buildInvoicePdf(JsPDF, inv) {
     downloadBlob(new Blob([x], { type: 'application/gpx+xml' }), 'trace-' + dateOf(new Date(s.debut)) + '-' + hhmm(new Date(s.debut)).replace(':', 'h') + '.gpx');
   }
   $('trStart').addEventListener('click', function () { traceStart(false); if (tcur) openDrive(); });
-  $('trStop').addEventListener('click', userStop);
+  /* Arrêt en deux temps : 1) « Arrêter la course » fige le compteur (le temps d'encaisser), 2) « Fin de course » termine et enregistre. */
+  function traceHalt() {
+    var s = tcur; if (!s || s.halted) return;
+    s.waitSec = twait(s); s.halted = true; s.haltAt = new Date().toISOString(); saveTrace(true);
+    showNotice($('trMsg'), 'Compteur figé. Encaissez le client, notez les kilomètres d\'arrivée, puis touchez « Fin de course (valider) ».', '');
+    renderTrace(); renderTraceList();
+  }
+  function traceEndStep() {
+    var s = tcur; if (!s) return;
+    if (!s.halted) { traceHalt(); return; }
+    if (cptVal('trKmDep') !== null && cptVal('trKmArr') === null && !s.cptWarned) {
+      s.cptWarned = true; saveTrace(true);
+      showNotice($('trMsg'), 'Kilomètres arrivée non renseignés. Notez-les, ou touchez encore « Fin de course (valider) » pour terminer sans.', 'warn'); return;
+    }
+    userStop();
+  }
+  $('trStop').addEventListener('click', traceEndStep);
   $('dStop').addEventListener('click', userStop);
   $('dMin').addEventListener('click', closeDrive);
   $('trOpenDrive').addEventListener('click', openDrive);
@@ -5042,8 +5080,8 @@ function buildInvoicePdf(JsPDF, inv) {
     $('lcLive').hidden = ph !== 'live';
     if (ph === 'live') {
       var g = traceGrille(tcur), tp = tracePrice(tcur);
-      $('lcLive').innerHTML = lcRow('Chronomètre', lcHms(Date.now() - new Date(tcur.debut).getTime())) + lcRow('Kilomètres parcourus', km(tcur.km)) +
-        lcRow('Prix provisoire', tp === null ? 'Aucun tarif' : eur(tp)) + lcRow('Tarif appliqué', esc(g.nom || '')) + lcRow('Adresse de départ', esc(tcur.addrDebut || 'Recherche en cours, signal GPS en attente'));
+      $('lcLive').innerHTML = lcRow('Chronomètre', lcHms(tend(tcur).getTime() - new Date(tcur.debut).getTime())) + lcRow('Kilomètres parcourus', km(tcur.km)) +
+        lcRow('Prix provisoire', tp === null ? 'Aucun tarif' : eur(tp)) + lcRow('Tarif appliqué', esc(g.nom || '')) + lcRow('Adresse de départ', esc(tcur.addrDebut || (tcur.lieuHeure === false ? 'Non enregistrée (case Lieu et heure décochée)' : 'Recherche en cours, signal GPS en attente')));
     }
     $('lcRecap').hidden = ph !== 'recap';
   }
@@ -5060,7 +5098,7 @@ function buildInvoicePdf(JsPDF, inv) {
     $('lcRecap').innerHTML = '<p class="fine">Calcul de la course et recherche de l\'adresse d\'arrivée…</p>'; lcRender();
     var jobs = [];
     if (s.last) jobs.push(lcAddr(s, 'addrFin', s.last[0], s.last[1]));
-    if (!s.addrDebut && s.pts && s.pts[0]) jobs.push(lcAddr(s, 'addrDebut', s.pts[0][1], s.pts[0][2]));
+    if (!s.addrDebut && s.lieuHeure !== false && s.pts && s.pts[0]) jobs.push(lcAddr(s, 'addrDebut', s.pts[0][1], s.pts[0][2]));
     var finished = false;
     function finish() {
       if (finished) return; finished = true;
