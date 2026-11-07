@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.10</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.11</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1691,7 +1691,7 @@ h3{color:var(--accent)}
     <details class="ah"><summary><b>3. Gestion des courses</b><small>Préparer, suivre, terminer et enregistrer</small></summary><div class="ab"><h4>Méthode rapide : la course en direct</h4>
 <p>Allez dans Courses, tout en haut de « Nouvelle course », carte « Course en direct ».</p>
 <ol>
-<li>Touchez « DÉBUT DE COURSE » quand le client monte. Le GPS démarre, avec le tarif choisi dans l'onglet GPS. Autorisez la localisation si le téléphone le demande.</li>
+<li>Touchez « DÉBUT DE COURSE » quand le client monte. Le GPS démarre, avec le tarif choisi dans l'onglet « Activer course ». Autorisez la localisation si le téléphone le demande.</li>
 <li>Roulez. L'écran affiche la distance, la durée, l'attente et le prix provisoire qui monte.</li>
 <li>Touchez « ARRIVÉE À DESTINATION » à l'arrivée. Le bouton reste grisé tant qu'aucune course n'est en cours.</li>
 <li>Un récapitulatif s'affiche : départ, arrivée, distance, durée, attente et prix final. La course est enregistrée automatiquement.</li>
@@ -1714,7 +1714,7 @@ h3{color:var(--accent)}
 <p>La carte « Suivi GPS de la course » propose « Démarrer le suivi » et « Arrêter le suivi ». Elle affiche le prix en direct, les km réels, la durée et les arrêts. Pour un aller-retour, « Début du retour » marque le moment du retour. Le bouton « Utiliser ces kilomètres dans le calcul de la course » reprend les kilomètres mesurés.</p></div></details>
     <details class="ah"><summary><b>4. GPS et compteur de vitesse</b><small>Activer le GPS et lire l'écran</small></summary><div class="ab"><h4>Activer le suivi</h4>
 <ol>
-<li>Touchez GPS dans la barre du bas.</li>
+<li>Touchez « Activer course » dans la barre du bas.</li>
 <li>Choisissez « Tarif appliqué au suivi » et « Type de course » : aller simple, aller-retour avec retour facturé, ou aller plus retour à vide non facturé.</li>
 <li>Touchez « Activer course ». Autorisez la localisation si besoin. La case « Lieu et heure » enregistre l'adresse de départ ; vous pouvez aussi noter le compteur du véhicule (Kilomètres départ, Kilomètres arrivée).</li>
 <li>À l'arrivée, touchez « Arrêter la course (Arrivée) » : le compteur se fige pendant que vous encaissez le client. Notez ensuite les kilomètres d'arrivée, puis touchez « Fin de course (valider) ». La course est alors enregistrée.</li>
@@ -1840,7 +1840,7 @@ h3{color:var(--accent)}
   <button class="tab is-active" data-tab="home" type="button">Accueil</button>
   <button class="tab" data-tab="rides" type="button">Courses<span id="rideCount" class="count"></span></button>
   <button class="tab" data-tab="clients" type="button">Clients</button>
-  <button class="tab" data-tab="trace" type="button">GPS<span id="recDot" class="recdot" hidden></span></button>
+  <button class="tab" data-tab="trace" type="button" style="font-size:.6rem;letter-spacing:-.03em">Activer course<span id="recDot" class="recdot" hidden></span></button>
   <button class="tab" data-tab="menu" type="button">Menu</button>
 </nav>
 
