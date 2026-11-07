@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.3</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.4</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -1767,7 +1767,7 @@ h3{color:var(--accent)}
 <li>« Consulter mon historique » liste les services et les pleins, avec des filtres par chauffeur, véhicule et dates.</li>
 </ol>
 <h4>Mes documents</h4>
-<p>Après un service terminé, Menu, « Mes documents » : la journée apparaît dans « Journées à valider ». Touchez « Préparer », contrôlez les informations et validez la journée. Vous obtenez la feuille de route et les courses clients en PDF et en Word. Vous pouvez les imprimer ou toucher « Envoyer au patron (4 fichiers) ». Les journées validées ne sont jamais supprimées. Si une erreur apparaît, « Corriger cette journée » garde la trace des versions.</p>
+<p>Après un service terminé, Menu, « Mes documents » : la journée apparaît dans « Journées à valider ». Touchez « Préparer », contrôlez les informations et validez la journée. Vous obtenez la feuille de route et les courses clients en PDF et en Word. Vous pouvez les imprimer ou toucher « Envoyer au patron (2 PDF) » : le message part avec 2 pièces jointes, la feuille de route et la feuille des courses clients, en PDF. Les versions Word se téléchargent à part. Les journées validées ne sont jamais supprimées. Si une erreur apparaît, « Corriger cette journée » garde la trace des versions.</p>
 <p>Les courses d'une feuille viennent des courses faites pendant le service. Les index kilométriques de chaque course sont à saisir ou à estimer. Les champs vides sont signalés.</p>
 <h4>Sauvegarde</h4>
 <p>Courses, « Historique » : « Exporter une sauvegarde » crée un fichier à garder ailleurs (courriel, ordinateur, clé USB). « Restaurer une sauvegarde » le remet dans l'application.</p></div></details>
@@ -4781,12 +4781,12 @@ function buildInvoicePdf(JsPDF, inv) {
     fr.onload = function () { try { fr.contentWindow.focus(); fr.contentWindow.print(); } catch (e) { window.open(u, '_blank'); } setTimeout(function () { fr.remove(); URL.revokeObjectURL(u); }, 60000); };
   }
   function dcSend(doc) {
-    var fs = [dcMake(doc, 'route', 'pdf'), dcMake(doc, 'route', 'docx'), dcMake(doc, 'courses', 'pdf'), dcMake(doc, 'courses', 'docx')];
+    var fs = [dcMake(doc, 'route', 'pdf'), dcMake(doc, 'courses', 'pdf')]; /* 2 PDF du même type : joints ensemble au message */
     if (fs.some(function (f) { return !f; })) return;
     var soc = dcSocFor(doc), to = soc.emailPatron || pro.emailPatron || '';
     var sujet = 'Feuilles de route du ' + frDate(doc.data.date) + ' - ' + doc.data.chauffeurNom + ' - ' + doc.data.immat;
     var texte = 'Bonjour,\n\nVeuillez trouver ci-joint la feuille de route et la feuille détaillée des courses du ' + frDate(doc.data.date) + ' (' + doc.data.chauffeurNom + ', ' + doc.data.immat + ').\n\nCordialement,\n' + doc.data.chauffeurNom;
-    var fin = function () { dcMsg('La fenêtre de partage est ouverte avec les 4 fichiers' + (to ? ' : choisissez votre messagerie et le destinataire ' + to : '') + '. Taxi Pro ne peut pas savoir si le message part réellement : vérifiez-le dans votre messagerie.', 'warn'); };
+    var fin = function () { dcMsg('La fenêtre de partage est ouverte avec les 2 fichiers PDF (feuille de route et courses clients)' + (to ? ' : choisissez votre messagerie et le destinataire ' + to : '') + '. Taxi Pro ne peut pas savoir si le message part réellement : vérifiez-le dans votre messagerie.', 'warn'); };
     if (FSP && SHP) {
       Promise.all(fs.map(function (f) { return blobToB64(f.blob).then(function (b) { return FSP.writeFile({ path: f.name, data: b, directory: 'CACHE' }); }); }))
         .then(function (rs) { return SHP.share({ title: sujet, text: (to ? 'Destinataire : ' + to + '\n\n' : '') + texte, files: rs.map(function (r) { return r.uri; }), dialogTitle: 'Envoyer les feuilles de route' }); })
@@ -4798,7 +4798,7 @@ function buildInvoicePdf(JsPDF, inv) {
       if (navigator.canShare && navigator.canShare({ files: files })) { navigator.share({ files: files, title: sujet, text: texte }).then(fin, function () {}); return; }
     } catch (err) { /* repli ci-dessous */ }
     fs.forEach(function (f, i) { setTimeout(function () { downloadBlob(f.blob, f.name); }, i * 400); });
-    dcMsg('Les 4 fichiers sont téléchargés. Votre messagerie va s\'ouvrir : joignez-les au message avant de l\'envoyer.', 'warn');
+    dcMsg('Les 2 fichiers PDF sont téléchargés. Votre messagerie va s\'ouvrir : joignez-les au message avant de l\'envoyer.', 'warn');
     setTimeout(function () { location.href = 'mailto:' + encodeURIComponent(to) + '?subject=' + encodeURIComponent(sujet) + '&body=' + encodeURIComponent(texte); }, 2200);
   }
 
@@ -4911,7 +4911,7 @@ function buildInvoicePdf(JsPDF, inv) {
       '<button class="btn" type="button" data-act="pdf-route">PDF feuille de route</button><button class="btn" type="button" data-act="pdf-courses">PDF courses clients</button>' +
       '<button class="btn" type="button" data-act="docx-route">Word feuille de route</button><button class="btn" type="button" data-act="docx-courses">Word courses clients</button>' +
       '<button class="btn" type="button" data-act="print-route">Imprimer la feuille de route</button><button class="btn" type="button" data-act="print-courses">Imprimer les courses</button>' +
-      '<button class="btn primary big" type="button" data-act="mail">Envoyer au patron (4 fichiers)</button>' +
+      '<button class="btn primary big" type="button" data-act="mail">Envoyer au patron (2 PDF)</button>' +
       '<button class="btn" type="button" data-act="fix">Corriger cette journée</button><button class="btn" type="button" data-act="close">Fermer</button></div>';
     if (doc.historique && doc.historique.length) h += '<p class="fine">Versions précédentes conservées : ' + doc.historique.map(function (x) { return 'v' + x.version + ' (' + svFD(x.at) + ')'; }).join(', ') + '.</p>';
     h += '<p class="sv-sep">Aperçu : feuille de route</p><div class="dc-prev">' + dcModelHtml(dcModelRoute(doc.data)) + '</div><p class="sv-sep">Aperçu : courses clients</p><div class="dc-prev">' + dcModelHtml(dcModelCourses(doc.data)) + '</div>';
