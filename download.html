@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taxi Pro - Installation</title>
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    color: #fff;
+  }
+  .logo { font-size: 64px; margin-bottom: 10px; }
+  h1 { font-size: 28px; margin-bottom: 8px; text-align: center; }
+  .subtitle { color: #aaa; margin-bottom: 40px; text-align: center; font-size: 16px; }
+  .btn {
+    display: inline-block;
+    background: linear-gradient(135deg, #00b894 0%, #00cec9 100%);
+    color: #fff;
+    font-size: 22px;
+    font-weight: bold;
+    padding: 22px 50px;
+    border: none;
+    border-radius: 50px;
+    cursor: pointer;
+    text-decoration: none;
+    box-shadow: 0 10px 30px rgba(0, 180, 148, 0.4);
+    transition: transform 0.2s, box-shadow 0.2s;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .btn:active { transform: scale(0.95); box-shadow: 0 5px 15px rgba(0, 180, 148, 0.4); }
+  .info {
+    margin-top: 40px;
+    background: rgba(255,255,255, 0.08);
+    border-radius: 16px;
+    padding: 24px;
+    max-width: 420px;
+    width: 100%;
+  }
+  .info h2 { font-size: 18px; margin-bottom: 14px; color: #00cec9; }
+  .info ol { padding-left: 20px; line-height: 1.8; font-size: 15px; color: #ccc; }
+  .info li { margin-bottom: 8px; }
+  .footer { margin-top: 30px; color: #666; font-size: 13px; text-align: center; }
+  .badge {
+    display: inline-block;
+    background: rgba(0, 180, 148, 0.2);
+    color: #00b894;
+    padding: 6px 14px;
+    border-radius: 20px;
+    font-size: 13px;
+    margin-bottom: 20px;
+  }
+</style>
+</head>
+<body>
+  <div class="badge">📱 Android</div>
+  <div class="logo">🚕</div>
+  <h1>Taxi Pro</h1>
+  <p class="subtitle">Application de taxi - Version APK 25</p>
+
+  <a class="btn" href="https://github.com/pacha20021959-dotcom/Taxis-priv-/releases/download/apk-25/taxi-pro.apk" download="taxi-pro.apk">
+    ⬇️ Installer l'application
+  </a>
+
+  <div class="info">
+    <h2>Comment installer ?</h2>
+    <ol>
+      <li>Cliquez sur le bouton <strong>Installer</strong></li>
+      <li>Le fichier APK se télécharge automatiquement</li>
+      <li>Ouvrez le fichier téléchargeé</li>
+      <li>Appuyez sur <strong>Installer</strong></li>
+      <li>Activez l'option "Sources inconnues" si nécessaire</li>
+      <li>Attendez la fin de l'installation</li>
+      <li>Profitez de Taxi Pro ! 🎉</li>
+    </ol>
+  </div>
+
+  <div class="footer">
+    Taxi Pro v25 · 6.26 Mo · Créé par Philippe
+  </div>
+
+<script>
+  // Amélioration : pour les navigateurs Android, le download peut ne pas déclencher l'installation directement
+  document.querySelector('.btn').addEventListener('click', function(e) {
+    // Laisse le navigateur gérer le download
+    // Si le navigateur bloque le download, on peut forcer avec window.open
+  });
+</script>
+</body>
+</html>
