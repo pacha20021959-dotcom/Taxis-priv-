@@ -111,7 +111,13 @@ jobs:
           npx cap sync android
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug --no-daemon
+          ok=0
+          for i in 1 2 3 4; do
+            if ./gradlew assembleDebug --no-daemon; then ok=1; break; fi
+            echo "Tentative $i echouee, nouvelle tentative dans 60 secondes"
+            sleep 60
+          done
+          [ "$ok" = 1 ] || exit 1
           cp app/build/outputs/apk/debug/app-debug.apk ../../taxi-pro.apk
 
       - name: Verifier la signature de l'APK
