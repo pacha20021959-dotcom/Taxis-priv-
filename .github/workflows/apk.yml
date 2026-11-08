@@ -112,11 +112,16 @@ jobs:
           cd android
           chmod +x gradlew
           ok=0
-          for i in 1 2 3 4; do
+          for i in 1 2 3; do
             if ./gradlew assembleDebug --no-daemon; then ok=1; break; fi
             echo "Tentative $i echouee, nouvelle tentative dans 60 secondes"
             sleep 60
           done
+          if [ "$ok" != 1 ]; then
+            echo "Le telechargement de Gradle echoue : essai avec le Gradle deja installe sur la machine"
+            gradle --version || true
+            gradle assembleDebug --no-daemon && ok=1
+          fi
           [ "$ok" = 1 ] || exit 1
           cp app/build/outputs/apk/debug/app-debug.apk ../../taxi-pro.apk
 
