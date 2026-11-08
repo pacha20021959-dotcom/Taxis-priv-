@@ -1174,7 +1174,7 @@ h3{color:var(--accent)}
 </div>
 <div class="wrap">
 <header class="top">
-  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.11</span></div>
+  <div class="brand"><span class="brand-mark" aria-hidden="true"></span><h1>Taxi Gestion Pro</h1><span class="fine" style="margin-left:auto">v4.12</span></div>
   <div id="gpsBar" class="gpsbar" hidden role="status"><span class="recdot big" aria-hidden="true"></span><b>SUIVI GPS ACTIF</b><span id="gpsBarTxt"></span><button class="btn" type="button" id="gpsBarOpen">Compteur</button><button class="btn" type="button" id="gpsBarStop">Arrêter</button></div>
   <div id="liveBar" class="live" hidden aria-live="off"><span>Course en cours <b id="liveKm">0,0 km</b></span><strong id="livePrice">0,00 €</strong></div>
 </header>
@@ -4517,9 +4517,11 @@ function buildInvoicePdf(JsPDF, inv) {
     function ts(r) { return new Date(r.date + 'T' + (r.heure || '00:00') + ':00').getTime(); }
     function reel(r) { return !r.resultat || r.resultat.kmTotal > 0 || r.resultat.prixConvenuUtilise || (r.gps && r.gps.km > 0.05); }
     var cand = rides.filter(function (r) { return !used[r.id] && r.date >= d0 && r.date <= d1 && reel(r); }).sort(function (a, b) { return ts(a) - ts(b); });
+    /* Relevé du compteur saisi avec la course (Kilomètres départ / arrivée) : repris tel quel, vide s'il n'a pas été saisi. */
+    function cptRideVal(r, k) { var v = r.compteur && r.compteur[k]; return (typeof v === 'number' && isFinite(v) && v >= 0) ? v : ''; }
     var courses = cand.map(function (r) {
       var inside = ts(r) >= t0 && ts(r) <= t1 + 60000, du = r.entrees ? num(r.entrees.dureeAllerMin) : 0;
-      return { rideId: r.id, inclus: inside, client: r.client || '', indexDep: '', embIdx: '', embLieu: r.depart || '', embHeure: r.heure || '', debIdx: '', debLieu: r.arrivee || '', debHeure: dAddMin(r.heure, du), prix: r2(r.resultat ? r.resultat.prix : 0), percu: r2(r.resultat ? r.resultat.prix : 0) };
+      return { rideId: r.id, inclus: inside, client: r.client || '', indexDep: '', embIdx: cptRideVal(r, 'dep'), embLieu: r.depart || '', embHeure: r.heure || '', debIdx: cptRideVal(r, 'arr'), debLieu: r.arrivee || '', debHeure: dAddMin(r.heure, du), prix: r2(r.resultat ? r.resultat.prix : 0), percu: r2(r.resultat ? r.resultat.prix : 0) };
     });
     var carb = 0; sv.pleins.forEach(function (p) { if (p.serviceId === x.id) carb += num(p.montant); });
     var lav = 0, aut = 0;
